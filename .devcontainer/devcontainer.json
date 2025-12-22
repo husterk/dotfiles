@@ -1,0 +1,52 @@
+{
+    "name": "dotfiles-devcontainer",
+    "dockerComposeFile": ["./docker-compose.devcontainer.yml"],
+    "service": "devcontainer",
+    "workspaceFolder": "/workspace",
+    "features": {
+        "ghcr.io/flexwie/devcontainer-features/op:1": {}
+    },
+    "containerUser": "vscode",
+    "remoteUser": "vscode",
+    "remoteEnv": {
+        "ENV_DEVCONTAINER_USER": "vscode"
+    },
+    "initializeCommand": "echo 'Devcontainer initialized successfully'",
+    "postCreateCommand": "bun install --frozen-lockfile && echo 'Devcontainer created successfully'",
+    "postStartCommand": "echo 'Devcontainer started successfully'",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "files.associations": {
+                    "*.env": "properties",
+                    "*.env.template": "properties",
+                    "*.env.*.template": "properties",
+                    "*.env.tpl": "properties",
+                    "*.env.*.tpl": "properties"
+                },
+                "terminal.integrated.profiles.linux": {
+                    "zsh": {
+                        "path": "zsh",
+                        "args": ["-l"]
+                    }
+                },
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "workbench.startupEditor": "none"
+            },
+            "extensions": [
+                "1Password.op-vscode",
+                "ms-azuretools.vscode-docker",
+                "bierner.markdown-preview-github-styles",
+                "esbenp.prettier-vscode",
+                "medo64.render-crlf",
+                "bierner.markdown-mermaid",
+                "oven.bun-vscode",
+                "jnoortheen.nix-ide",
+                "arrterian.nix-env-selector",
+                "timonwong.shellcheck",
+                "foxundermoon.shell-format",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
+}

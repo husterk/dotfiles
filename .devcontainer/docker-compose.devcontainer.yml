@@ -1,0 +1,34 @@
+# ---------------------------------------------------------
+# README:
+# - This compose file defines a VSCode dev container.
+# NOTES:
+# - Open this project in VSCode and it will prompt to reopen
+#   the project in the dev container.
+# ---------------------------------------------------------
+services:
+  # The main VSCode devcontainer that is loaded into the VSCode IDE.
+  devcontainer:
+    entrypoint:
+      # Ensure that the dev container stays running until manually stopped.
+      - sleep
+      - infinity
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        ARG_DEVCONTAINER_CLI: true
+        ARG_DEVCONTAINER_USER: vscode
+        ARG_BUN_VERSION: 1.3.2
+    init: true
+    env_file:
+      - ./.env
+    volumes:
+      # Map the project directory into the dev container so that it will be
+      # used as the VSCode explorer directory.
+      - ../:/workspace/
+      # Override mapped workspace directories that are generated as part of the build processes.
+      # This will improve file access performance when working within the devcontainer.
+      - node_modules:/workspace/node_modules/
+
+volumes:
+  node_modules:

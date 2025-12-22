@@ -1,0 +1,24 @@
+{
+    "name": "dotfiles",
+    "description": "Dotfiles and Nix configuration",
+    "version": "1.0.0",
+    "license": "UNLICENSED",
+    "author": {
+        "name": "Keith Huster",
+        "email": "husterk@gmail.com",
+        "url": "https://keithhuster.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:husterk/dotfiles.git"
+    },
+    "scripts": {
+        "prettier-all": "bunx prettier . --write"
+    },
+    "type": "module",
+    "dependencies": {},
+    "devDependencies": {
+        "@fission-ai/openspec": "0.16.0",
+        "prettier": "3.7.4"
+    }
+}

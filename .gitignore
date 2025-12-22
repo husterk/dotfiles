@@ -1,0 +1,9 @@
+# Don't commit the generated assests associated with builds.
+**/node_modules
+
+# Don't commit any *.env files. These files are expected to
+# be generated or manually created on the developer machine.
+**/.env
+
+# Don't commit local Mac OS cache files
+.DS_Store
