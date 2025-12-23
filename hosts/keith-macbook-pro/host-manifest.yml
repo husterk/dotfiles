@@ -1,0 +1,47 @@
+---
+config:
+  root-relative-path: ../../
+  home-dir: ${PATH_USERS}/${USER_USERNAME}
+
+system:
+  modules:
+    - /modules/macos-base.nix
+
+apps:
+  - name: 1password
+    modules:
+      - /apps/1password/1password.nix
+    dotfiles:
+      - source: /apps/1password/agent.toml
+        target: ~/.config/1Password/ssh/agent.toml
+
+  - name: curl
+    modules:
+      - /apps/curl/curl.nix
+
+  - name: git
+    modules:
+      - /apps/git/git.nix
+    dotfiles:
+      - source: /apps/git/.gitconfig
+        target: ~/.gitconfig
+      - source: /apps/git/.gitignore_global
+        target: ~/.gitignore_global
+
+  - name: nix
+    modules:
+      - /apps/nix/nix.nix
+    dotfiles:
+      - source: /apps/nix/nix.conf
+        target: ~/.config/nix/nix.conf
+
+  - name: stow
+    modules:
+      - /apps/stow/stow.nix
+
+  - name: zsh
+    modules:
+      - /apps/zsh/zsh.nix
+    dotfiles:
+      - source: /apps/zsh/.zshrc
+        target: ~/.zshrc

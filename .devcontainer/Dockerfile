@@ -36,8 +36,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 USER root
 
 # Update all local OS apps to resolve potential CVEs within the base image.
+# Install required tools for the generate-config.sh script
 RUN apt-get update && \
-    apt-get -y upgrade
+    apt-get -y upgrade && \
+    apt-get install -y --no-install-recommends \
+        gettext-base \
+        wget \
+        ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Switch to the `root` user to ensure that NodeJS is installed properly.
 USER root
@@ -56,6 +63,11 @@ ENV BUN_INSTALL=/usr/local/.bun
 ENV PATH=$BUN_INSTALL/bin:$PATH
 
 RUN bun --version
+
+# Install yq for YAML parsing (required by generate-config.sh)
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq && \
+    yq --version
 
 # Switch to the user specified in the globally declared args.
 USER ${ARG_DEVCONTAINER_USER}

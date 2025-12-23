@@ -224,7 +224,7 @@ if [ "$SKIP_DARWIN" = false ]; then
     
     # Verify nix-darwin installation
     if command -v darwin-rebuild &> /dev/null; then
-        log_success "nix-darwin is ready ($(darwin-rebuild --version 2>&1 | head -n1))."
+        log_success "nix-darwin is ready."
     fi
 else
     log_warning "Skipping nix-darwin installation (no flake.nix found)."

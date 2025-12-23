@@ -43,16 +43,4 @@
   nixpkgs.config = {
     allowUnfree = true;
   };
-
-  # =========================================================================
-  # Required System Packages
-  # =========================================================================
-  
-  environment.systemPackages = with pkgs; [
-    # Host management tools which are required on all systems
-    # that are managed via NixOS configuration modules.
-    stow # for dotfile management
-    curl # for downloading files
-    git # for version control
-  ];
 }

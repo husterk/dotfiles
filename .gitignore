@@ -7,3 +7,7 @@
 
 # Don't commit local Mac OS cache files
 .DS_Store
+
+# Ignore generated directory as it contains generated files
+# that may contain sensitive information from 1Password secrets.
+**/generated

@@ -11,7 +11,7 @@
     "remoteEnv": {
         "ENV_DEVCONTAINER_USER": "vscode"
     },
-    "initializeCommand": "echo 'Devcontainer initialized successfully'",
+    "initializeCommand": "${localWorkspaceFolder}/.devcontainer/initialize.sh",
     "postCreateCommand": "bun install --frozen-lockfile && echo 'Devcontainer created successfully'",
     "postStartCommand": "echo 'Devcontainer started successfully'",
     "customizations": {
@@ -36,13 +36,13 @@
             "extensions": [
                 "1Password.op-vscode",
                 "ms-azuretools.vscode-docker",
+                "be5invis.toml",
                 "bierner.markdown-preview-github-styles",
                 "esbenp.prettier-vscode",
                 "medo64.render-crlf",
                 "bierner.markdown-mermaid",
                 "oven.bun-vscode",
-                "jnoortheen.nix-ide",
-                "arrterian.nix-env-selector",
+                "bbenoist.nix",
                 "timonwong.shellcheck",
                 "foxundermoon.shell-format",
                 "EditorConfig.EditorConfig"

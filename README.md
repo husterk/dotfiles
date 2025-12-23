@@ -16,7 +16,7 @@ This script uses the 1Password CLI to automatically populate the required enviro
 
 ```
 dotfiles/
-├── bootstrap-scripts/macos-arm/
+├── bootstrap-scripts/macos-arm64/
 │   ├── bootstrap.sh          # Idempotent bootstrap script
 │   └── darwin-helper.sh      # Helper for common operations
 ├── dotfiles/                 # User dotfiles (managed by Stow)
@@ -40,20 +40,20 @@ cd ~/git-repos/dotfiles
 # Use existing host as template: cp -r hosts/keith-macbook-pro hosts/$(hostname -s)
 
 # Run bootstrap script (installs Nix, nix-darwin, configures system)
-./bootstrap-scripts/macos-arm/bootstrap.sh
+./bootstrap-scripts/macos-arm64/bootstrap.sh
 ```
 
 ## Common Commands
 
 ```bash
 # Apply configuration changes
-./bootstrap-scripts/macos-arm/darwin-helper.sh switch
+./bootstrap-scripts/macos-arm64/darwin-helper.sh switch
 
 # Update packages and rebuild
-./bootstrap-scripts/macos-arm/darwin-helper.sh upgrade
+./bootstrap-scripts/macos-arm64/darwin-helper.sh upgrade
 
 # Rollback to previous generation
-./bootstrap-scripts/macos-arm/darwin-helper.sh rollback
+./bootstrap-scripts/macos-arm64/darwin-helper.sh rollback
 
 # Search for packages
 nix search nixpkgs <package-name>

@@ -5,8 +5,10 @@
 {
   # Import all required modules.
   imports = [
-    ../../modules/nix-base.nix
-    ../../modules/macos-base.nix
+    # Modules
+    {{MANIFEST_SYSTEM_MODULES}}
+    # Apps
+    {{MANIFEST_APPS_MODULES}}
   ];
 
   # =========================================================================
