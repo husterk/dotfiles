@@ -297,15 +297,15 @@ else
         # Resolve source path (relative to REPO_ROOT)
         SOURCE_PATH="$REPO_ROOT$source"
         
-        # Replace ~ with the home directory from manifest config
-        target="${target/\~/$HOME_DIR}"
+        # Replace ~ with empty string to get home-relative path (for Stow compatibility)
+        # Stow expects files to be relative to the target directory (home), not absolute paths
+        target="${target/\~\//}"
         
         # Expand environment variables in target path
         TARGET_PATH=$(echo "$target" | envsubst)
         
-        # Create relative path under generated/dotfiles preserving directory structure
-        # Strip leading slash to make it relative
-        RELATIVE_PATH="${TARGET_PATH#/}"
+        # Use the target path directly as relative path (already home-relative)
+        RELATIVE_PATH="$TARGET_PATH"
         
         DEST_PATH="$GENERATED_DOTFILES_DIR/$RELATIVE_PATH"
         
