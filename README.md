@@ -58,6 +58,7 @@ cd ~/git-repos/dotfiles
 code .
 
 # In devcontainer terminal:
+./dotfiles generate-env keith-macbook-pro            # Generate .env from 1Password
 ./dotfiles generate-nix-config keith-macbook-pro
 ./dotfiles generate-dotfiles keith-macbook-pro
 
@@ -92,22 +93,37 @@ The `./dotfiles` script provides a unified interface for all operations:
 
 ## Bootstrap Workflow
 
-This repository uses a 5-step workflow to bootstrap and configure a new host:
+This repository uses a 6-step workflow to bootstrap and configure a new host:
 
-### 1. Generate Nix Configuration (in devcontainer)
+### 1. Generate Environment Variables (in devcontainer)
 
-Generate nix-darwin configuration from templates with 1Password secret injection:
+Generate .env file from 1Password secrets:
+
+```bash
+# Run from devcontainer terminal (only needed when secrets change)
+./dotfiles generate-env keith-macbook-pro
+
+# Files generated in hosts/<hostname>/generated/:
+#   - .env                    # Environment variables from 1Password
+```
+
+**Note:** This step only needs to be run when your 1Password secrets change. The .env file will be reused by subsequent commands.
+
+### 2. Generate Nix Configuration (in devcontainer)
+
+Generate nix-darwin configuration from templates:
 
 ```bash
 # Run from devcontainer terminal
 ./dotfiles generate-nix-config keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
-#   - .env                    # Environment variables from 1Password
 #   - configuration.nix       # System configuration with imported modules
+
+# Note: If .env doesn't exist, this will generate it automatically from 1Password
 ```
 
-### 2. Generate Dotfiles (in devcontainer)
+### 3. Generate Dotfiles (in devcontainer)
 
 Generate dotfiles from templates with environment variable substitution:
 
@@ -119,7 +135,7 @@ Generate dotfiles from templates with environment variable substitution:
 #   - dotfiles/               # Dotfiles with variable substitution
 ```
 
-### 3. Bootstrap Host (on host)
+### 4. Bootstrap Host (on host)
 
 Install Nix package manager, nix-darwin, and GNU Stow on the host:
 
@@ -133,7 +149,7 @@ Install Nix package manager, nix-darwin, and GNU Stow on the host:
 #   - GNU Stow (dotfile symlink manager)
 ```
 
-### 4. Apply Nix Configuration (on host)
+### 5. Apply Nix Configuration (on host)
 
 Apply the nix-darwin system configuration (handles git staging automatically):
 
@@ -148,7 +164,7 @@ Apply the nix-darwin system configuration (handles git staging automatically):
 #   - Cleans up staged files (keeps secrets out of git history)
 ```
 
-### 5. Deploy Dotfiles (on host)
+### 6. Deploy Dotfiles (on host)
 
 Deploy dotfiles to your home directory using GNU Stow:
 
@@ -194,6 +210,9 @@ Remove Nix, nix-darwin, and all packages:
 ## Common Commands
 
 ```bash
+# Regenerate .env when secrets change (devcontainer)
+./dotfiles generate-env keith-macbook-pro
+
 # Regenerate configuration after making changes (devcontainer)
 ./dotfiles generate-nix-config keith-macbook-pro
 ./dotfiles generate-dotfiles keith-macbook-pro

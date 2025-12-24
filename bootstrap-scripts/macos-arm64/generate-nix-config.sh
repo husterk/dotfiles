@@ -141,14 +141,34 @@ fi
 log_success "All prerequisites verified."
 
 # ------------------------------------------------------------------------
-# Step 2: Clean Generated Directory (Config Files Only)
+# Step 2: Check for existing .env file
 # ------------------------------------------------------------------------
-if [ -f "$GENERATED_CONFIG" ] || [ -f "$GENERATED_ENV" ]; then
-    log_warning "Generated configuration files already exist."
-    log_warning "These files will be deleted and regenerated:"
-    [ -f "$GENERATED_ENV" ] && log_warning "  - $GENERATED_ENV"
-    [ -f "$GENERATED_CONFIG" ] && log_warning "  - $GENERATED_CONFIG"
-    echo -n "Continue? (y/N): "
+if [ -f "$GENERATED_ENV" ]; then
+    log_info "Using existing .env file: $GENERATED_ENV"
+    log_info "To regenerate .env from 1Password, run: ./dotfiles generate-env $HOSTNAME"
+else
+    log_info "No .env file found. Generating from 1Password..."
+    
+    # Create generated directory if it doesn't exist
+    mkdir -p "$GENERATED_DIR"
+    
+    # Use 1Password CLI to inject secrets into .env file
+    if op inject -i "$TEMPLATE_ENV" -o "$GENERATED_ENV" 2>&1; then
+        log_success "Generated .env file: $GENERATED_ENV"
+    else
+        log_error "Failed to generate .env file using 1Password CLI."
+        log_info "Ensure you are signed in to 1Password and have access to the secrets."
+        log_info "Or run: ./dotfiles generate-env $HOSTNAME"
+        exit 1
+    fi
+fi
+
+# ------------------------------------------------------------------------
+# Step 3: Clean Existing Configuration File
+# ------------------------------------------------------------------------
+if [ -f "$GENERATED_CONFIG" ]; then
+    log_warning "Generated configuration file already exists: $GENERATED_CONFIG"
+    echo -n "Overwrite? (y/N): "
     read -r response
     
     if [[ ! "$response" =~ ^[Yy]$ ]]; then
@@ -156,26 +176,9 @@ if [ -f "$GENERATED_CONFIG" ] || [ -f "$GENERATED_ENV" ]; then
         exit 0
     fi
     
-    log_info "Removing existing configuration files..."
-    rm -f "$GENERATED_ENV" "$GENERATED_CONFIG"
-    log_success "Cleaned existing configuration files."
-fi
-
-# ------------------------------------------------------------------------
-# Step 3: Generate .env file from 1Password
-# ------------------------------------------------------------------------
-log_info "Generating .env file from 1Password secrets..."
-
-# Create generated directory if it doesn't exist
-mkdir -p "$GENERATED_DIR"
-
-# Use 1Password CLI to inject secrets into .env file
-if op inject -i "$TEMPLATE_ENV" -o "$GENERATED_ENV" 2>&1; then
-    log_success "Generated .env file: $GENERATED_ENV"
-else
-    log_error "Failed to generate .env file using 1Password CLI."
-    log_info "Ensure you are signed in to 1Password and have access to the secrets."
-    exit 1
+    log_info "Removing existing configuration file..."
+    rm -f "$GENERATED_CONFIG"
+    log_success "Cleaned existing configuration file."
 fi
 
 # ------------------------------------------------------------------------
