@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # ========================================================================
 # macOS ARM Generate Config Script
@@ -186,6 +186,7 @@ log_info "Loading environment variables from generated .env..."
 # Source the .env file to load variables
 if [ -f "$GENERATED_ENV" ]; then
     set -a  # automatically export all variables
+    # shellcheck source=/dev/null
     source "$GENERATED_ENV"
     set +a
     log_success "Environment variables loaded."
@@ -266,6 +267,7 @@ mv "$TEMP_CONFIG" "$GENERATED_CONFIG"
 # Replace environment variable placeholders using envsubst
 # Export all variables from .env so envsubst can use them
 set -a
+# shellcheck source=/dev/null
 source "$GENERATED_ENV"
 set +a
 

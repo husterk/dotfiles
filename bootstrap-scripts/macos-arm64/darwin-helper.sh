@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # ========================================================================
 # nix-darwin Helper Script
@@ -31,6 +31,10 @@ log_info() {
 
 log_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
 }
 
 log_error() {
@@ -72,7 +76,11 @@ if [ ! -f "$FLAKE_PATH" ]; then
     log_error "No flake.nix found for host '$HOSTNAME' at: $FLAKE_PATH"
     log_info "Available hosts:"
     if [ -d "$REPO_ROOT/hosts" ]; then
-        ls -1 "$REPO_ROOT/hosts" | grep -v README | sed 's/^/  - /'
+        for dir in "$REPO_ROOT/hosts"/*; do
+            if [ -d "$dir" ]; then
+                basename "$dir"
+            fi
+        done | grep -v "^README$" | sed 's/^/  - /'
     fi
     log_info ""
     log_info "Create a host configuration at: $HOST_DIR"

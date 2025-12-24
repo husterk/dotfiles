@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # ========================================================================
 # macOS ARM Bootstrap Script
@@ -155,7 +155,11 @@ if [ ! -f "$FLAKE_PATH" ]; then
     log_warning "No flake.nix found for host '$HOSTNAME' at: $FLAKE_PATH"
     log_info "Available hosts:"
     if [ -d "$REPO_ROOT/hosts" ]; then
-        ls -1 "$REPO_ROOT/hosts" | grep -v README | sed 's/^/  - /'
+        for dir in "$REPO_ROOT/hosts"/*; do
+            if [ -d "$dir" ]; then
+                basename "$dir"
+            fi
+        done | grep -v "^README$" | sed 's/^/  - /'
     fi
     log_info ""
     log_info "Please create a host configuration:"

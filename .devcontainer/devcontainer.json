@@ -12,8 +12,8 @@
         "ENV_DEVCONTAINER_USER": "vscode",
         "HOST_USER": "${localEnv:USER}"
     },
-    "initializeCommand": "${localWorkspaceFolder}/.devcontainer/initialize.sh",
-    "postCreateCommand": "ln -sf /home/vscode/.ssh-host /home/vscode/.ssh && bun install --frozen-lockfile && echo 'Devcontainer created successfully'",
+    "initializeCommand": "${localWorkspaceFolder}/.devcontainer/scripts/initialize.sh",
+    "postCreateCommand": "${containerWorkspaceFolder}/.devcontainer/scripts/post-create.sh",
     "postStartCommand": "echo 'Devcontainer started successfully'",
     "customizations": {
         "vscode": {
@@ -31,7 +31,7 @@
                         "args": ["-l"]
                     },
                     "zsh (host)": {
-                        "path": "/workspace/.devcontainer/ssh-to-host.sh",
+                        "path": "/workspace/.devcontainer/scripts/ssh-to-host.sh",
                         "icon": "terminal-bash"
                     }
                 },

@@ -11,6 +11,13 @@ This script uses the 1Password CLI to automatically populate the required enviro
 ```
 dotfiles/
 ├── .devcontainer/              # VS Code devcontainer configuration
+│   ├── scripts/               # Devcontainer lifecycle scripts
+│   │   ├── initialize.sh      # Pre-build: Generate .env from 1Password
+│   │   ├── post-create.sh     # Post-create: Setup SSH, shell integration, packages
+│   │   └── ssh-to-host.sh     # SSH wrapper for host terminal access
+│   ├── devcontainer.json
+│   ├── docker-compose.devcontainer.yml
+│   └── Dockerfile
 ├── bootstrap-scripts/
 │   └── macos-arm64/
 │       ├── bootstrap.sh        # Initial system setup (Nix, nix-darwin, Stow)
