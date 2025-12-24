@@ -2,6 +2,7 @@
 config:
   root-relative-path: ../../
   home-dir: ${PATH_USERS}/${USER_USERNAME}
+  bootstrap-target: macos-arm64
 
 system:
   modules:

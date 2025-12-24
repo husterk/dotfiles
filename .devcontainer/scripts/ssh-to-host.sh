@@ -25,7 +25,9 @@ if [ -z "$HOST_USER" ]; then
 fi
 
 # SSH to host with configured options
+# Start in the dotfiles repository directory
 exec ssh \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
-    "$HOST_USER@host.docker.internal"
+    -t "$HOST_USER@host.docker.internal" \
+    "cd ~/git-repos/dotfiles 2>/dev/null || cd ~; exec zsh -l"

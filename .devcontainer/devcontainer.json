@@ -26,16 +26,22 @@
                     "*.env.*.tpl": "properties"
                 },
                 "terminal.integrated.profiles.linux": {
-                    "zsh": {
+                    "zsh (devcontainer)": {
                         "path": "zsh",
-                        "args": ["-l"]
+                        "args": ["-l"],
+                        "overrideName": true
                     },
                     "zsh (host)": {
                         "path": "/workspace/.devcontainer/scripts/ssh-to-host.sh",
-                        "icon": "terminal-bash"
-                    }
+                        "icon": "terminal-bash",
+                        "overrideName": true
+                    },
+                    "bash": null,
+                    "zsh": null,
+                    "sh": null,
+                    "JavaScript Debug Terminal": null
                 },
-                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.defaultProfile.linux": "zsh (devcontainer)",
                 "workbench.startupEditor": "none"
             },
             "extensions": [

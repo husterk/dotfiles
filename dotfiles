@@ -1,0 +1,224 @@
+#!/bin/bash
+
+# ========================================================================
+# Dotfiles Management Script
+# ========================================================================
+# This script provides a unified interface for managing your dotfiles
+# and nix-darwin configuration across macOS hosts.
+#
+# Usage: ./dotfiles <command> <hostname>
+# ========================================================================
+
+set -e  # Exit on error
+
+# Color output for better visibility
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Helper functions for output
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Get the repository root directory
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+# Get bootstrap target from host manifest
+get_bootstrap_target() {
+    local hostname="$1"
+    local manifest_file="$REPO_ROOT/hosts/$hostname/host-manifest.yml"
+    
+    if [ ! -f "$manifest_file" ]; then
+        log_error "Host manifest not found: $manifest_file"
+        exit 1
+    fi
+    
+    # Extract bootstrap-target from manifest using yq
+    if command -v yq &> /dev/null; then
+        yq eval '.config.bootstrap-target // "macos-arm64"' "$manifest_file"
+    else
+        # Fallback: simple grep/sed parsing
+        grep -A1 '^config:' "$manifest_file" | grep 'bootstrap-target:' | sed 's/.*bootstrap-target:[[:space:]]*//'
+    fi
+}
+
+# Show help
+show_help() {
+    cat << EOF
+Dotfiles Management Script
+
+Usage: dotfiles <command> <hostname>
+
+Commands:
+  bootstrap <hostname>             Bootstrap a new host with Nix and nix-darwin
+  generate-nix-config <hostname>   Generate Nix configuration from templates
+  generate-dotfiles <hostname>     Generate dotfiles from templates
+  apply-config <hostname>          Apply Nix configuration to the system
+  deploy-dotfiles <hostname>       Deploy dotfiles using GNU Stow
+  restore-dotfiles <hostname>      Restore dotfiles from backup
+  unbootstrap <hostname>           Remove Nix and nix-darwin from system
+  help                             Show this help message
+
+Typical Bootstrap Workflow:
+  1) [zsh (devcontainer)] ./dotfiles bootstrap <hostname>              # Bootstrap current host
+  2) [zsh (devcontainer)] ./dotfiles generate-nix-config <hostname>    # Generate config for specific host
+  3) [zsh (devcontainer)] ./dotfiles generate-dotfiles <hostname>      # Generate dotfiles for specific host
+  4) [zsh (host)] ./dotfiles apply-config <hostname>                   # Apply Nix configuration on host
+  5) [zsh (host)] ./dotfiles deploy-dotfiles <hostname>                # Deploy dotfiles on host
+Typical Unbootstrap Workflow:
+  1) [zsh (host)] ./dotfiles restore-dotfiles <hostname>               # Restore dotfiles for current host
+  2) [zsh (host)] ./dotfiles unbootstrap <hostname>                    # Unbootstrap nix-darwin from the host
+
+Note: 
+  - Hostname is REQUIRED for all commands to prevent unintended operations.
+  - Bootstrap target (OS/architecture) is read from host-manifest.yml
+
+EOF
+}
+
+# Parse command
+COMMAND="${1:-help}"
+HOSTNAME="${2:-}"
+
+# Execute command
+case "$COMMAND" in
+    bootstrap)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            log_info "Please ensure 'bootstrap-target' is set in host-manifest.yml"
+            exit 1
+        fi
+        log_info "Bootstrap target: $BOOTSTRAP_TARGET"
+        log_info "Starting bootstrap process for host: $HOSTNAME"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/bootstrap.sh" "$HOSTNAME"
+        ;;
+    
+    generate-nix-config)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_info "Generating Nix configuration for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/generate-nix-config.sh" "$HOSTNAME"
+        ;;
+    
+    generate-dotfiles)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_info "Generating dotfiles for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/generate-dotfiles.sh" "$HOSTNAME"
+        ;;
+    
+    apply-config)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_info "Applying Nix configuration for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/apply-config.sh" "$HOSTNAME"
+        ;;
+    
+    deploy-dotfiles)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_info "Deploying dotfiles for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/deploy-dotfiles.sh" "$HOSTNAME"
+        ;;
+    
+    restore-dotfiles)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_info "Restoring dotfiles for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/deploy-dotfiles.sh" "$HOSTNAME" --restore
+        ;;
+    
+    unbootstrap)
+        if [ -z "$HOSTNAME" ]; then
+            log_error "Hostname required for this command."
+            echo ""
+            show_help
+            exit 1
+        fi
+        BOOTSTRAP_TARGET=$(get_bootstrap_target "$HOSTNAME")
+        if [ -z "$BOOTSTRAP_TARGET" ]; then
+            log_error "Could not determine bootstrap target for host: $HOSTNAME"
+            exit 1
+        fi
+        log_warning "Starting unbootstrap process for host: $HOSTNAME (target: $BOOTSTRAP_TARGET)"
+        exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/unbootstrap.sh" "$HOSTNAME"
+        ;;
+    
+    help|--help|-h)
+        show_help
+        ;;
+    
+    *)
+        log_error "Unknown command: $COMMAND"
+        echo ""
+        show_help
+        exit 1
+        ;;
+esac

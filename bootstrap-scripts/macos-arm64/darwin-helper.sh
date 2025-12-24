@@ -3,20 +3,15 @@
 # ========================================================================
 # nix-darwin Helper Script
 # ========================================================================
-# This script provides convenient shortcuts for common nix-darwin operations
+# This script provides convenient shortcuts for low-level nix-darwin operations.
+# Use this for direct darwin-rebuild commands without the full workflow.
+#
+# For high-level operations, use the main ./dotfiles script instead.
+#
+# Usage: ./darwin-helper.sh <command> <hostname>
 # ========================================================================
 
 set -e
-
-# Get the repository root
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
-
-# Get the hostname
-HOSTNAME=$(hostname -s)
-
-# Host-specific directory and flake path
-HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
-FLAKE_PATH="$HOST_DIR/flake.nix"
 
 # Colors
 RED='\033[0;31m'
@@ -24,6 +19,42 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
+
+# Helper functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Parse arguments
+COMMAND="${1:-}"
+HOSTNAME="${2:-}"
+
+if [ -z "$COMMAND" ]; then
+    log_error "No command provided."
+    echo ""
+    echo "Usage: $0 <command> <hostname>"
+    echo "Example: $0 switch keith-macbook-pro"
+    exit 1
+fi
+
+if [ -z "$HOSTNAME" ]; then
+    log_error "No hostname provided."
+    echo ""
+    echo "Usage: $0 <command> <hostname>"
+    echo "Example: $0 switch keith-macbook-pro"
+    exit 1
+fi
+
+# Get the repository root
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+
+# Host-specific directory and flake path
+HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
+FLAKE_PATH="$HOST_DIR/flake.nix"
 
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -88,8 +119,6 @@ if [ ! -f "$FLAKE_PATH" ]; then
 fi
 
 # Parse command
-COMMAND="${1:-help}"
-
 case "$COMMAND" in
     switch)
         log_info "Building and activating configuration for host '$HOSTNAME'..."

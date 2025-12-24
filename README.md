@@ -10,6 +10,7 @@ This script uses the 1Password CLI to automatically populate the required enviro
 
 ```
 dotfiles/
+├── dotfiles                    # Main management script (unified interface)
 ├── .devcontainer/              # VS Code devcontainer configuration
 │   ├── scripts/               # Devcontainer lifecycle scripts
 │   │   ├── initialize.sh      # Pre-build: Generate .env from 1Password
@@ -18,17 +19,21 @@ dotfiles/
 │   ├── devcontainer.json
 │   ├── docker-compose.devcontainer.yml
 │   └── Dockerfile
-├── bootstrap-scripts/
-│   └── macos-arm64/
-│       ├── bootstrap.sh        # Initial system setup (Nix, nix-darwin, Stow)
-│       ├── generate-config.sh  # Generate configs from templates with secrets
-│       ├── apply-config.sh     # Apply nix-darwin configuration
-│       └── deploy-dotfiles.sh  # Deploy dotfiles with GNU Stow
+├── bootstrap-scripts/          # OS/architecture-specific bootstrap scripts
+│   └── <target>/              # e.g., macos-arm64, linux-x86_64, etc.
+│       ├── bootstrap.sh             # Initial system setup (Nix, nix-darwin, Stow)
+│       ├── generate-nix-config.sh   # Generate Nix config from templates
+│       ├── generate-dotfiles.sh     # Generate dotfiles from templates
+│       ├── apply-config.sh          # Apply nix-darwin configuration
+│       ├── deploy-dotfiles.sh       # Deploy dotfiles with GNU Stow
+│       ├── unbootstrap.sh           # Remove Nix and nix-darwin
+│       └── darwin-helper.sh         # Low-level nix-darwin operations
 ├── hosts/<hostname>/
 │   ├── flake.nix              # Nix flake entry point
 │   ├── template.env           # 1Password secret references
-│   ├── template.nix           # System configuration template
+│   ├── configuration-template.nix  # System configuration template
 │   ├── host-manifest.yml      # Declarative module and dotfile specification
+│   │                          # (includes bootstrap-target for OS/arch selection)
 │   └── generated/             # Generated files (gitignored, contains secrets)
 │       ├── .env
 │       ├── configuration.nix
@@ -49,106 +54,137 @@ dotfiles/
 git clone https://github.com/husterk/dotfiles ~/git-repos/dotfiles
 cd ~/git-repos/dotfiles
 
-# Create host configuration for your machine
-# Use existing host as template: cp -r hosts/keith-macbook-pro hosts/$(hostname -s)
+# Bootstrap your macOS host (installs Nix, nix-darwin, GNU Stow)
+./dotfiles bootstrap
 
-# HOST TERMINAL SESSION: Run bootstrap script (installs Nix, nix-darwin, GNU Stow).
-./bootstrap-scripts/macos-arm64/bootstrap.sh
+# Generate and apply configuration
+./dotfiles generate-config $(hostname -s)
+./dotfiles generate-dotfiles $(hostname -s)
+./dotfiles apply-config $(hostname -s)
+./dotfiles deploy-dotfiles $(hostname -s)
 ```
+
+## Management Commands
+
+The `./dotfiles` script provides a unified interface for all operations:
+
+```bash
+./dotfiles <command> [hostname]
+```
+
+### Available Commands
+
+| Command             | Description                                                        |
+| ------------------- | ------------------------------------------------------------------ |
+| `bootstrap`         | Bootstrap a new macOS host with Nix and nix-darwin                 |
+| `generate-config`   | Generate Nix configuration from templates (with 1Password secrets) |
+| `generate-dotfiles` | Generate dotfiles from templates                                   |
+| `apply-config`      | Apply Nix configuration to the system (requires sudo)              |
+| `deploy-dotfiles`   | Deploy dotfiles using GNU Stow                                     |
+| `restore-dotfiles`  | Restore dotfiles from backup (removes Stow symlinks)               |
+| `unbootstrap`       | Remove Nix and nix-darwin from system                              |
+| `help`              | Show help message                                                  |
+
+**Note:** If hostname is not provided, the current hostname will be detected automatically.
 
 ## Configuration Workflow
 
-This repository uses a three-step workflow to manage your system configuration and dotfiles:
+This repository uses a four-step workflow to manage your system configuration and dotfiles:
 
-### 1. Generate Configuration
+### 1. Bootstrap (One-time Setup)
 
-Generate nix-darwin configuration and dotfiles from templates with 1Password secret injection:
+Install Nix package manager, nix-darwin, and GNU Stow:
 
 ```bash
-# DEVCONTAINER/HOST TERMINAL SESSION: Generate configuration for your host
-./bootstrap-scripts/macos-arm64/generate-config.sh $(hostname -s)
+./dotfiles bootstrap
+```
+
+### 2. Generate Nix Configuration
+
+Generate nix-darwin configuration from templates with 1Password secret injection:
+
+```bash
+./dotfiles generate-config $(hostname -s)
+
+# Or let it auto-detect hostname:
+./dotfiles generate-config
 
 # Files generated in hosts/<hostname>/generated/:
 #   - .env                    # Environment variables from 1Password
 #   - configuration.nix       # System configuration with imported modules
-#   - dotfiles/               # Dotfiles with environment variable substitution
 ```
 
-### 2. Apply System Configuration
+### 3. Generate Dotfiles
+
+Generate dotfiles from templates with environment variable substitution:
+
+```bash
+./dotfiles generate-dotfiles $(hostname -s)
+
+# Files generated in hosts/<hostname>/generated/:
+#   - dotfiles/               # Dotfiles with variable substitution
+```
+
+### 4. Apply Configuration
 
 Apply the nix-darwin system configuration (handles git staging automatically):
 
 ```bash
-# HOST TERMINAL SESSION: Apply configuration (requires sudo)
-./bootstrap-scripts/macos-arm64/apply-config.sh $(hostname -s)
+./dotfiles apply-config $(hostname -s)
 
-# This script:
+# This command:
 #   - Temporarily stages configuration.nix in git (required by nix flakes)
 #   - Runs darwin-rebuild switch --flake
 #   - Cleans up staged files (keeps secrets out of git history)
 ```
 
-### 3. Deploy Dotfiles
+### 5. Deploy Dotfiles
 
 Deploy dotfiles to your home directory using GNU Stow:
 
 ```bash
-# HOST TERMINAL SESSION: Preview what will be deployed (recommended first time)
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --dry-run
+# Preview what will be deployed (recommended first time)
+./dotfiles deploy-dotfiles $(hostname -s) --dry-run
 
-# HOST TERMINAL SESSION: Deploy dotfiles (automatically backs up existing files)
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s)
-
-# HOST TERMINAL SESSION: Update existing dotfiles after changes
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --restow
-
-# HOST TERMINAL SESSION: Remove dotfile symlinks
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --delete
-
-# HOST TERMINAL SESSION: Restore dotfiles from a previous backup
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --restore
+# Deploy dotfiles (automatically backs up existing files)
+./dotfiles deploy-dotfiles $(hostname -s)
 ```
-
-**Backup Management:**
-
-- Backups are automatically created before deployment in `hosts/<hostname>/generated/dotfiles-backup-<timestamp>/`
-- Each backup contains your original dotfiles before they were replaced with symlinks
-- Use `--restore` to interactively select and restore from any previous backup
-- Restoring will remove Stow symlinks and restore your original files
-
-### Complete Workflow Example
-
-```bash
-# 1. DEVCONTAINER/HOST TERMINAL SESSION: Generate configs and dotfiles from templates
-./bootstrap-scripts/macos-arm64/generate-config.sh $(hostname -s)
-
-# 2. HOST TERMINAL SESSION: Apply nix-darwin system configuration
-./bootstrap-scripts/macos-arm64/apply-config.sh $(hostname -s)
-
-# 3. HOST TERMINAL SESSION: Deploy dotfiles with Stow
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s)
-```
-
-**Note:** Generated files in `hosts/<hostname>/generated/` contain secrets and are gitignored. They should never be committed to version control.
 
 ## Common Commands
 
 ```bash
-# HOST TERMINAL SESSION COMMANDS:
-# Regenerate and reapply configuration after making changes
-./bootstrap-scripts/macos-arm64/generate-config.sh $(hostname -s)
-./bootstrap-scripts/macos-arm64/apply-config.sh $(hostname -s)
+# Regenerate configuration after making changes
+./dotfiles generate-config
+./dotfiles generate-dotfiles
+./dotfiles apply-config
+./dotfiles deploy-dotfiles
+
+# Update existing dotfiles after changes
 ./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --restow
+
+# Restore dotfiles from a previous backup
+./dotfiles restore-dotfiles
+
+# Remove Nix and nix-darwin completely
+./dotfiles unbootstrap
+
+# Low-level nix-darwin operations (advanced)
+./bootstrap-scripts/macos-arm64/darwin-helper.sh switch
+./bootstrap-scripts/macos-arm64/darwin-helper.sh rollback
+./bootstrap-scripts/macos-arm64/darwin-helper.sh list
 
 # Search for packages
 nix search nixpkgs <package-name>
-
-# View previous system generations
-darwin-rebuild --list-generations
-
-# Rollback to previous generation
-darwin-rebuild rollback --flake .
 ```
+
+## Backup Management
+
+Dotfile backups are automatically created during deployment:
+
+- Location: `hosts/<hostname>/generated/dotfiles-backup-<timestamp>/`
+- Contains: Your original dotfiles before they were replaced with symlinks
+- Restore: `./dotfiles restore-dotfiles $(hostname -s)`
+- Restoring removes Stow symlinks and restores your original files
 
 ## Customization
 
@@ -168,14 +204,15 @@ vim hosts/$(hostname -s)/host-manifest.yml
 vim hosts/$(hostname -s)/template.env
 
 # Generate and apply configuration
-./bootstrap-scripts/macos-arm64/generate-config.sh $(hostname -s)
-./bootstrap-scripts/macos-arm64/apply-config.sh $(hostname -s)
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s)
+./dotfiles generate-config $(hostname -s)
+./dotfiles generate-dotfiles $(hostname -s)
+./dotfiles apply-config $(hostname -s)
+./dotfiles deploy-dotfiles $(hostname -s)
 ```
 
 ### Adding Packages
 
-Edit your host's `host-manifest.yml` to add application modules, or directly edit `template.nix`:
+Edit your host's `host-manifest.yml` to add application modules, or directly edit `configuration-template.nix`:
 
 ```nix
 environment.systemPackages = with pkgs; [
@@ -187,8 +224,8 @@ environment.systemPackages = with pkgs; [
 After making changes, regenerate and apply:
 
 ```bash
-./bootstrap-scripts/macos-arm64/generate-config.sh $(hostname -s)
-./bootstrap-scripts/macos-arm64/apply-config.sh $(hostname -s)
+./dotfiles generate-config $(hostname -s)
+./dotfiles apply-config $(hostname -s)
 ```
 
 ### Creating Modules

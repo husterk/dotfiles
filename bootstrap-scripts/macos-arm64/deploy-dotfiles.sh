@@ -156,8 +156,8 @@ if [ "$RESTORE" = false ]; then
     if [ ! -d "$DOTFILES_DIR" ]; then
         log_error "Generated dotfiles directory not found: $DOTFILES_DIR"
         echo ""
-        echo "Please run generate-config.sh first:"
-        echo "  ./bootstrap-scripts/macos-arm64/generate-config.sh $HOSTNAME"
+        echo "Please run generate-dotfiles.sh first:"
+        echo "  ./bootstrap-scripts/macos-arm64/generate-dotfiles.sh $HOSTNAME"
         exit 1
     fi
 
@@ -409,5 +409,5 @@ fi
 echo ""
 log_info "To update dotfiles:"
 log_info "  1. Modify source files in apps/*/  "
-log_info "  2. Run: ./bootstrap-scripts/macos-arm64/generate-config.sh $HOSTNAME"
+log_info "  2. Run: ./bootstrap-scripts/macos-arm64/generate-dotfiles.sh $HOSTNAME"
 log_info "  3. Run: ./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $HOSTNAME --restow"

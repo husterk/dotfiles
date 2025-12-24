@@ -10,6 +10,9 @@
 #
 # The script is fully idempotent and can be safely run multiple times
 # to bootstrap new systems or update existing ones.
+#
+# Usage: ./bootstrap.sh <hostname>
+# Example: ./bootstrap.sh keith-macbook-pro
 # ========================================================================
 
 set -e  # Exit on error
@@ -55,6 +58,22 @@ if ! command -v git &> /dev/null; then
 fi
 
 log_success "All prerequisites verified."
+
+# ------------------------------------------------------------------------
+# Step 0: Parse Arguments
+# ------------------------------------------------------------------------
+HOSTNAME="${1:-}"
+
+if [ -z "$HOSTNAME" ]; then
+    log_error "No hostname provided."
+    echo ""
+    echo "Usage: $0 <hostname>"
+    echo ""
+    echo "Example: $0 keith-macbook-pro"
+    exit 1
+fi
+
+log_info "Bootstrapping host: $HOSTNAME"
 
 # ------------------------------------------------------------------------
 # Step 2: Install Nix Package Manager
@@ -142,10 +161,6 @@ if [ -z "$REPO_ROOT" ]; then
 fi
 
 log_info "Repository root: $REPO_ROOT"
-
-# Get the hostname for the flake configuration
-HOSTNAME=$(hostname -s)
-log_info "Detected hostname: $HOSTNAME"
 
 # Check if host-specific flake.nix exists
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"

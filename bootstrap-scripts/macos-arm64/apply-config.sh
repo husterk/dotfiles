@@ -96,7 +96,7 @@ TEMP_CONFIG="$HOST_DIR/configuration.nix"
 # Validate generated configuration exists
 if [ ! -f "$GENERATED_CONFIG" ]; then
     log_error "Generated configuration not found: $GENERATED_CONFIG"
-    log_info "Please run generate-config.sh first to create the configuration."
+    log_info "Please run generate-nix-config.sh first to create the configuration."
     exit 1
 fi
 
