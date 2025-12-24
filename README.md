@@ -50,18 +50,21 @@ dotfiles/
 ## Quick Start
 
 ```bash
-# Clone repository
+# Clone repository (on host)
 git clone https://github.com/husterk/dotfiles ~/git-repos/dotfiles
 cd ~/git-repos/dotfiles
 
-# Bootstrap your macOS host (installs Nix, nix-darwin, GNU Stow)
-./dotfiles bootstrap
+# Open in VS Code with devcontainer
+code .
 
-# Generate and apply configuration
-./dotfiles generate-config $(hostname -s)
-./dotfiles generate-dotfiles $(hostname -s)
-./dotfiles apply-config $(hostname -s)
-./dotfiles deploy-dotfiles $(hostname -s)
+# In devcontainer terminal:
+./dotfiles generate-nix-config keith-macbook-pro
+./dotfiles generate-dotfiles keith-macbook-pro
+
+# In host terminal:
+./dotfiles bootstrap keith-macbook-pro
+./dotfiles apply-nix-config keith-macbook-pro
+./dotfiles deploy-dotfiles keith-macbook-pro
 ```
 
 ## Management Commands
@@ -74,104 +77,144 @@ The `./dotfiles` script provides a unified interface for all operations:
 
 ### Available Commands
 
-| Command             | Description                                                        |
-| ------------------- | ------------------------------------------------------------------ |
-| `bootstrap`         | Bootstrap a new macOS host with Nix and nix-darwin                 |
-| `generate-config`   | Generate Nix configuration from templates (with 1Password secrets) |
-| `generate-dotfiles` | Generate dotfiles from templates                                   |
-| `apply-config`      | Apply Nix configuration to the system (requires sudo)              |
-| `deploy-dotfiles`   | Deploy dotfiles using GNU Stow                                     |
-| `restore-dotfiles`  | Restore dotfiles from backup (removes Stow symlinks)               |
-| `unbootstrap`       | Remove Nix and nix-darwin from system                              |
-| `help`              | Show help message                                                  |
+| Command               | Description                                                        |
+| --------------------- | ------------------------------------------------------------------ |
+| `bootstrap`           | Bootstrap a new host with Nix and nix-darwin                       |
+| `generate-nix-config` | Generate Nix configuration from templates (with 1Password secrets) |
+| `generate-dotfiles`   | Generate dotfiles from templates                                   |
+| `apply-nix-config`    | Apply Nix configuration to the system (requires sudo)              |
+| `deploy-dotfiles`     | Deploy dotfiles using GNU Stow                                     |
+| `restore-dotfiles`    | Restore dotfiles from backup (removes Stow symlinks)               |
+| `unbootstrap`         | Remove Nix and nix-darwin from system                              |
+| `help`                | Show help message                                                  |
 
-**Note:** If hostname is not provided, the current hostname will be detected automatically.
+**Note:** Hostname is REQUIRED for all commands to prevent unintended operations.
 
-## Configuration Workflow
+## Bootstrap Workflow
 
-This repository uses a four-step workflow to manage your system configuration and dotfiles:
+This repository uses a 5-step workflow to bootstrap and configure a new host:
 
-### 1. Bootstrap (One-time Setup)
-
-Install Nix package manager, nix-darwin, and GNU Stow:
-
-```bash
-./dotfiles bootstrap
-```
-
-### 2. Generate Nix Configuration
+### 1. Generate Nix Configuration (in devcontainer)
 
 Generate nix-darwin configuration from templates with 1Password secret injection:
 
 ```bash
-./dotfiles generate-config $(hostname -s)
-
-# Or let it auto-detect hostname:
-./dotfiles generate-config
+# Run from devcontainer terminal
+./dotfiles generate-nix-config keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
 #   - .env                    # Environment variables from 1Password
 #   - configuration.nix       # System configuration with imported modules
 ```
 
-### 3. Generate Dotfiles
+### 2. Generate Dotfiles (in devcontainer)
 
 Generate dotfiles from templates with environment variable substitution:
 
 ```bash
-./dotfiles generate-dotfiles $(hostname -s)
+# Run from devcontainer terminal
+./dotfiles generate-dotfiles keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
 #   - dotfiles/               # Dotfiles with variable substitution
 ```
 
-### 4. Apply Configuration
+### 3. Bootstrap Host (on host)
+
+Install Nix package manager, nix-darwin, and GNU Stow on the host:
+
+```bash
+# Run from host terminal (one-time setup)
+./dotfiles bootstrap keith-macbook-pro
+
+# This installs:
+#   - Nix package manager (via Determinate Systems installer)
+#   - nix-darwin (declarative macOS configuration)
+#   - GNU Stow (dotfile symlink manager)
+```
+
+### 4. Apply Nix Configuration (on host)
 
 Apply the nix-darwin system configuration (handles git staging automatically):
 
 ```bash
-./dotfiles apply-config $(hostname -s)
+# Run from host terminal
+./dotfiles apply-nix-config keith-macbook-pro
 
 # This command:
 #   - Temporarily stages configuration.nix in git (required by nix flakes)
 #   - Runs darwin-rebuild switch --flake
+#   - Installs all packages defined in configuration
 #   - Cleans up staged files (keeps secrets out of git history)
 ```
 
-### 5. Deploy Dotfiles
+### 5. Deploy Dotfiles (on host)
 
 Deploy dotfiles to your home directory using GNU Stow:
 
 ```bash
+# Run from host terminal
+
 # Preview what will be deployed (recommended first time)
-./dotfiles deploy-dotfiles $(hostname -s) --dry-run
+./dotfiles deploy-dotfiles keith-macbook-pro --dry-run
 
 # Deploy dotfiles (automatically backs up existing files)
-./dotfiles deploy-dotfiles $(hostname -s)
+./dotfiles deploy-dotfiles keith-macbook-pro
+```
+
+## Unbootstrap Workflow
+
+To completely remove the configuration and Nix from your system:
+
+### 1. Restore Dotfiles (on host)
+
+Restore your original dotfiles from backup:
+
+```bash
+# Run from host terminal
+./dotfiles restore-dotfiles keith-macbook-pro
+
+# This removes Stow symlinks and restores your original files
+```
+
+### 2. Unbootstrap System (on host)
+
+Remove Nix, nix-darwin, and all packages:
+
+```bash
+# Run from host terminal
+./dotfiles unbootstrap keith-macbook-pro
+
+# This removes:
+#   - All nix-darwin configurations
+#   - Nix package manager and all packages
+#   - All data in /nix directory
 ```
 
 ## Common Commands
 
 ```bash
-# Regenerate configuration after making changes
-./dotfiles generate-config
-./dotfiles generate-dotfiles
-./dotfiles apply-config
-./dotfiles deploy-dotfiles
+# Regenerate configuration after making changes (devcontainer)
+./dotfiles generate-nix-config keith-macbook-pro
+./dotfiles generate-dotfiles keith-macbook-pro
 
-# Update existing dotfiles after changes
-./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $(hostname -s) --restow
+# Apply changes (host)
+./dotfiles apply-nix-config keith-macbook-pro
+./dotfiles deploy-dotfiles keith-macbook-pro
 
-# Restore dotfiles from a previous backup
-./dotfiles restore-dotfiles
+# Update existing dotfiles after changes (host)
+./dotfiles deploy-dotfiles keith-macbook-pro --restow
 
-# Remove Nix and nix-darwin completely
-./dotfiles unbootstrap
+# Restore dotfiles from a previous backup (host)
+./dotfiles restore-dotfiles keith-macbook-pro
 
-# Low-level nix-darwin operations (advanced)
-./bootstrap-scripts/macos-arm64/darwin-helper.sh switch
-./bootstrap-scripts/macos-arm64/darwin-helper.sh rollback
-./bootstrap-scripts/macos-arm64/darwin-helper.sh list
+# Remove Nix and nix-darwin completely (host)
+./dotfiles unbootstrap keith-macbook-pro
+
+# Low-level nix-darwin operations (advanced, on host)
+./bootstrap-scripts/macos-arm64/darwin-helper.sh switch keith-macbook-pro
+./bootstrap-scripts/macos-arm64/darwin-helper.sh rollback keith-macbook-pro
+./bootstrap-scripts/macos-arm64/darwin-helper.sh list keith-macbook-pro
 
 # Search for packages
 nix search nixpkgs <package-name>
@@ -204,10 +247,10 @@ vim hosts/$(hostname -s)/host-manifest.yml
 vim hosts/$(hostname -s)/template.env
 
 # Generate and apply configuration
-./dotfiles generate-config $(hostname -s)
-./dotfiles generate-dotfiles $(hostname -s)
-./dotfiles apply-config $(hostname -s)
-./dotfiles deploy-dotfiles $(hostname -s)
+./dotfiles generate-nix-config keith-macbook-pro
+./dotfiles generate-dotfiles keith-macbook-pro
+./dotfiles apply-nix-config keith-macbook-pro
+./dotfiles deploy-dotfiles keith-macbook-pro
 ```
 
 ### Adding Packages
@@ -224,8 +267,8 @@ environment.systemPackages = with pkgs; [
 After making changes, regenerate and apply:
 
 ```bash
-./dotfiles generate-config $(hostname -s)
-./dotfiles apply-config $(hostname -s)
+./dotfiles generate-nix-config keith-macbook-pro
+./dotfiles apply-nix-config keith-macbook-pro
 ```
 
 ### Creating Modules

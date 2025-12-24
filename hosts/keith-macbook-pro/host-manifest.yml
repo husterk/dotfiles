@@ -19,6 +19,9 @@ apps:
   - name: curl
     modules:
       - /apps/curl/curl.nix
+    dotfiles:
+      - source: /apps/curl/.curlrc
+        target: ~/.config/curl/.curlrc
 
   - name: git
     modules:
@@ -44,5 +47,11 @@ apps:
     modules:
       - /apps/zsh/zsh.nix
     dotfiles:
+      - source: /apps/zsh/.iterm2_shell_integration.zsh
+        target: ~/.config/zsh/.iterm2_shell_integration.zsh
+      - source: /apps/zsh/.zprofile
+        target: ~/.config/zsh/.zprofile
+      - source: /apps/zsh/.zshenv
+        target: ~/.config/zsh/.zshenv
       - source: /apps/zsh/.zshrc
-        target: ~/.zshrc
+        target: ~/.config/zsh/.zshrc

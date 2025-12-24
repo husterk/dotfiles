@@ -154,6 +154,9 @@ if [ -f "$GENERATED_ENV" ]; then
     source "$GENERATED_ENV"
     set +a
     log_success "Environment variables loaded."
+    
+    # Build envsubst variable list (only substitute vars from .env)
+    ENVSUBST_VARS=$(grep -v '^#' "$GENERATED_ENV" | grep '=' | cut -d= -f1 | sed 's/^/$/' | tr '\n' ' ')
 else
     log_error "Generated .env file not found: $GENERATED_ENV"
     exit 1
@@ -184,8 +187,8 @@ else
         # Stow expects files to be relative to the target directory (home), not absolute paths
         target="${target/\~\//}"
         
-        # Expand environment variables in target path
-        TARGET_PATH=$(echo "$target" | envsubst)
+        # Expand environment variables in target path (only from .env)
+        TARGET_PATH=$(echo "$target" | envsubst "$ENVSUBST_VARS")
         
         # Use the target path directly as relative path (already home-relative)
         RELATIVE_PATH="$TARGET_PATH"
@@ -201,8 +204,8 @@ else
             continue
         fi
         
-        # Copy and substitute environment variables
-        envsubst < "$SOURCE_PATH" > "$DEST_PATH"
+        # Copy and substitute environment variables (only from .env)
+        envsubst "$ENVSUBST_VARS" < "$SOURCE_PATH" > "$DEST_PATH"
         
         log_info "  ✓ Generated: $RELATIVE_PATH"
     done

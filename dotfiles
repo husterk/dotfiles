@@ -50,10 +50,22 @@ get_bootstrap_target() {
     
     # Extract bootstrap-target from manifest using yq
     if command -v yq &> /dev/null; then
-        yq eval '.config.bootstrap-target // "macos-arm64"' "$manifest_file"
+        local target
+        target=$(yq eval '.config.bootstrap-target // ""' "$manifest_file" 2>/dev/null)
+        if [ -n "$target" ]; then
+            echo "$target"
+        else
+            echo "macos-arm64"  # Default fallback
+        fi
     else
-        # Fallback: simple grep/sed parsing
-        grep -A1 '^config:' "$manifest_file" | grep 'bootstrap-target:' | sed 's/.*bootstrap-target:[[:space:]]*//'
+        # Fallback: simple awk parsing for YAML
+        local target
+        target=$(awk '/^config:/,/^[^ ]/ {if ($1 == "bootstrap-target:") print $2}' "$manifest_file" | tr -d '\r')
+        if [ -n "$target" ]; then
+            echo "$target"
+        else
+            echo "macos-arm64"  # Default fallback
+        fi
     fi
 }
 
@@ -68,18 +80,19 @@ Commands:
   bootstrap <hostname>             Bootstrap a new host with Nix and nix-darwin
   generate-nix-config <hostname>   Generate Nix configuration from templates
   generate-dotfiles <hostname>     Generate dotfiles from templates
-  apply-config <hostname>          Apply Nix configuration to the system
+  apply-nix-config <hostname>      Apply Nix configuration to the system
   deploy-dotfiles <hostname>       Deploy dotfiles using GNU Stow
   restore-dotfiles <hostname>      Restore dotfiles from backup
   unbootstrap <hostname>           Remove Nix and nix-darwin from system
   help                             Show this help message
 
 Typical Bootstrap Workflow:
-  1) [zsh (devcontainer)] ./dotfiles bootstrap <hostname>              # Bootstrap current host
-  2) [zsh (devcontainer)] ./dotfiles generate-nix-config <hostname>    # Generate config for specific host
-  3) [zsh (devcontainer)] ./dotfiles generate-dotfiles <hostname>      # Generate dotfiles for specific host
-  4) [zsh (host)] ./dotfiles apply-config <hostname>                   # Apply Nix configuration on host
+  1) [zsh (devcontainer)] ./dotfiles generate-nix-config <hostname>    # Generate config for specific host
+  2) [zsh (devcontainer)] ./dotfiles generate-dotfiles <hostname>      # Generate dotfiles for specific host
+  3) [zsh (host)] ./dotfiles bootstrap <hostname>                      # Bootstrap current host
+  4) [zsh (host)] ./dotfiles apply-nix-config <hostname>               # Apply Nix configuration on host
   5) [zsh (host)] ./dotfiles deploy-dotfiles <hostname>                # Deploy dotfiles on host
+
 Typical Unbootstrap Workflow:
   1) [zsh (host)] ./dotfiles restore-dotfiles <hostname>               # Restore dotfiles for current host
   2) [zsh (host)] ./dotfiles unbootstrap <hostname>                    # Unbootstrap nix-darwin from the host
@@ -147,7 +160,7 @@ case "$COMMAND" in
         exec "$REPO_ROOT/bootstrap-scripts/$BOOTSTRAP_TARGET/generate-dotfiles.sh" "$HOSTNAME"
         ;;
     
-    apply-config)
+    apply-nix-config)
         if [ -z "$HOSTNAME" ]; then
             log_error "Hostname required for this command."
             echo ""
