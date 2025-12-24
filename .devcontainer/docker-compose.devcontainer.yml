@@ -22,10 +22,14 @@ services:
     init: true
     env_file:
       - ./.env
+    environment:
+      - HOST_USER=${USER}
     volumes:
       # Map the project directory into the dev container so that it will be
       # used as the VSCode explorer directory.
       - ../:/workspace/
+      # Mount host SSH directory for authentication (read-only)
+      - ${HOME}/.ssh:/home/vscode/.ssh-host:ro
       # Override mapped workspace directories that are generated as part of the build processes.
       # This will improve file access performance when working within the devcontainer.
       - node_modules:/workspace/node_modules/
