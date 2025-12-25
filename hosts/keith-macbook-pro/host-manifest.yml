@@ -45,6 +45,13 @@ apps:
     modules:
       - /apps/stow/stow.nix
 
+  - name: wget
+    modules:
+      - /apps/wget/wget.nix
+    dotfiles:
+      - source: /apps/wget/wgetrc
+        target: ~/.config/wget/wgetrc
+
   - name: zsh
     modules:
       - /apps/zsh/zsh.nix
