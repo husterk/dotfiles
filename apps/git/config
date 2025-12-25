@@ -3,9 +3,10 @@
 	email = ${USER_EMAIL}
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCjaJB5AdrWt/WJ0VlZqBXEnG4j8ju/DfLsbJFptoVf
 [core]
-	excludesfile = ${PATH_USERS}/${USER_USERNAME}/.gitignore_global
+	excludesfile = ~/.config/git/ignore
+[init]
+    defaultBranch = main
 [commit]
-	template = ${PATH_USERS}/${USER_USERNAME}/.stCommitMsg
 	gpgsign = true
 [gpg]
 	format = ssh

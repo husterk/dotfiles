@@ -27,10 +27,12 @@ apps:
     modules:
       - /apps/git/git.nix
     dotfiles:
-      - source: /apps/git/.gitconfig
-        target: ~/.gitconfig
-      - source: /apps/git/.gitignore_global
-        target: ~/.gitignore_global
+      - source: /apps/git/commit-template
+        target: ~/.config/git/commit-template
+      - source: /apps/git/config
+        target: ~/.config/git/config
+      - source: /apps/git/ignore
+        target: ~/.config/git/ignore
 
   - name: nix
     modules:
