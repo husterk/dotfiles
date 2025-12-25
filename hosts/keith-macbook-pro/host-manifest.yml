@@ -16,12 +16,17 @@ apps:
       - source: /apps/1password/agent.toml
         target: ~/.config/1Password/ssh/agent.toml
 
+
   - name: curl
     modules:
       - /apps/curl/curl.nix
     dotfiles:
       - source: /apps/curl/.curlrc
         target: ~/.config/curl/.curlrc
+
+  - name: dropbox
+    modules:
+      - /apps/dropbox/dropbox.nix
 
   - name: git
     modules:
@@ -34,6 +39,18 @@ apps:
       - source: /apps/git/ignore
         target: ~/.config/git/ignore
 
+  - name: homebrew
+    modules:
+      - /apps/homebrew/homebrew.nix
+
+  - name: inetutils
+    modules:
+      - /apps/inetutils/inetutils.nix
+
+  - name: iterm2
+    modules:
+      - /apps/iterm2/iterm2.nix
+
   - name: nix
     modules:
       - /apps/nix/nix.nix
@@ -41,9 +58,40 @@ apps:
       - source: /apps/nix/nix.conf
         target: ~/.config/nix/nix.conf
 
+  - name: nss
+    modules:
+      - /apps/nss/nss.nix
+
+  - name: nushell
+    modules:
+      - /apps/nushell/nushell.nix
+    dotfiles:
+      - source: /apps/nushell/config.nu
+        target: ~/.config/nushell/config.nu
+      - source: /apps/nushell/env.nu
+        target: ~/.config/nushell/env.nu
+
+  - name: orbstack
+    modules:
+      - /apps/orbstack/orbstack.nix
+    dotfiles:
+      - source: /apps/orbstack/docker/config.json
+        target: ~/.config/docker/config.json
+      - source: /apps/orbstack/docker/daemon.json
+        target: ~/.config/docker/daemon.json
+
   - name: stow
     modules:
       - /apps/stow/stow.nix
+
+  - name: swaks
+    modules:
+      - /apps/swaks/swaks.nix
+
+
+  - name: visual-studio-code
+    modules:
+      - /apps/visual-studio-code/visual-studio-code.nix
 
   - name: wget
     modules:

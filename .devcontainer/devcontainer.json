@@ -56,7 +56,8 @@
                 "bbenoist.nix",
                 "timonwong.shellcheck",
                 "foxundermoon.shell-format",
-                "EditorConfig.EditorConfig"
+                "EditorConfig.EditorConfig",
+                "TheNuProjectContributors.vscode-nushell-lang"
             ]
         }
     }

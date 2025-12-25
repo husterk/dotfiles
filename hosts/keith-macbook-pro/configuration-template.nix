@@ -34,6 +34,11 @@
   #   shell = pkgs.zsh;
   # };
 
+  # Set Nushell as the default terminal shell for your user.
+  users.users.${USER_USERNAME} = {
+    shell = pkgs.nushell;
+  };
+
   # =========================================================================
   # Host-specific macOS Settings
   # =========================================================================
@@ -47,6 +52,10 @@
     
   #   # Add more host-specific defaults
   # };
+
+  # Set the system primary user, required for some darwin modules
+  # including homebrew.
+  system.primaryUser = "${USER_USERNAME}";
 
   # Used for backwards compatibility. Set to the version when first installing.
   # See: darwin-rebuild changelog
