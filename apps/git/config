@@ -12,3 +12,5 @@
 	format = ssh
 [gpg "ssh"]
 	program = ${GIT_GPG_SSH_PROGRAM}
+[credential]
+    helper = /run/current-system/sw/bin/git-credential-manager
