@@ -24,6 +24,14 @@ apps:
       - source: /apps/curl/.curlrc
         target: ~/.config/curl/.curlrc
 
+  - name: davinci-resolve
+    modules:
+      - /apps/davinci-resolve/davinci-resolve.nix
+
+  - name: dockutil
+    modules:
+      - /apps/dockutil/dockutil.nix
+
   - name: dropbox
     modules:
       - /apps/dropbox/dropbox.nix
@@ -43,6 +51,10 @@ apps:
     modules:
       - /apps/homebrew/homebrew.nix
 
+  - name: image-plus-tools
+    modules:
+      - /apps/image-plus-tools/image-plus-tools.nix
+
   - name: inetutils
     modules:
       - /apps/inetutils/inetutils.nix
@@ -50,6 +62,10 @@ apps:
   - name: iterm2
     modules:
       - /apps/iterm2/iterm2.nix
+
+  - name: mas
+    modules:
+      - /apps/mas/mas.nix
 
   - name: nix
     modules:
@@ -99,6 +115,10 @@ apps:
     dotfiles:
       - source: /apps/wget/wgetrc
         target: ~/.config/wget/wgetrc
+
+  - name: xcode
+    modules:
+      - /apps/xcode/xcode.nix
 
   - name: zsh
     modules:

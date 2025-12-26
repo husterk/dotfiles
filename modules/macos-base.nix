@@ -42,7 +42,7 @@
       autohide-time-modifier = 0.2; # Fast animation when showing/hiding.
       orientation = "bottom"; # Keep the dock at the bottom of the screen.
       show-recents = false; # Keep the dock clean of "suggested" apps.
-      static-only = true; # ONLY show persistent apps (no transient ones).
+      static-only = false; # Must be set to false to allow dockutil to modify the dock.
       mru-spaces = false; # Stop macOS from rearranging your Spaces.
     };
 
