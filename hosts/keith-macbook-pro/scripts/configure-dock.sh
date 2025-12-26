@@ -19,6 +19,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Load shared script helpers (skip if already sourced by parent)
 if ! command -v script_header &> /dev/null; then
+    # shellcheck disable=SC1091
     source "${SCRIPT_DIR}/script-helpers.sh"
 fi
 
@@ -71,7 +72,7 @@ declare -a DOCK_APPS=(
     "/System/Applications/Messages.app"
     "/Applications/Visual Studio Code.app"
     "/Applications/Fork.app"
-    "/Applications/iTerm.app"
+    "/Applications/Nix Apps/WezTerm.app"
     "/Applications/1Password.app"
     "/Applications/Davinci Resolve.app"
     "/Applications/Insta360 Studio.app"
