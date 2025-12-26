@@ -1,5 +1,6 @@
 # env.nu
 # Loaded before config.nu
+# This file sets up the environment for Nushell, including PATH for Nix-managed packages
 
 # Define how to convert the PATH string into a Nushell list.
 $env.ENV_CONVERSIONS = {
@@ -9,5 +10,18 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-# Ensure the main Nix-Darwin path is present immediately.
-$env.PATH = ($env.PATH | split row (char esep) | append '/run/current-system/sw/bin' | uniq)
+# Set NIX_PROFILES for Nix to find packages
+$env.NIX_PROFILES = "/nix/var/nix/profiles/default /run/current-system/sw"
+
+# Build PATH explicitly with all necessary directories
+# Start fresh to ensure Nix paths have priority
+$env.PATH = [
+    '/run/current-system/sw/bin'                    # nix-darwin system packages (highest priority)
+    ($env.HOME | path join '.nix-profile' 'bin')    # user nix packages
+    '/nix/var/nix/profiles/default/bin'             # default nix profile
+    '/usr/local/bin'                                 # homebrew/local tools
+    '/usr/bin'                                       # system binaries
+    '/bin'                                           # basic system binaries
+    '/usr/sbin'                                      # system admin binaries
+    '/sbin'                                          # basic system admin binaries
+]

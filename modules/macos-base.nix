@@ -67,8 +67,4 @@
     enableKeyMapping = true; # Enable custom key mappings.
     remapCapsLockToControl = false; # Don't remap Caps Lock.
   };
-
-  # =========================================================================
-  # Common System Programs
-  # =========================================================================
 }

@@ -8,21 +8,10 @@ $env.config.buffer_editor = "code"
 use std/util "path add"
 
 # -------------------------------------------------------------------------
-# Add your custom paths WITHOUT overwriting the system path 
+# Add your custom paths
 # -------------------------------------------------------------------------
 path add "~/.orbstack/bin"
 path add "/Applications/iTerm.app/Contents/Resources/utilities"
-path add "/Library/Apple/usr/bin"
-path add "/usr/local/bin"
-path add "/opt/homebrew/bin"
-path add "/opt/homebrew/sbin"
-
-# -------------------------------------------------------------------------
-# Explicitly ensure Nix paths are at the front
-# -------------------------------------------------------------------------
-path add "/run/current-system/sw/bin"
-path add "/nix/var/nix/profiles/default/bin"
-path add $"($env.HOME)/.nix-profile/bin"
 
 # Corrected NIX_PATH for your specific dotfiles setup.
 $env.NIX_PATH = $"darwin-config=($env.HOME)/dotfiles/darwin-configuration.nix:/nix/var/nix/profiles/per-user/root/channels"

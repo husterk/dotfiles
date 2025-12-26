@@ -12,6 +12,12 @@
 
 set -e  # Exit on error
 
+# Add Nix and common package manager paths
+# Nix-darwin packages are typically in /run/current-system/sw/bin
+# User Nix packages in ~/.nix-profile/bin
+# System Nix packages in /nix/var/nix/profiles/default/bin
+export PATH="/run/current-system/sw/bin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/opt/local/bin:$PATH"
+
 # Color output for better visibility
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -43,10 +49,21 @@ log_error() {
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEVCONTAINER_DIR="$(dirname "$SCRIPT_DIR")"
 
-# Add common paths where op might be installed
-export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-
 log_info "Initializing devcontainer environment..."
+
+# ------------------------------------------------------------------------
+# Step 2: Ensure op CLI symlink exists
+# ------------------------------------------------------------------------
+# 1Password app integration requires op to be in /usr/local/bin for older versions
+OP_SOURCE=$(command -v op 2>/dev/null || echo "")
+if [ -n "$OP_SOURCE" ] && [ "$OP_SOURCE" != "/usr/local/bin/op" ]; then
+    if [ ! -e "/usr/local/bin/op" ]; then
+        log_info "Creating symlink for 1Password CLI app integration..."
+        sudo mkdir -p /usr/local/bin
+        sudo ln -sf "$OP_SOURCE" /usr/local/bin/op
+        log_success "Symlink created: /usr/local/bin/op -> $OP_SOURCE"
+    fi
+fi
 
 # ------------------------------------------------------------------------
 # Step 2: Validate 1Password CLI

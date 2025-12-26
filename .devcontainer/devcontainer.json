@@ -45,7 +45,6 @@
                 "workbench.startupEditor": "none"
             },
             "extensions": [
-                "1Password.op-vscode",
                 "ms-azuretools.vscode-docker",
                 "be5invis.toml",
                 "bierner.markdown-preview-github-styles",

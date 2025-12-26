@@ -9,25 +9,69 @@
 # Used by the "zsh (host)" terminal profile in VS Code.
 # ========================================================================
 
-set -e  # Exit on error
-
 # Color output for better visibility
 RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+# Helper functions for output
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# ------------------------------------------------------------------------
+# Validate Environment
+# ------------------------------------------------------------------------
 
 # Validate HOST_USER is set
 if [ -z "$HOST_USER" ]; then
-    echo -e "${RED}[ERROR]${NC} HOST_USER environment variable not set."
+    log_error "HOST_USER environment variable not set."
     echo ""
     echo "This variable should be automatically set by the devcontainer."
     echo "Please rebuild the devcontainer or check devcontainer.json configuration."
+    echo ""
+    echo "Press Enter to close this terminal..."
+    read -r
     exit 1
 fi
 
+# ------------------------------------------------------------------------
+# Connect to Host
+# ------------------------------------------------------------------------
+
 # SSH to host with configured options
-# Start in the dotfiles repository directory
-exec ssh \
+# Explicitly start zsh (regardless of login shell) and change to dotfiles directory
+# Use bash to execute the command to avoid nushell parsing issues
+# Try Nix-managed zsh first, fallback to system zsh if not available
+log_info "Connecting to host as ${HOST_USER}..."
+
+ssh \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
+    -o LogLevel=ERROR \
     -t "$HOST_USER@host.docker.internal" \
-    "cd ~/git-repos/dotfiles 2>/dev/null || cd ~; exec zsh -l"
+    '/bin/bash -c '"'"'cd ~/git-repos/dotfiles 2>/dev/null || cd ~; if [ -x /run/current-system/sw/bin/zsh ]; then exec /run/current-system/sw/bin/zsh -l; elif [ -x /bin/zsh ]; then exec /bin/zsh -l; else echo "ERROR: zsh not found"; sleep 5; exit 1; fi'"'"''
+
+# ------------------------------------------------------------------------
+# Connection Closed
+# ------------------------------------------------------------------------
+
+# If SSH exits, show message before closing
+echo ""
+log_info "SSH connection closed."
+echo "Press Enter to close this terminal..."
+read -r
