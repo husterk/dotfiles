@@ -33,11 +33,17 @@
   # Run the "extraActivation" script to perform additional, custom configuration
   # steps such as setting the login shell, customizing the dock, etc.
   system.activationScripts.extraActivation.text = ''
-    ${pkgs.bash}/bin/bash ${./scripts/create-additional-symlinks.sh} \
+    # Source script-helpers.sh from .devcontainer/scripts and export functions
+    # shellcheck disable=SC1091
+    source ${../../.devcontainer/scripts/script-helpers.sh}
+    export -f script_header script_footer log_info log_success log_warning log_error
+    export RED GREEN YELLOW BLUE CYAN BOLD NC
+
+    ${pkgs.bash}/bin/bash ${./scripts}/create-additional-symlinks.sh \
       "${USER_USERNAME}"
-    ${pkgs.bash}/bin/bash ${./scripts/set-login-shell.sh} \
+    ${pkgs.bash}/bin/bash ${./scripts}/set-login-shell.sh \
       "${USER_USERNAME}"
-    ${pkgs.bash}/bin/bash ${./scripts/configure-dock.sh} \
+    ${pkgs.bash}/bin/bash ${./scripts}/configure-dock.sh \
       "${PATH_USERS}" \
       "${USER_USERNAME}" \
       "${pkgs.dockutil}/bin/dockutil"

@@ -13,21 +13,17 @@
 
 set -e
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+# ------------------------------------------------------------------------
+# Setup Paths & Load Helpers
+# ------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Helper functions
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Load shared script helpers
+source "${REPO_ROOT}/.devcontainer/scripts/script-helpers.sh"
 
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Display script header
+script_header "nix-darwin Helper" "Low-level darwin-rebuild operations"
 
 # Parse arguments
 COMMAND="${1:-}"
@@ -185,3 +181,5 @@ case "$COMMAND" in
         exit 1
         ;;
 esac
+
+script_footer "success"

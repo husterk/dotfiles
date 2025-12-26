@@ -13,29 +13,17 @@
 
 set -e  # Exit on error
 
-# Color output for better visibility
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# ------------------------------------------------------------------------
+# Setup Paths & Load Helpers
+# ------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Helper functions for output
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Load shared script helpers
+source "${REPO_ROOT}/.devcontainer/scripts/script-helpers.sh"
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Display script header
+script_header "Generate Nix Configuration" "Creates configuration.nix from template and manifest"
 
 # ------------------------------------------------------------------------
 # Step 0: Parse Arguments and Setup Paths
@@ -284,12 +272,6 @@ log_success "Generated configuration.nix: $GENERATED_CONFIG"
 # ------------------------------------------------------------------------
 # Step 6: Final Summary
 # ------------------------------------------------------------------------
-echo ""
-log_success "=========================================="
-log_success "Nix Configuration Generated!"
-log_success "=========================================="
-echo ""
-
 log_info "Generated files:"
 log_info "  • .env file: $GENERATED_ENV"
 log_info "  • configuration.nix: $GENERATED_CONFIG"
@@ -299,4 +281,4 @@ log_info "Next steps:"
 log_info "1. Review the generated configuration: $GENERATED_CONFIG"
 log_info "2. Apply configuration using: ./bootstrap-scripts/macos-arm64/apply-config.sh $HOSTNAME"
 log_info "   (This script will temporarily stage the config, run darwin-rebuild, then clean up)"
-echo ""
+script_footer "success"

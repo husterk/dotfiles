@@ -9,29 +9,17 @@
 # Used by the "zsh (host)" terminal profile in VS Code.
 # ========================================================================
 
-# Color output for better visibility
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# ------------------------------------------------------------------------
+# Setup Paths & Load Helpers
+# ------------------------------------------------------------------------
+# Get the directory where this script is located (.devcontainer/scripts/)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Helper functions for output
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Load shared script helpers
+source "${SCRIPT_DIR}/script-helpers.sh"
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Display script header
+script_header "SSH to Host" "Connecting to host machine via SSH"
 
 # ------------------------------------------------------------------------
 # Validate Environment
@@ -71,7 +59,7 @@ ssh \
 # ------------------------------------------------------------------------
 
 # If SSH exits, show message before closing
-echo ""
 log_info "SSH connection closed."
 echo "Press Enter to close this terminal..."
 read -r
+script_footer "success"

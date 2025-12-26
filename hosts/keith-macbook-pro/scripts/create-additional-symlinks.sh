@@ -18,29 +18,18 @@
 
 set -e  # Exit on error
 
-# Color output for better visibility
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# ------------------------------------------------------------------------
+# Setup Paths & Load Helpers
+# ------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Helper functions for output
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Load shared script helpers (skip if already sourced by parent)
+if ! command -v script_header &> /dev/null; then
+    source "${SCRIPT_DIR}/script-helpers.sh"
+fi
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Display script header
+script_header "Create Additional Symlinks" "Links Nix-managed tools to standard locations"
 
 # ------------------------------------------------------------------------
 # Determine Username
@@ -173,12 +162,9 @@ for symlink_def in "${SYMLINKS[@]}"; do
 done
 
 log_info "Processed ${total} symlink(s): $((total - failed)) successful, ${failed} failed."
-echo ""
-log_info "=========================================="
 if [ ${failed} -eq 0 ]; then
-    log_success "All symlinks configured successfully!"
+    script_footer "success"
 else
-    log_warning "${failed} symlink(s) failed to configure."
+    script_footer "warning" "${failed} symlink(s) failed to configure"
     exit 1
 fi
-log_info "=========================================="

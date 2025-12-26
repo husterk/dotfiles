@@ -18,36 +18,18 @@ set -e  # Exit on error
 # System Nix packages in /nix/var/nix/profiles/default/bin
 export PATH="/run/current-system/sw/bin:$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/opt/homebrew/bin:/usr/local/bin:/opt/local/bin:$PATH"
 
-# Color output for better visibility
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Helper functions for output
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
 # ------------------------------------------------------------------------
-# Step 1: Setup Paths
+# Setup Paths & Load Helpers
 # ------------------------------------------------------------------------
 # Get the directory where this script is located (.devcontainer/scripts/)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEVCONTAINER_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Load shared script helpers
+source "${SCRIPT_DIR}/script-helpers.sh"
+
+# Display script header
+script_header "Devcontainer Initialize" "Validates 1Password and generates .env file"
 
 log_info "Initializing devcontainer environment..."
 
@@ -129,9 +111,5 @@ fi
 # ------------------------------------------------------------------------
 # Completion
 # ------------------------------------------------------------------------
-echo ""
-log_success "=========================================="
-log_success "Devcontainer Initialization Complete!"
-log_success "=========================================="
-echo ""
 log_info "Container build will now proceed..."
+script_footer "success"

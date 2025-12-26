@@ -21,29 +21,17 @@
 
 set -e  # Exit on error
 
-# Color output for better visibility
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# ------------------------------------------------------------------------
+# Setup Paths & Load Helpers
+# ------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Helper functions for output
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
+# Load shared script helpers
+source "${REPO_ROOT}/.devcontainer/scripts/script-helpers.sh"
 
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
+# Display script header
+script_header "Deploy Dotfiles" "Uses GNU Stow to symlink generated dotfiles"
 
 # ------------------------------------------------------------------------
 # Step 0: Parse Arguments and Setup Paths
@@ -377,12 +365,6 @@ fi
 # ------------------------------------------------------------------------
 # Step 4: Display Summary
 # ------------------------------------------------------------------------
-echo ""
-log_success "=========================================="
-log_success "Deployment Complete!"
-log_success "=========================================="
-echo ""
-
 if [ "$DELETE" = false ]; then
     log_info "Your dotfiles are now symlinked from:"
     log_info "  $DOTFILES_DIR"
@@ -411,3 +393,4 @@ log_info "To update dotfiles:"
 log_info "  1. Modify source files in apps/*/  "
 log_info "  2. Run: ./bootstrap-scripts/macos-arm64/generate-dotfiles.sh $HOSTNAME"
 log_info "  3. Run: ./bootstrap-scripts/macos-arm64/deploy-dotfiles.sh $HOSTNAME --restow"
+script_footer "success"
