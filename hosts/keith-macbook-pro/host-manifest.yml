@@ -63,6 +63,13 @@ apps:
     modules:
       - /apps/mas/mas.nix
 
+  - name: neovim
+    modules:
+      - /apps/neovim/neovim.nix
+    dotfiles:
+      - source: /apps/neovim/init.lua
+        target: ~/.config/nvim/init.lua
+
   - name: nix
     modules:
       - /apps/nix/nix.nix
