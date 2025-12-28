@@ -13,16 +13,16 @@ apps:
     modules:
       - /apps/1password/1password.nix
     dotfiles:
-      - source: /apps/1password/agent.toml
-        target: ~/.config/1Password/ssh/agent.toml
+      - source: /apps/1password/dotfiles/**/*
+        target: ~/.config/1Password/
 
 
   - name: curl
     modules:
       - /apps/curl/curl.nix
     dotfiles:
-      - source: /apps/curl/.curlrc
-        target: ~/.config/curl/.curlrc
+      - source: /apps/curl/dotfiles/**/*
+        target: ~/.config/curl/
 
   - name: davinci-resolve
     modules:
@@ -40,12 +40,8 @@ apps:
     modules:
       - /apps/git/git.nix
     dotfiles:
-      - source: /apps/git/commit-template
-        target: ~/.config/git/commit-template
-      - source: /apps/git/config
-        target: ~/.config/git/config
-      - source: /apps/git/ignore
-        target: ~/.config/git/ignore
+      - source: /apps/git/dotfiles/**/*
+        target: ~/.config/git/
 
   - name: homebrew
     modules:
@@ -67,15 +63,15 @@ apps:
     modules:
       - /apps/neovim/neovim.nix
     dotfiles:
-      - source: /apps/neovim/init.lua
-        target: ~/.config/nvim/init.lua
+      - source: /apps/neovim/dotfiles/**/*
+        target: ~/.config/nvim/
 
   - name: nix
     modules:
       - /apps/nix/nix.nix
     dotfiles:
-      - source: /apps/nix/nix.conf
-        target: ~/.config/nix/nix.conf
+      - source: /apps/nix/dotfiles/**/*
+        target: ~/.config/nix/
 
   - name: nss
     modules:
@@ -85,19 +81,15 @@ apps:
     modules:
       - /apps/nushell/nushell.nix
     dotfiles:
-      - source: /apps/nushell/config.nu
-        target: ~/.config/nushell/config.nu
-      - source: /apps/nushell/env.nu
-        target: ~/.config/nushell/env.nu
+      - source: /apps/nushell/dotfiles/**/*
+        target: ~/.config/nushell/
 
   - name: orbstack
     modules:
       - /apps/orbstack/orbstack.nix
     dotfiles:
-      - source: /apps/orbstack/docker/config.json
-        target: ~/.config/docker/config.json
-      - source: /apps/orbstack/docker/daemon.json
-        target: ~/.config/docker/daemon.json
+      - source: /apps/orbstack/docker/**/*
+        target: ~/.config/docker/
 
   - name: stow
     modules:
@@ -116,15 +108,15 @@ apps:
     modules:
       - /apps/wezterm/wezterm.nix
     dotfiles:
-      - source: /apps/wezterm/wezterm.lua
-        target: ~/.config/wezterm/wezterm.lua
+      - source: /apps/wezterm/dotfiles/**/*
+        target: ~/.config/wezterm/
 
   - name: wget
     modules:
       - /apps/wget/wget.nix
     dotfiles:
-      - source: /apps/wget/wgetrc
-        target: ~/.config/wget/wgetrc
+      - source: /apps/wget/dotfiles/**/*
+        target: ~/.config/wget/
 
   - name: xcode
     modules:
@@ -134,11 +126,5 @@ apps:
     modules:
       - /apps/zsh/zsh.nix
     dotfiles:
-      - source: /apps/zsh/.iterm2_shell_integration.zsh
-        target: ~/.config/zsh/.iterm2_shell_integration.zsh
-      - source: /apps/zsh/.zprofile
-        target: ~/.config/zsh/.zprofile
-      - source: /apps/zsh/.zshenv
-        target: ~/.config/zsh/.zshenv
-      - source: /apps/zsh/.zshrc
-        target: ~/.config/zsh/.zshrc
+      - source: /apps/zsh/dotfiles/**/*
+        target: ~/.config/zsh/

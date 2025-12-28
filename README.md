@@ -81,8 +81,10 @@ The `./dotfiles` script provides a unified interface for all operations:
 | Command               | Description                                                        |
 | --------------------- | ------------------------------------------------------------------ |
 | `bootstrap`           | Bootstrap a new host with Nix and nix-darwin                       |
+| `generate-env`        | Generate .env file from 1Password secrets                          |
 | `generate-nix-config` | Generate Nix configuration from templates (with 1Password secrets) |
 | `generate-dotfiles`   | Generate dotfiles from templates                                   |
+| `sync-dotfiles`       | Sync generated dotfiles back to source (with secret replacement)   |
 | `apply-nix-config`    | Apply Nix configuration to the system (requires sudo)              |
 | `deploy-dotfiles`     | Deploy dotfiles using GNU Stow                                     |
 | `restore-dotfiles`    | Restore dotfiles from backup (removes Stow symlinks)               |
@@ -207,6 +209,30 @@ Remove Nix, nix-darwin, and all packages:
 #   - All data in /nix directory
 ```
 
+## Iterating on Dotfiles
+
+Once deployed, GNU Stow creates symlinks from `~/.config/` to your generated dotfiles. This means you can edit files directly and see changes immediately:
+
+```bash
+# On host: Edit the symlinked file (changes apply immediately)
+nvim ~/.config/nvim/init.lua
+
+# In devcontainer: Sync changes back to source
+./dotfiles sync-dotfiles keith-macbook-pro --dry-run  # Preview changes
+./dotfiles sync-dotfiles keith-macbook-pro            # Apply sync
+
+# Review and commit
+git diff apps/neovim/init.lua
+git commit -am "feat(neovim): improve configuration"
+```
+
+**Key Benefits:**
+
+- Edit with immediate feedback (no regeneration needed)
+- Automatic secret replacement when syncing back
+- Safe commits (secrets never leak to git)
+- Perfect for configs requiring rapid iteration (Neovim, shell, etc.)
+
 ## Common Commands
 
 ```bash
@@ -216,6 +242,10 @@ Remove Nix, nix-darwin, and all packages:
 # Regenerate configuration after making changes (devcontainer)
 ./dotfiles generate-nix-config keith-macbook-pro
 ./dotfiles generate-dotfiles keith-macbook-pro
+
+# Sync dotfile changes back to source (devcontainer)
+./dotfiles sync-dotfiles keith-macbook-pro --dry-run  # Preview
+./dotfiles sync-dotfiles keith-macbook-pro            # Apply
 
 # Apply changes (host)
 ./dotfiles apply-nix-config keith-macbook-pro
