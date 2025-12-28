@@ -55,6 +55,10 @@ apps:
     modules:
       - /apps/inetutils/inetutils.nix
 
+  - name: lazygit
+    modules:
+      - /apps/lazygit/lazygit.nix
+
   - name: mas
     modules:
       - /apps/mas/mas.nix
