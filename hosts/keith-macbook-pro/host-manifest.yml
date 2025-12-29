@@ -95,6 +95,10 @@ apps:
       - source: /apps/orbstack/docker/**/*
         target: ~/.config/docker/
 
+  - name: ripgrep
+    modules:
+      - /apps/ripgrep/ripgrep.nix
+
   - name: stow
     modules:
       - /apps/stow/stow.nix
