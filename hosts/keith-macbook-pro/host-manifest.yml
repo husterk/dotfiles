@@ -17,6 +17,10 @@ apps:
         target: ~/.config/1Password/
 
 
+  - name: ca-certificates
+    modules:
+      - /apps/ca-certificates/ca-certificates.nix
+ 
   - name: curl
     modules:
       - /apps/curl/curl.nix
