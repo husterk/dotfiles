@@ -42,3 +42,14 @@ if [[ -f "$ZDOTDIR/.iterm2_shell_integration.zsh" ]]; then
 else
     echo "iTerm2 shell integration not found at $ZDOTDIR/.iterm2_shell_integration.zsh"
 fi
+
+# This y shell wrapper that provides the ability to change the current working directory when
+# exiting Yazi.
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+

@@ -134,6 +134,13 @@ apps:
     modules:
       - /apps/xcode/xcode.nix
 
+  - name: yazi
+    modules:
+      - /apps/yazi/yazi.nix
+    dotfiles:
+      - source: /apps/yazi/dotfiles/**/*
+        target: ~/.config/yazi/
+
   - name: zsh
     modules:
       - /apps/zsh/zsh.nix
