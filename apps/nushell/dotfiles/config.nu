@@ -41,3 +41,9 @@ def --env y [...args] {
 	rm -fp $tmp
 }
 
+# This is the Nushell way to initialize Starship, using the cached
+# init script if it is available.
+let starship_init_cache = $"($env.HOME)/.cache/starship/init.nu"
+if ($starship_init_cache | path exists) {
+  source-env ~/.cache/starship/init.nu
+}

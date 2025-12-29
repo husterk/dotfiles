@@ -25,3 +25,18 @@ $env.PATH = [
     '/usr/sbin'                                      # system admin binaries
     '/sbin'                                          # basic system admin binaries
 ]
+
+# This is the Nushell way to initialize Starship, creating the cached
+# init script if it is not yet available.
+let starship_cache = ($env.HOME | path join ".cache" "starship")
+let starship_init = ($starship_cache | path join "init.nu")
+
+# Check if directory exists, create if not
+if not ($starship_cache | path exists) {
+    mkdir $starship_cache
+}
+
+# Generate the file if it doesn't exist
+if not ($starship_init | path exists) {
+    starship init nu | save -f $starship_init
+}

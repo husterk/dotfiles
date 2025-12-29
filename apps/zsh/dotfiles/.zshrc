@@ -53,3 +53,6 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+# Enable Starship for a fully customizable terminal prompt.
+eval "$(starship init zsh)"
+

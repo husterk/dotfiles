@@ -103,6 +103,13 @@ apps:
     modules:
       - /apps/ripgrep/ripgrep.nix
 
+  - name: starship
+    modules:
+      - /apps/starship/starship.nix
+    dotfiles:
+      - source: /apps/starship/dotfiles/**/*
+        target: ~/.config/starship/
+
   - name: stow
     modules:
       - /apps/stow/stow.nix
