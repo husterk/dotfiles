@@ -1,0 +1,10 @@
+os:
+  editPreset: 'nvim'
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+# This ensures LazyGit uses the 'nvim-remote' logic 
+# so it doesn't open a "Neovim inside a Neovim"
+core:
+  editor: 'nvim'
