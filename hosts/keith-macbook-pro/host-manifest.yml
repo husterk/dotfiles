@@ -39,6 +39,10 @@ apps:
     modules:
       - /apps/davinci-resolve/davinci-resolve.nix
 
+  - name: direnv
+    modules:
+      - /apps/direnv/direnv.nix
+
   - name: dockutil
     modules:
       - /apps/dockutil/dockutil.nix

@@ -35,7 +35,7 @@
   system.activationScripts.extraActivation.text = ''
     # Source script-helpers.sh from .devcontainer/scripts and export functions
     # shellcheck disable=SC1091
-    source ${../../.devcontainer/scripts/script-helpers.sh}
+    source ${../../scripts/script-helpers.sh}
     export -f script_header script_footer log_info log_success log_warning log_error
     export RED GREEN YELLOW BLUE CYAN BOLD NC
 

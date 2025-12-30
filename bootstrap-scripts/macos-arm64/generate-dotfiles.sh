@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ========================================================================
 # macOS ARM Generate Dotfiles Script
@@ -23,7 +23,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Load shared script helpers
-source "${REPO_ROOT}/.devcontainer/scripts/script-helpers.sh"
+source "${REPO_ROOT}/scripts/script-helpers.sh"
 
 # Display script header
 script_header "Generate Dotfiles" "Creates host-specific dotfiles with variable substitution"

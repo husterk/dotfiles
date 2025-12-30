@@ -1,9 +1,7 @@
-# Don't commit the generated assests associated with builds.
-**/node_modules
-
 # Don't commit any *.env files. These files are expected to
 # be generated or manually created on the developer machine.
 **/.env
+.env
 
 # Don't commit local Mac OS cache files
 .DS_Store
@@ -11,3 +9,11 @@
 # Ignore generated directory as it contains generated files
 # that may contain sensitive information from 1Password secrets.
 **/generated
+
+# direnv
+.direnv/
+.envrc.cache
+
+# Nix build results
+result
+result-*

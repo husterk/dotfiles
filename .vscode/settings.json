@@ -1,4 +1,0 @@
-{
-  // 1Password CLI path for nix-darwin installation
-  "1password.cliPath": "/run/current-system/sw/bin/op"
-}

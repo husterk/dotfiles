@@ -4,47 +4,88 @@ Declarative macOS system configuration using [Nix](https://nixos.org/), [nix-dar
 
 ## Prerequisites
 
-This script uses the 1Password CLI to automatically populate the required environment variables for the devcontainer. You must have the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) installed and be signed in.
+### Required
 
-## Repository Structure
+-   **macOS** (arm64 architecture)
+-   **Nix Package Manager** (installed via bootstrap process)
+-   **1Password CLI** (`op`) - [Installation Guide](https://developer.1password.com/docs/cli/get-started/)
+    -   Must be signed in: `eval $(op signin)`
 
-```
-dotfiles/
-├── dotfiles                    # Main management script (unified interface)
-├── .devcontainer/              # VS Code devcontainer configuration
-│   ├── scripts/               # Devcontainer lifecycle scripts
-│   │   ├── initialize.sh      # Pre-build: Generate .env from 1Password
-│   │   ├── post-create.sh     # Post-create: Setup SSH, shell integration, packages
-│   │   └── ssh-to-host.sh     # SSH wrapper for host terminal access
-│   ├── devcontainer.json
-│   ├── docker-compose.devcontainer.yml
-│   └── Dockerfile
-├── bootstrap-scripts/          # OS/architecture-specific bootstrap scripts
-│   └── <target>/              # e.g., macos-arm64, linux-x86_64, etc.
-│       ├── bootstrap.sh             # Initial system setup (Nix, nix-darwin, Stow)
-│       ├── generate-nix-config.sh   # Generate Nix config from templates
-│       ├── generate-dotfiles.sh     # Generate dotfiles from templates
-│       ├── apply-config.sh          # Apply nix-darwin configuration
-│       ├── deploy-dotfiles.sh       # Deploy dotfiles with GNU Stow
-│       ├── unbootstrap.sh           # Remove Nix and nix-darwin
-│       └── darwin-helper.sh         # Low-level nix-darwin operations
-├── hosts/<hostname>/
-│   ├── flake.nix              # Nix flake entry point
-│   ├── template.env           # 1Password secret references
-│   ├── configuration-template.nix  # System configuration template
-│   ├── host-manifest.yml      # Declarative module and dotfile specification
-│   │                          # (includes bootstrap-target for OS/arch selection)
-│   └── generated/             # Generated files (gitignored, contains secrets)
-│       ├── .env
-│       ├── configuration.nix
-│       └── dotfiles/
-├── apps/                       # Application-specific configs and dotfiles
-│   └── <app-name>/
-│       ├── <app-name>.nix     # Nix module for the app
-│       └── <dotfiles>         # App dotfiles (templates)
-└── modules/                    # Reusable Nix modules
+### Recommended
+
+-   **direnv** - Automatically loads Nix development shell
+    -   Will be installed automatically during setup if missing
+-   **Neovim** - Included in development shell with LSPs
+    │ ├── apply-config.sh # Apply nix-darwin configuration
+    │ ├── deploy-dotfiles.sh # Deploy dotfiles with GNU Stow
+    │ ├── unbootstrap.sh # Remove Nix and nix-darwin
+    │ └── darwin-helper.sh # Low-level nix-darwin operations
+    ├── hosts/<hostname>/
+    │ ├── flake.nix # Nix flake entry point
+    │ ├── template.env # 1Password secret references
+    │ ├── configuration-template.nix # System configuration template
+    │ ├── host-manifest.yml # Declarative module and dotfile specification
+    │ │ # (includes bootstrap-target for OS/arch selection)
+    │ └── generated/ # Generated files (gitignored, contains secrets)
+    │ ├── .env
+    │ ├── configuration.nix
+    │ └── dotfiles/
+    ├── apps/ # Application-specific configs and dotfiles
+    │ └── <app-name>/
+    │ ├── <app-name>.nix # Nix module for the app
+    │ └── <dotfiles> # App dotfiles (templates)
+    └── modules/ # Reusable Nix modules
     ├── nix-base.nix
     └── macos-base.nix
+
+````
+
+## Development Environment
+
+This repository uses **Nix flakes** to provide a reproducible development environment with all required tools.
+
+### Automatic Setup (Recommended)
+
+When you navigate to this directory, `direnv` will automatically load the development shell:
+
+```bash
+cd ~/git-repos/dotfiles
+# direnv: loading ~/git-repos/dotfiles/.envrc
+# 🚀 Dotfiles development environment loaded
+````
+
+### Manual Setup
+
+If you prefer not to use direnv:
+
+```bash
+# Enter development shell manually
+nix develop
+
+# Or run a single command in the shell
+nix develop --command ./dotfiles --help
+```
+
+### Available Tools in Development Shell
+
+The development shell provides:
+
+-   **yq** - YAML processor for parsing manifests
+-   **1Password CLI** (`op`) - Secret management
+-   **ShellCheck** - Shell script linting and validation
+-   **shfmt** - Shell script formatter
+-   **Nix tools** - nil (LSP), nixpkgs-fmt, statix
+-   **Neovim** - With LSPs for Bash, Lua, Markdown, and Nix
+
+### Neovim Integration
+
+Neovim automatically inherits the development environment:
+
+```bash
+cd ~/git-repos/dotfiles
+# direnv loads automatically
+
+nvim  # Launch Neovim - all tools and LSPs are available
 ```
 
 ## Quick Start
@@ -54,15 +95,25 @@ dotfiles/
 git clone https://github.com/husterk/dotfiles ~/git-repos/dotfiles
 cd ~/git-repos/dotfiles
 
-# Open in VS Code with devcontainer
-code .
+# Sign in to 1Password (required for generating .env with secrets)
+eval $(op signin)
 
-# In devcontainer terminal:
-./dotfiles generate-env keith-macbook-pro            # Generate .env from 1Password
+# Initialize development shell (first time only)
+# This will generate .env from 1Password secrets and configure direnv
+./.nix-shell/scripts/init-dev-shell.sh
+
+# Restart your shell
+source ~/.config/zsh/.zshrc
+
+# Development shell will now load automatically via direnv
+# All tools are available in your PATH
+
+# Generate environment and configuration
+./dotfiles generate-env keith-macbook-pro
 ./dotfiles generate-nix-config keith-macbook-pro
 ./dotfiles generate-dotfiles keith-macbook-pro
 
-# In host terminal:
+# Bootstrap and apply (on host)
 ./dotfiles bootstrap keith-macbook-pro
 ./dotfiles apply-nix-config keith-macbook-pro
 ./dotfiles deploy-dotfiles keith-macbook-pro
@@ -97,12 +148,12 @@ The `./dotfiles` script provides a unified interface for all operations:
 
 This repository uses a 6-step workflow to bootstrap and configure a new host:
 
-### 1. Generate Environment Variables (in devcontainer)
+### 1. Generate Environment Variables (in development shell)
 
 Generate .env file from 1Password secrets:
 
 ```bash
-# Run from devcontainer terminal (only needed when secrets change)
+# Run from development shell (only needed when secrets change)
 ./dotfiles generate-env keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
@@ -111,12 +162,12 @@ Generate .env file from 1Password secrets:
 
 **Note:** This step only needs to be run when your 1Password secrets change. The .env file will be reused by subsequent commands.
 
-### 2. Generate Nix Configuration (in devcontainer)
+### 2. Generate Nix Configuration (in development shell)
 
 Generate nix-darwin configuration from templates:
 
 ```bash
-# Run from devcontainer terminal
+# Run from development shell
 ./dotfiles generate-nix-config keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
@@ -125,12 +176,12 @@ Generate nix-darwin configuration from templates:
 # Note: If .env doesn't exist, this will generate it automatically from 1Password
 ```
 
-### 3. Generate Dotfiles (in devcontainer)
+### 3. Generate Dotfiles (in development shell)
 
 Generate dotfiles from templates with environment variable substitution:
 
 ```bash
-# Run from devcontainer terminal
+# Run from development shell
 ./dotfiles generate-dotfiles keith-macbook-pro
 
 # Files generated in hosts/<hostname>/generated/:
@@ -217,7 +268,7 @@ Once deployed, GNU Stow creates symlinks from `~/.config/` to your generated dot
 # On host: Edit the symlinked file (changes apply immediately)
 nvim ~/.config/nvim/init.lua
 
-# In devcontainer: Sync changes back to source
+# In development shell: Sync changes back to source
 ./dotfiles sync-dotfiles keith-macbook-pro --dry-run  # Preview changes
 ./dotfiles sync-dotfiles keith-macbook-pro            # Apply sync
 
@@ -228,22 +279,22 @@ git commit -am "feat(neovim): improve configuration"
 
 **Key Benefits:**
 
-- Edit with immediate feedback (no regeneration needed)
-- Automatic secret replacement when syncing back
-- Safe commits (secrets never leak to git)
-- Perfect for configs requiring rapid iteration (Neovim, shell, etc.)
+-   Edit with immediate feedback (no regeneration needed)
+-   Automatic secret replacement when syncing back
+-   Safe commits (secrets never leak to git)
+-   Perfect for configs requiring rapid iteration (Neovim, shell, etc.)
 
 ## Common Commands
 
 ```bash
-# Regenerate .env when secrets change (devcontainer)
+# Regenerate .env when secrets change (development shell)
 ./dotfiles generate-env keith-macbook-pro
 
-# Regenerate configuration after making changes (devcontainer)
+# Regenerate configuration after making changes (development shell)
 ./dotfiles generate-nix-config keith-macbook-pro
 ./dotfiles generate-dotfiles keith-macbook-pro
 
-# Sync dotfile changes back to source (devcontainer)
+# Sync dotfile changes back to source (development shell)
 ./dotfiles sync-dotfiles keith-macbook-pro --dry-run  # Preview
 ./dotfiles sync-dotfiles keith-macbook-pro            # Apply
 
@@ -273,10 +324,10 @@ nix search nixpkgs <package-name>
 
 Dotfile backups are automatically created during deployment:
 
-- Location: `hosts/<hostname>/generated/dotfiles-backup-<timestamp>/`
-- Contains: Your original dotfiles before they were replaced with symlinks
-- Restore: `./dotfiles restore-dotfiles $(hostname -s)`
-- Restoring removes Stow symlinks and restores your original files
+-   Location: `hosts/<hostname>/generated/dotfiles-backup-<timestamp>/`
+-   Contains: Your original dotfiles before they were replaced with symlinks
+-   Restore: `./dotfiles restore-dotfiles $(hostname -s)`
+-   Restoring removes Stow symlinks and restores your original files
 
 ## Customization
 
@@ -349,6 +400,58 @@ apps:
 
 ## Troubleshooting
 
+### Nix Development Shell
+
+```bash
+# First time setup
+./scripts/init-dev-shell.sh
+
+# Check if direnv is working
+direnv status
+
+# Reload direnv manually
+direnv allow
+direnv reload
+
+# Enter shell manually if direnv issues
+nix develop
+
+# Update flake inputs
+nix flake update
+
+# Check flake syntax
+nix flake check
+```
+
+### 1Password CLI Authentication
+
+```bash
+# Sign in to 1Password
+eval $(op signin)
+
+# Verify authentication
+op account list
+
+# List available vaults
+op vault list
+```
+
+### Neovim LSP Issues
+
+```bash
+# Verify LSPs are available in the shell
+which bash-language-server
+which lua-language-server
+which nil
+which marksman
+
+# Inside Neovim, check LSP status
+:LspInfo
+:checkhealth lsp
+```
+
+### Nix-darwin Issues
+
 ```bash
 # Show detailed build errors
 darwin-rebuild switch --flake . --show-trace
@@ -365,6 +468,6 @@ hostname -s && ls -1 hosts/
 
 ## Resources
 
-- [nix-darwin Documentation](https://github.com/LnL7/nix-darwin)
-- [Nix Package Search](https://search.nixos.org/packages)
-- [nix-darwin Options](https://daiderd.com/nix-darwin/manual/index.html)
+-   [nix-darwin Documentation](https://github.com/LnL7/nix-darwin)
+-   [Nix Package Search](https://search.nixos.org/packages)
+-   [nix-darwin Options](https://daiderd.com/nix-darwin/manual/index.html)

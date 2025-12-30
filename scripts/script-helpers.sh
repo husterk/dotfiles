@@ -7,9 +7,7 @@
 # 
 # Usage: Source this file at the beginning of your script:
 #   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-#   source "${SCRIPT_DIR}/script-helpers.sh"
-#   # OR for scripts in subdirectories:
-#   source "${SCRIPT_DIR}/../.devcontainer/scripts/script-helpers.sh"
+#   source "${SCRIPT_DIR}/../scripts/script-helpers.sh"
 # ========================================================================
 
 # Color definitions

@@ -22,7 +22,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Load shared script helpers
-source "${REPO_ROOT}/.devcontainer/scripts/script-helpers.sh"
+source "${REPO_ROOT}/scripts/script-helpers.sh"
 
 # Display script header
 script_header "Apply Nix Configuration" "Applies generated configuration and runs darwin-rebuild"
