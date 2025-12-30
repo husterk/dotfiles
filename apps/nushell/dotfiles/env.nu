@@ -26,6 +26,13 @@ $env.PATH = [
     '/sbin'                                          # basic system admin binaries
 ]
 
+# Add Homebrew to Nushell PATH
+# Note: Use prepend to ensure brew takes priority over system defaults
+let brew_path = "/opt/homebrew/bin"
+if ($brew_path | path exists) {
+    $env.PATH = ($env.PATH | split row (char esep) | prepend $brew_path)
+}
+
 # This is the Nushell way to initialize Starship, creating the cached
 # init script if it is not yet available.
 let starship_cache = ($env.HOME | path join ".cache" "starship")

@@ -16,3 +16,9 @@ ZSH_CUSTOM="$ZDOTDIR/custom" # Must be named ZSH_CUSTOM for Zsh.
 if [[ ! -d "$ZSH_CUSTOM" ]]; then
     mkdir -p "$ZSH_CUSTOM"
 fi
+
+# Add Homebrew to PATH
+if [[ -f "/opt/homebrew/bin/brew" ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+

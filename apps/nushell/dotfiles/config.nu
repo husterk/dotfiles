@@ -11,7 +11,6 @@ use std/util "path add"
 # Add your custom paths
 # -------------------------------------------------------------------------
 path add "~/.orbstack/bin"
-path add "/Applications/iTerm.app/Contents/Resources/utilities"
 
 # Corrected NIX_PATH for your specific dotfiles setup.
 $env.NIX_PATH = $"darwin-config=($env.HOME)/dotfiles/darwin-configuration.nix:/nix/var/nix/profiles/per-user/root/channels"

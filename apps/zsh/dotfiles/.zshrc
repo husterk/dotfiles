@@ -1,8 +1,3 @@
-# ---------------------------------------------------------------
-# TODO - UPDATE THIS DOC TO BE OS AGNOSTIC BY USING NIX CONFIGS
-#. - This file is currently using the macOS bootstrap as an example.
-# ---------------------------------------------------------------
-
 # Configure the ZSH history settings.
 HISTSIZE=10000
 SAVEHIST=10000
@@ -19,29 +14,14 @@ compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 export ZSH_CACHE_DIR="$XDG_CACHE_HOME/oh-my-zsh"
 mkdir -p "$ZSH_CACHE_DIR"
 
-# OMZ Settings.
-ZSH_THEME="robbyrussell"
-plugins=(git sudo docker)
+# Activate syntax highlighting
+source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+(( ${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[path]=none
+ZSH_HIGHLIGHT_STYLES[path_prefix]=none
 
-# Explicitly set the path to the Nix-managed OMZ (ZSH=...).
-# Note: This is handled in the zsh.nix file.
-
-# Load OMZ.
-if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
-    source "$ZSH/oh-my-zsh.sh"
-else
-    echo "Oh My Zsh not found at $ZSH"
-fi
-
-# Load iTerm2 shell integration if available.
-# -------------------------------------------
-# It enables features like "click to move cursor," status bar indicators, and the ability for iTerm2
-# to know your current directory or user for its internal utilities.
-if [[ -f "$ZDOTDIR/.iterm2_shell_integration.zsh" ]]; then
-    source "$ZDOTDIR/.iterm2_shell_integration.zsh"
-else
-    echo "iTerm2 shell integration not found at $ZDOTDIR/.iterm2_shell_integration.zsh"
-fi
+# Activate autosuggestions
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # This y shell wrapper that provides the ability to change the current working directory when
 # exiting Yazi.
