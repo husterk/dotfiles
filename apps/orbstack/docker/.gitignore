@@ -1,0 +1,13 @@
+# macOS system files
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.swn
+*~
+
+# Docker runtime/state files
+contexts/
+cli-plugins/

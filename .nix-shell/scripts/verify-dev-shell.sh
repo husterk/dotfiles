@@ -10,6 +10,7 @@ set -e
 
 # Source shared helper functions
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
 source "${SCRIPT_DIR}/../../scripts/script-helpers.sh"
 
 script_header "Development Shell Verification" "Checking Nix development environment configuration"
@@ -158,7 +159,7 @@ if [ $ERRORS -eq 0 ]; then
     echo "Next steps:"
     echo "  1. Run: ./scripts/init-dev-shell.sh"
     echo "  2. Restart your shell: source ~/.config/zsh/.zshrc"
-    echo "  3. Test the environment: cd . && ./dotfiles --help"
+    echo "  3. Test the environment: task --list"
     echo "  4. Open Neovim: nvim"
     echo ""
     script_footer "success" "All checks passed! Development shell is properly configured."

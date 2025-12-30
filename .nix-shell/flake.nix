@@ -20,85 +20,41 @@
 
           # Development dependencies
           buildInputs = with pkgs; [
-            # Core tools
-            git
-            gnused
-            gettext # for envsubst
-            bash # Modern bash (4+) for globstar support
+            # === REQUIRED: Core utilities ===
+            git # Version control (repo management)
+            gnused # GNU sed (used extensively in bootstrap scripts for text processing)
+            gettext # Provides envsubst (used for variable substitution in templates)
+            bash # Modern bash 4+ (required for globstar support in scripts)
 
-            # Script dependencies
-            yq-go # YAML processor
-            _1password-cli # 1Password CLI
+            # === REQUIRED: Task runner ===
+            go-task # Modern task runner - executes all Taskfile commands
 
-            # Shell scripting tools
-            shellcheck
-            shfmt
+            # === REQUIRED: Script dependencies ===
+            yq-go # YAML processor (parses host-manifest.yml in all task scripts)
+            _1password-cli # 1Password CLI (retrieves secrets for .env generation)
 
-            # Nix development
-            nil # Nix LSP
-            nixpkgs-fmt
-            statix # Nix linter
+            # === REQUIRED: Shell script quality tools ===
+            shellcheck # Linter for shell scripts (task dev:lint)
+            shfmt # Formatter for shell scripts (task dev:format)
 
-            # Editor with LSPs
-            neovim
-            nodePackages.bash-language-server
-            lua-language-server
-            marksman # Markdown LSP
+            # === OPTIONAL: Nix development tools ===
+            # Only needed when editing Nix configuration files
+            nil # Nix Language Server Protocol (editor support)
+            nixpkgs-fmt # Nix code formatter
+            statix # Nix linter (static analysis)
 
-            # Additional utilities
-            curl
-            wget
-            tree
-            jq
+            # === OPTIONAL: Editor with LSPs ===
+            # Pre-configured editor with language servers for convenience
+            neovim # Text editor
+            nodePackages.bash-language-server # Bash LSP (shell script editing)
+            lua-language-server # Lua LSP (Neovim config editing)
+            marksman # Markdown LSP (documentation editing)
           ];
 
           # Shell initialization
-          shellHook = ''
-            echo "🚀 Dotfiles development environment loaded"
-            echo ""
-            echo "Available tools:"
-            echo "  • yq:         $(yq --version)"
-            echo "  • 1Password:  $(op --version 2>/dev/null || echo 'not authenticated')"
-            echo "  • Neovim:     $(nvim --version | head -n1)"
-            echo ""
-
-            # Ensure 1Password CLI is authenticated
-            if ! op account list &> /dev/null; then
-              echo "⚠️  Warning: 1Password CLI not authenticated"
-              echo "   Run: eval \$(op signin)"
-              echo ""
-            else
-              # Auto-generate .env from template if it doesn't exist or template is newer
-              if [ -f .nix-shell/.env.template ]; then
-                if [ ! -f .env ] || [ .nix-shell/.env.template -nt .env ]; then
-                  echo "📝 Generating .env from 1Password..."
-                  if op inject -i .nix-shell/.env.template -o .env &>/dev/null; then
-                    echo "✅ Generated .env file"
-                  else
-                    echo "⚠️  Failed to generate .env (check 1Password vault access)"
-                  fi
-                  echo ""
-                fi
-              fi
-            fi
-
-            # Set up environment
-            export DOTFILES_ROOT="$PWD"
-            export PATH="$DOTFILES_ROOT:$PATH"
-
-            # Load .env file if it exists
-            if [ -f .env ]; then
-              echo "📄 Loading environment from .env"
-              set -a
-              source .env
-              set +a
-            fi
-
-            echo "Commands:"
-            echo "  ./dotfiles --help    # Show available commands"
-            echo "  nvim                 # Open Neovim with LSPs"
-            echo ""
-          '';
+          # External script at: .nix-shell/scripts/shell-hook.sh
+          # Kept inline for Nix evaluation, but maintained as separate file for shellcheck
+          shellHook = builtins.readFile ./scripts/shell-hook.sh;
         };
       }
     );

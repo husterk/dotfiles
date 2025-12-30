@@ -1,0 +1,12 @@
+# macOS system files
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.swn
+*~
+
+# lazygit state files
+state.yml

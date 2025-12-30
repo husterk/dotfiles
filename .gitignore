@@ -10,9 +10,15 @@
 # that may contain sensitive information from 1Password secrets.
 **/generated
 
+# Ignore symlinks to generated dotfiles (created during deployment)
+hosts/**/.config
+
 # direnv
 .direnv/
 .envrc.cache
+
+# Task runner state
+.task/
 
 # Nix build results
 result

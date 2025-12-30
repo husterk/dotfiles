@@ -11,6 +11,7 @@ set -e
 
 # Source shared helper functions
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck disable=SC1091
 source "${SCRIPT_DIR}/../../scripts/script-helpers.sh"
 
 script_header "Development Shell Initialization" "Setting up Nix development environment with direnv"
@@ -37,7 +38,7 @@ log_info "Checking prerequisites..."
 
 if ! command -v nix &> /dev/null; then
     log_error "Nix is not installed. Please bootstrap your host first:"
-    echo "  ./dotfiles bootstrap <hostname>"
+    echo "  task setup-host"
     exit 1
 fi
 
@@ -110,15 +111,19 @@ fi
 # Add direnv hook to zsh config if not already present
 if [ -n "$ZSHRC_PATH" ]; then
     if ! grep -q "direnv hook zsh" "$ZSHRC_PATH" 2>/dev/null; then
-        echo '' >> "$ZSHRC_PATH"
-        echo '# direnv integration' >> "$ZSHRC_PATH"
-        echo 'eval "$(direnv hook zsh)"' >> "$ZSHRC_PATH"
+        {
+            echo ''
+            echo '# direnv integration'
+            # shellcheck disable=SC2016
+            echo 'eval "$(direnv hook zsh)"'
+        } >> "$ZSHRC_PATH"
         log_success "Added direnv hook to $ZSHRC_PATH"
     else
         log_info "direnv hook already in $ZSHRC_PATH"
     fi
 else
     log_warning "zsh config not found. Please add this to your shell config:"
+    # shellcheck disable=SC2016
     echo '  eval "$(direnv hook zsh)"'
 fi
 
@@ -159,7 +164,7 @@ echo "  1. Restart your shell or run: source ~/.config/zsh/.zshrc"
 echo "  2. Navigate to this directory - direnv will auto-load the environment"
 echo "  3. .env will auto-generate from 1Password when authenticated"
 echo "  4. Open Neovim and start coding: nvim"
-echo "  5. Verify tools: ./dotfiles --help"
+echo "  5. Run tasks: task --list"
 echo ""
 
 script_footer "success"

@@ -14,6 +14,6 @@
   # =========================================================================
 
   environment.variables = {
-    BAT_THEME="Catppuccin Mocha";
+    BAT_THEME = "Catppuccin Mocha";
   };
 }

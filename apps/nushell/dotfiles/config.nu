@@ -40,6 +40,14 @@ def --env y [...args] {
 	rm -fp $tmp
 }
 
+# Hook direnv into the shell
+$env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt | append {||
+  if (which direnv | is-empty) {
+    return
+  }
+  direnv export json | from json | default {} | load-env
+})
+
 # This is the Nushell way to initialize Starship, using the cached
 # init script if it is available.
 let starship_init_cache = $"($env.HOME)/.cache/starship/init.nu"

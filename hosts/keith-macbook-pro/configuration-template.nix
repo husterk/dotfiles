@@ -19,37 +19,37 @@
     {{MANIFEST_APPS_MODULES}}
   ];
 
-  # =========================================================================
-  # Host-specific Settings
-  # =========================================================================
-  
-  networking.hostName = "keith-macbook-pro";
-  networking.computerName = "Keith's MacBook Pro";
+      # =========================================================================
+      # Host-specific Settings
+      # =========================================================================
 
-  # =========================================================================
-  # User Configuration
-  # =========================================================================
+      networking.hostName = "keith-macbook-pro";
+      networking.computerName = "Keith's MacBook Pro";
 
-  # Run the "extraActivation" script to perform additional, custom configuration
-  # steps such as setting the login shell, customizing the dock, etc.
-  system.activationScripts.extraActivation.text = ''
-    # Source script-helpers.sh from .devcontainer/scripts and export functions
-    # shellcheck disable=SC1091
-    source ${../../scripts/script-helpers.sh}
-    export -f script_header script_footer log_info log_success log_warning log_error
-    export RED GREEN YELLOW BLUE CYAN BOLD NC
+      # =========================================================================
+      # User Configuration
+      # =========================================================================
 
-    ${pkgs.bash}/bin/bash ${./scripts}/create-additional-symlinks.sh \
-      "${USER_USERNAME}"
-    ${pkgs.bash}/bin/bash ${./scripts}/set-login-shell.sh \
-      "${USER_USERNAME}"
-    ${pkgs.bash}/bin/bash ${./scripts}/configure-dock.sh \
-      "${PATH_USERS}" \
-      "${USER_USERNAME}" \
-      "${pkgs.dockutil}/bin/dockutil"
-  '';
+      # Run the "extraActivation" script to perform additional, custom configuration
+      # steps such as setting the login shell, customizing the dock, etc.
+      system.activationScripts.extraActivation.text = ''
+        # Source script-helpers.sh from .devcontainer/scripts and export functions
+        # shellcheck disable=SC1091
+        source ${../../scripts/script-helpers.sh}
+        export -f script_header script_footer log_info log_success log_warning log_error
+        export RED GREEN YELLOW BLUE CYAN BOLD NC
 
-  # =========================================================================
-  # Host-specific macOS Settings
-  # =========================================================================
-}
+        ${pkgs.bash}/bin/bash ${./scripts}/create-additional-symlinks.sh \
+          "${USER_USERNAME}"
+        ${pkgs.bash}/bin/bash ${./scripts}/set-login-shell.sh \
+          "${USER_USERNAME}"
+        ${pkgs.bash}/bin/bash ${./scripts}/configure-dock.sh \
+          "${PATH_USERS}" \
+          "${USER_USERNAME}" \
+          "${pkgs.dockutil}/bin/dockutil"
+      '';
+
+      # =========================================================================
+      # Host-specific macOS Settings
+      # =========================================================================
+    }

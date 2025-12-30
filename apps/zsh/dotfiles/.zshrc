@@ -29,5 +29,8 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+# Hook direnv into the shell
+eval "$(direnv hook zsh)"
+
 # Enable Starship for a fully customizable terminal prompt.
 eval "$(starship init zsh)"

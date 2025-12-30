@@ -1,0 +1,12 @@
+# macOS system files
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.swn
+*~
+
+# Nushell history and runtime files
+history.txt

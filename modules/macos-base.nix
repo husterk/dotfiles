@@ -10,15 +10,15 @@
   environment.variables = {
     # Set up XDG base directories for modern application configuration.
     XDG_CONFIG_HOME = "$HOME/.config";
-    XDG_CACHE_HOME  = "$HOME/Library/Caches";
-    XDG_DATA_HOME   = "$HOME/.local/share";
-    XDG_STATE_HOME  = "$HOME/.local/state";
+    XDG_CACHE_HOME = "$HOME/Library/Caches";
+    XDG_DATA_HOME = "$HOME/.local/share";
+    XDG_STATE_HOME = "$HOME/.local/state";
   };
 
   # =========================================================================
   # macOS System Defaults
   # =========================================================================
-  
+
   system.defaults = {
     # -------------------------------------------------------------------------
     # Finder: High-visibility for dotfiles and file extensions
@@ -62,7 +62,7 @@
   # =========================================================================
   # macOS Keyboard Configuration
   # =========================================================================
-  
+
   system.keyboard = {
     enableKeyMapping = true; # Enable custom key mappings.
     remapCapsLockToControl = false; # Don't remap Caps Lock.

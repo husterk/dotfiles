@@ -1,0 +1,15 @@
+# macOS system files
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.swn
+*~
+
+# Zsh cache and state files
+.zcompdump*
+.zsh_history
+custom/
+history

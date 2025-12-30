@@ -8,7 +8,7 @@
   environment.variables = {
     # Ensures Yazi knows it's inside a high-end terminal.
     # This allows for proper previewing of images, videos, etc.
-    TERM="xterm-256color";
+    TERM = "xterm-256color";
   };
 
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ========================================================================
 # macOS ARM Apply Config Script
@@ -13,7 +13,7 @@
 # Example: ./apply-config.sh keith-macbook-pro
 # ========================================================================
 
-set -e  # Exit on error
+set -e # Exit on error
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers
@@ -22,6 +22,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Load shared script helpers
+# shellcheck disable=SC1091
 source "${REPO_ROOT}/scripts/script-helpers.sh"
 
 # Display script header
@@ -33,22 +34,22 @@ script_header "Apply Nix Configuration" "Applies generated configuration and run
 HOSTNAME="${1:-}"
 
 if [ -z "$HOSTNAME" ]; then
-    log_error "No hostname provided."
-    echo ""
-    echo "Usage: $0 <hostname>"
-    echo ""
-    echo "Example: $0 keith-macbook-pro"
-    echo ""
-    
-    # Determine the git repo root directory
-    REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
-    
-    if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
-        echo "Available hosts:"
-        ls -1 "$REPO_ROOT/hosts" | sed 's/^/  - /'
-    fi
-    
-    exit 1
+  log_error "No hostname provided."
+  echo ""
+  echo "Usage: $0 <hostname>"
+  echo ""
+  echo "Example: $0 keith-macbook-pro"
+  echo ""
+
+  # Determine the git repo root directory
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+
+  if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
+    echo "Available hosts:"
+    find "$REPO_ROOT/hosts" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sed 's/^/  - /'
+  fi
+
+  exit 1
 fi
 
 log_info "Applying configuration for host: $HOSTNAME"
@@ -57,8 +58,8 @@ log_info "Applying configuration for host: $HOSTNAME"
 REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
-    log_error "This script must be run from within a git repository."
-    exit 1
+  log_error "This script must be run from within a git repository."
+  exit 1
 fi
 
 log_info "Repository root: $REPO_ROOT"
@@ -67,12 +68,12 @@ log_info "Repository root: $REPO_ROOT"
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
 
 if [ ! -d "$HOST_DIR" ]; then
-    log_error "Host directory not found: $HOST_DIR"
-    log_info "Available hosts:"
-    if [ -d "$REPO_ROOT/hosts" ]; then
-        ls -1 "$REPO_ROOT/hosts" | sed 's/^/  - /'
-    fi
-    exit 1
+  log_error "Host directory not found: $HOST_DIR"
+  log_info "Available hosts:"
+  if [ -d "$REPO_ROOT/hosts" ]; then
+    find "$REPO_ROOT/hosts" -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | sed 's/^/  - /'
+  fi
+  exit 1
 fi
 
 log_success "Found host directory: $HOST_DIR"
@@ -83,9 +84,9 @@ TEMP_CONFIG="$HOST_DIR/configuration.nix"
 
 # Validate generated configuration exists
 if [ ! -f "$GENERATED_CONFIG" ]; then
-    log_error "Generated configuration not found: $GENERATED_CONFIG"
-    log_info "Please run generate-nix-config.sh first to create the configuration."
-    exit 1
+  log_error "Generated configuration not found: $GENERATED_CONFIG"
+  log_info "Please run generate-nix-config.sh first to create the configuration."
+  exit 1
 fi
 
 log_success "Found generated configuration: $GENERATED_CONFIG"
@@ -97,9 +98,9 @@ log_info "Preparing configuration for darwin-rebuild..."
 
 # Check if temp location already exists and back it up
 if [ -f "$TEMP_CONFIG" ]; then
-    log_warning "Found existing configuration.nix, backing up..."
-    cp "$TEMP_CONFIG" "$TEMP_CONFIG.backup"
-    log_info "Backup saved to: $TEMP_CONFIG.backup"
+  log_warning "Found existing configuration.nix, backing up..."
+  cp "$TEMP_CONFIG" "$TEMP_CONFIG.backup"
+  log_info "Backup saved to: $TEMP_CONFIG.backup"
 fi
 
 # Copy generated config to host directory
@@ -126,23 +127,23 @@ echo ""
 cd "$REPO_ROOT"
 
 if sudo darwin-rebuild switch --impure --flake "./hosts/$HOSTNAME"; then
-    log_success "darwin-rebuild completed successfully!"
+  log_success "darwin-rebuild completed successfully!"
 else
-    EXIT_CODE=$?
-    log_error "darwin-rebuild failed with exit code: $EXIT_CODE"
-    
-    # Clean up even on failure
-    log_info "Cleaning up temporary files..."
-    git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
-    rm -f "$TEMP_CONFIG"
-    
-    # Restore backup if it exists
-    if [ -f "$TEMP_CONFIG.backup" ]; then
-        mv "$TEMP_CONFIG.backup" "$TEMP_CONFIG"
-        log_info "Restored original configuration.nix from backup."
-    fi
-    
-    exit $EXIT_CODE
+  EXIT_CODE=$?
+  log_error "darwin-rebuild failed with exit code: $EXIT_CODE"
+
+  # Clean up even on failure
+  log_info "Cleaning up temporary files..."
+  git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" >/dev/null 2>&1
+  rm -f "$TEMP_CONFIG"
+
+  # Restore backup if it exists
+  if [ -f "$TEMP_CONFIG.backup" ]; then
+    mv "$TEMP_CONFIG.backup" "$TEMP_CONFIG"
+    log_info "Restored original configuration.nix from backup."
+  fi
+
+  exit $EXIT_CODE
 fi
 
 # ------------------------------------------------------------------------
@@ -151,7 +152,7 @@ fi
 log_info "Cleaning up temporary files..."
 
 # Unstage the file
-git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
+git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" >/dev/null 2>&1
 log_info "Unstaged configuration from git."
 
 # Remove the temporary file
@@ -160,8 +161,8 @@ log_info "Removed temporary configuration.nix"
 
 # Remove backup if it exists
 if [ -f "$TEMP_CONFIG.backup" ]; then
-    rm -f "$TEMP_CONFIG.backup"
-    log_info "Removed backup file."
+  rm -f "$TEMP_CONFIG.backup"
+  log_info "Removed backup file."
 fi
 
 log_success "Cleanup complete."
