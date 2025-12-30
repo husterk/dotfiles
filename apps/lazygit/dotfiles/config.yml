@@ -1,10 +1,12 @@
 os:
-  editPreset: 'nvim'
+  editPreset: "nvim"
 git:
   paging:
     colorArg: always
     pager: delta --dark --paging=never
-# This ensures LazyGit uses the 'nvim-remote' logic 
+  # Enable git commit reword when using gpg tools such as 1Password
+  overrideGpg: true
+# This ensures LazyGit uses the 'nvim-remote' logic
 # so it doesn't open a "Neovim inside a Neovim"
 core:
-  editor: 'nvim'
+  editor: "nvim"

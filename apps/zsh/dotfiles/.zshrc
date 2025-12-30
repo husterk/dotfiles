@@ -10,10 +10,6 @@ setopt HIST_IGNORE_DUPS    # Don't record transitions that are duplicates
 autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
-# Set the Cache directory (XDG Standard).
-export ZSH_CACHE_DIR="$XDG_CACHE_HOME/oh-my-zsh"
-mkdir -p "$ZSH_CACHE_DIR"
-
 # Activate syntax highlighting
 source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 (( ${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
@@ -35,4 +31,3 @@ function y() {
 
 # Enable Starship for a fully customizable terminal prompt.
 eval "$(starship init zsh)"
-

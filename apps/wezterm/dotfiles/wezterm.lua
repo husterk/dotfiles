@@ -14,7 +14,7 @@ config.font = wezterm.font("JetBrains Mono")
 config.font_size = 14.0
 
 -- Use Nushell as the default terminal shell
-config.default_prog = { "/run/current-system/sw/bin/nu" }
+-- config.default_prog = { "/run/current-system/sw/bin/nu", "--login" }
 
 -- Tab Bar & Window
 config.window_close_confirmation = "NeverPrompt"
@@ -22,10 +22,10 @@ config.hide_tab_bar_if_only_one_tab = true
 config.window_decorations = "RESIZE" -- Cleaner look on macOS
 config.default_cursor_style = "BlinkingBar"
 
--- 2. Define the Leader key combination
+-- Define the Leader key combination
 config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 2000 }
 
--- 3. Define the Keys directly on the config object
+-- Define the Keys directly on the config object
 config.keys = {
 	-- SPLITS
 	{ key = "\\", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },

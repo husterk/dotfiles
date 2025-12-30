@@ -20,7 +20,7 @@ apps:
   - name: ca-certificates
     modules:
       - /apps/ca-certificates/ca-certificates.nix
- 
+
   - name: curl
     modules:
       - /apps/curl/curl.nix
@@ -62,6 +62,9 @@ apps:
   - name: lazygit
     modules:
       - /apps/lazygit/lazygit.nix
+    dotfiles:
+      - source: /apps/lazygit/dotfiles/**/*
+        target: ~/.config/lazygit/
 
   - name: mas
     modules:
