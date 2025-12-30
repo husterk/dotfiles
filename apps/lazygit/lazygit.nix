@@ -7,6 +7,7 @@
 
   environment.systemPackages = with pkgs; [
     lazygit
+    delta # Syntax highlighting pager for lazygit
   ];
 
   # =========================================================================

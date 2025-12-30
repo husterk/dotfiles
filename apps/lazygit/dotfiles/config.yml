@@ -1,9 +1,12 @@
 os:
   editPreset: "nvim"
 git:
+  # Use delta as the preferred pager
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never
   paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+    pager: delta
   # Enable git commit reword when using gpg tools such as 1Password
   overrideGpg: true
 # This ensures LazyGit uses the 'nvim-remote' logic

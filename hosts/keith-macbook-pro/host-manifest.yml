@@ -17,6 +17,13 @@ apps:
         target: ~/.config/1Password/
 
 
+  - name: bat
+    modules:
+      - /apps/bat/bat.nix
+    dotfiles:
+      - source: /apps/bat/dotfiles/**/*
+        target: ~/.config/bat/
+
   - name: ca-certificates
     modules:
       - /apps/ca-certificates/ca-certificates.nix

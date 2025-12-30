@@ -6,15 +6,14 @@
   # =========================================================================
 
   environment.systemPackages = with pkgs; [
-    wget
+    bat
   ];
 
   # =========================================================================
-  # Environment Variables
+  # Environment Variables for Bat
   # =========================================================================
 
   environment.variables = {
-    # Tell wget where to find the user configuration file.
-    WGETRC = "$HOME/.config/wget/wgetrc";
+    BAT_THEME="Catppuccin Mocha";
   };
 }

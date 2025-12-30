@@ -1,3 +1,5 @@
+[include]
+	path = ~/git-repos/delta/catppuccin.gitconfig
 [user]
 	name = ${USER_FIRST_NAME} ${USER_LAST_NAME}
 	email = ${USER_EMAIL}
@@ -16,3 +18,5 @@
 	program = ${GIT_GPG_SSH_PROGRAM}
 [credential]
     helper = /run/current-system/sw/bin/git-credential-manager
+[delta]
+	features = catppuccin-mocha

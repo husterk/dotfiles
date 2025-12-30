@@ -7,5 +7,6 @@
 
   environment.systemPackages = with pkgs; [
     neovim
+    statix # Static analyzer for nix files
   ];
 }
