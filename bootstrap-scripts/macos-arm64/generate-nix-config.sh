@@ -240,13 +240,13 @@ fi
 APPS_FORMATTED=$(cat "$TEMP_APPS")
 rm "$TEMP_APPS"
 
-# Use awk to replace both placeholders
+# Use awk to replace both placeholders (comment-based format)
 TEMP_CONFIG=$(mktemp)
 awk -v system_modules="$SYSTEM_FORMATTED" -v app_modules="$APPS_FORMATTED" '
 {
-    if ($0 ~ /{{MANIFEST_SYSTEM_MODULES}}/) {
+    if ($0 ~ /#{{MANIFEST_SYSTEM_MODULES}}/) {
         print system_modules
-    } else if ($0 ~ /{{MANIFEST_APPS_MODULES}}/) {
+    } else if ($0 ~ /#{{MANIFEST_APPS_MODULES}}/) {
         print app_modules
     } else {
         print $0
