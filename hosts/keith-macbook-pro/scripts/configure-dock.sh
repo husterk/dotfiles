@@ -70,14 +70,13 @@ fi
 declare -a DOCK_APPS=(
   "/Applications/Google Chrome.app"
   "/System/Applications/Messages.app"
-  "/Applications/Visual Studio Code.app"
   "/Applications/Fork.app"
   "/Applications/Nix Apps/WezTerm.app"
+  "/Applications/Visual Studio Code.app"
   "/Applications/1Password.app"
   "/Applications/Davinci Resolve.app"
   "/Applications/Insta360 Studio.app"
   "/System/Applications/Notes.app"
-  "/System/Applications/Stickies.app"
 )
 
 # ------------------------------------------------------------------------
