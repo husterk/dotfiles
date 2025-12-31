@@ -1,6 +1,10 @@
 os:
   editPreset: nvim
 git:
+  # Enable icons and smoother graph lines
+  nerdFontsVersion: "3"
+  # Customize the border for a cleaner look
+  border: rounded
   # Use delta as the preferred pager
   pagers:
     - colorArg: always
