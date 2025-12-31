@@ -10,7 +10,8 @@ end
 -- Basic Settings
 config.automatically_reload_config = true
 config.color_scheme = "Catppuccin Mocha"
-config.font = wezterm.font("JetBrains Mono")
+config.font = wezterm.font("JetBrainsMono Nerd Font")
+config.front_end = "WebGpu" -- Use WebGPU for better performance
 config.font_size = 14.0
 
 -- Use Nushell as the default terminal shell

@@ -1,19 +1,11 @@
-os:
-  editPreset: nvim
+gui:
+  border: rounded # Customize the border for a cleaner look
+  nerdFontsVersion: "3" # Enable icons and smoother graph lines
 git:
-  # Enable icons and smoother graph lines
-  nerdFontsVersion: "3"
-  # Customize the border for a cleaner look
-  border: rounded
-  # Use delta as the preferred pager
+  log:
+    showGraph: always # Always show commit graph
   pagers:
-    - colorArg: always
-      pager: delta --paging=never
-  paging:
-    pager: delta
-  # Enable git commit reword when using gpg tools such as 1Password
-  overrideGpg: true
-# This ensures LazyGit uses the 'nvim-remote' logic
-# so it doesn't open a "Neovim inside a Neovim"
-core:
-  editor: nvim
+    - colorArg: always # Use colors always
+      pager: delta --paging=never # use delta and disable internal paging
+  parseEmoji: true # Display emojis in commit messages
+  overrideGpg: true # Enable git commit reword when using gpg tools such as 1Password
