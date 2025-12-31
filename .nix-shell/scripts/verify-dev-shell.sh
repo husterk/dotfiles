@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ========================================================================
 # Verify Development Shell Setup
@@ -110,14 +110,14 @@ echo ""
 # ------------------------------------------------------------------------
 if command -v nix &> /dev/null; then
     log_info "Testing flake syntax..."
-    
+
     if nix flake show "$REPO_ROOT/.nix-shell" --quiet &> /dev/null; then
         log_success "flake.nix syntax is valid"
     else
         log_error "flake.nix has syntax errors"
         ERRORS=$((ERRORS + 1))
     fi
-    
+
     # Check if devShells.default exists
     if nix flake show "$REPO_ROOT/.nix-shell" 2>/dev/null | grep -q "devShells"; then
         log_success "flake.nix defines devShells"

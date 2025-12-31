@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # ========================================================================
 # Initialize Development Shell
@@ -75,7 +75,7 @@ if ! op account list &> /dev/null; then
     echo ""
 else
     log_success "1Password CLI is authenticated"
-    
+
     # Generate .env immediately if template exists
     if [ -f "$REPO_ROOT/.nix-shell/.env.template" ]; then
         if [ ! -f "$REPO_ROOT/.env" ] || [ "$REPO_ROOT/.nix-shell/.env.template" -nt "$REPO_ROOT/.env" ]; then
