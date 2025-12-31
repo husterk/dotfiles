@@ -36,6 +36,20 @@ fi
 export DOTFILES_ROOT="$PWD"
 export PATH="$DOTFILES_ROOT:$PATH"
 
+# Install git hooks if not already installed
+if [ -d .git ] && [ -f hooks/pre-commit ]; then
+  if [ ! -L .git/hooks/pre-commit ] || [ "$(readlink .git/hooks/pre-commit)" != "../../hooks/pre-commit" ]; then
+    echo "🪝 Installing git hooks..."
+    if [ -f .git/hooks/pre-commit ] && [ ! -L .git/hooks/pre-commit ]; then
+      # Backup existing hook
+      mv .git/hooks/pre-commit .git/hooks/pre-commit.backup 2>/dev/null || true
+    fi
+    ln -sf ../../hooks/pre-commit .git/hooks/pre-commit
+    echo "✅ Git hooks installed (pre-commit: format + lint)"
+    echo ""
+  fi
+fi
+
 # Load .env file if it exists
 if [ -f .env ]; then
   echo "📄 Loading environment from .env"

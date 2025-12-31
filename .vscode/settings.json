@@ -1,6 +1,6 @@
 {
     // Editor Settings
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false, // Disabled: Use Task commands instead (task dev:format)
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.rulers": [120],
@@ -82,7 +82,7 @@
         "https://taskfile.dev/schema.json": ["Taskfile*.yml", "Taskfile*.yaml"],
         "file:///Users/keithhuster/git-repos/dotfiles/hosts/*/host-manifest.yml": ["hosts/*/host-manifest.yml"]
     },
-    "yaml.format.enable": true,
+    "yaml.format.enable": false, // Disabled: Use Task commands instead (task dev:format-yaml)
     "yaml.format.singleQuote": false,
     "yaml.format.proseWrap": "preserve",
     "yaml.customTags": [],

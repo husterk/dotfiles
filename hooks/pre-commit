@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Pre-commit hook that runs formatting and linting checks
+# Installed via: task dev:install-hooks
+# Skip with: SKIP=1 git commit or git commit --no-verify
+
+set -e
+
+# Allow skipping checks
+if [ -n "$SKIP" ]; then
+	echo "⏭️  Skipping pre-commit checks (SKIP is set)"
+	exit 0
+fi
+
+# Get repository root
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+echo "🔍 Running pre-commit checks..."
+
+# Run formatters (auto-fixes issues)
+echo "📝 Formatting code..."
+if ! (cd "$REPO_ROOT" && task dev:format); then
+	echo "❌ Formatting failed. Please fix the issues and try again."
+	echo "💡 Tip: Run 'task dev:format' manually to see details"
+	exit 1
+fi
+
+# Run linters (checks for issues)
+echo "🔬 Linting code..."
+if ! (cd "$REPO_ROOT" && task dev:lint); then
+	echo "❌ Linting failed. Please fix the issues and try again."
+	echo "💡 Tip: Run 'task dev:lint' manually to see details"
+	exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0

@@ -52,6 +52,8 @@ task --list              # View available commands
 
 **Tools included**: task, yq, jq, shellcheck, shfmt, nixpkgs-fmt, nil, neovim, LSPs
 
+**Git hooks**: Automatically installed by dev shell (pre-commit checks: format + lint).
+
 ## Common Tasks
 
 ### Essential Commands

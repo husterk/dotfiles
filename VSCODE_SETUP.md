@@ -53,18 +53,28 @@ _You already have nil in your dev shell. VSCode will find it automatically._
 -   ShellCheck + Shell Format (shell scripts)
 -   YAML, Markdown, Task, EditorConfig, GitLens, Error Lens, 1Password, Todo Tree
 
-**Auto-formatting on save:**
+**Formatting:**
 
--   Nix files → nixpkgs-fmt
--   Shell scripts → shfmt
-
-**Manual formatting via Task:**
+Format-on-save is disabled. Use Task commands instead:
 
 ```bash
 task dev:format        # Format all files
-task dev:format-yaml   # YAML with yq
-task dev:format-json   # JSON with jq
+task dev:format-nix    # Nix only
+task dev:format-scripts # Shell scripts only
+task dev:format-yaml   # YAML only
+task dev:format-json   # JSON only
 ```
+
+Or let the pre-commit hook auto-format when you commit.
+
+**Pre-commit hooks:**
+
+Automatically installed by dev shell and run on `git commit`:
+
+-   `task dev:format` (auto-fixes formatting)
+-   `task dev:lint` (checks code quality)
+
+Skip with: `SKIP=1 git commit` or `git commit --no-verify`
 
 ## Troubleshooting
 
