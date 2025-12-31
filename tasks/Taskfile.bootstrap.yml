@@ -1,15 +1,13 @@
 version: "3"
-
 # ========================================================================
 # Bootstrap Tasks
 # ========================================================================
 # Tasks for bootstrapping and configuring hosts
 # ========================================================================
-
 tasks:
   # Generate .env from 1Password
   generate-env:
-    desc: "Generate .env file from 1Password secrets"
+    desc: Generate .env file from 1Password secrets
     silent: true
     summary: |
       Generates .env file from 1Password secrets using template.env.
@@ -19,22 +17,21 @@ tasks:
       - When setting up a new host
       - When secrets change in 1Password
       - From the development container (not the host)
-    dir: "{{.REPO_ROOT}}"
+    dir: '{{.REPO_ROOT}}'
     preconditions:
-      - sh: "op account list &> /dev/null"
-        msg: "1Password CLI not authenticated. Run: eval $(op signin)"
+      - sh: op account list &> /dev/null
+        msg: '1Password CLI not authenticated. Run: eval $(op signin)'
       - sh: '[ -f "{{.HOST_DIR}}/template.env" ]'
-        msg: "template.env not found: {{.HOST_DIR}}/template.env"
+        msg: 'template.env not found: {{.HOST_DIR}}/template.env'
     cmds:
-      - "{{.TASKFILE_DIR}}/scripts/task-generate-env.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
+      - '{{.TASKFILE_DIR}}/scripts/task-generate-env.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
     sources:
-      - "{{.HOST_DIR}}/template.env"
+      - '{{.HOST_DIR}}/template.env'
     generates:
-      - "{{.HOST_DIR}}/generated/.env"
-
+      - '{{.HOST_DIR}}/generated/.env'
   # Generate Nix configuration
   generate-nix-config:
-    desc: "Generate Nix configuration from template"
+    desc: Generate Nix configuration from template
     silent: true
     summary: |
       Generates configuration.nix from template with secrets substitution.
@@ -45,26 +42,25 @@ tasks:
       - After modifying configuration-template.nix
       - After modifying host-manifest.yml
       - From the development container (not the host)
-    dir: "{{.REPO_ROOT}}"
+    dir: '{{.REPO_ROOT}}'
     deps:
       - generate-env
     preconditions:
       - sh: '[ -f "{{.HOST_DIR}}/configuration-template.nix" ]'
-        msg: "configuration-template.nix not found"
+        msg: configuration-template.nix not found
       - sh: '[ -f "{{.HOST_DIR}}/generated/.env" ]'
-        msg: ".env not found. Run: task bootstrap:generate-env"
+        msg: '.env not found. Run: task bootstrap:generate-env'
     cmds:
-      - "{{.TASKFILE_DIR}}/scripts/task-generate-nix-config.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
+      - '{{.TASKFILE_DIR}}/scripts/task-generate-nix-config.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
     sources:
-      - "{{.HOST_DIR}}/configuration-template.nix"
-      - "{{.HOST_DIR}}/host-manifest.yml"
-      - "{{.HOST_DIR}}/generated/.env"
+      - '{{.HOST_DIR}}/configuration-template.nix'
+      - '{{.HOST_DIR}}/host-manifest.yml'
+      - '{{.HOST_DIR}}/generated/.env'
     generates:
-      - "{{.HOST_DIR}}/generated/configuration.nix"
-
+      - '{{.HOST_DIR}}/generated/configuration.nix'
   # Generate dotfiles
   generate-dotfiles:
-    desc: "Generate dotfiles from templates"
+    desc: Generate dotfiles from templates
     silent: true
     summary: |
       Generates dotfiles from app templates with secrets substitution.
@@ -75,24 +71,23 @@ tasks:
       - After modifying dotfile templates
       - After modifying host-manifest.yml
       - From the development container (not the host)
-    dir: "{{.REPO_ROOT}}"
+    dir: '{{.REPO_ROOT}}'
     deps:
       - generate-env
     preconditions:
       - sh: '[ -f "{{.HOST_DIR}}/generated/.env" ]'
-        msg: ".env not found. Run: task bootstrap:generate-env"
+        msg: '.env not found. Run: task bootstrap:generate-env'
     cmds:
-      - "{{.TASKFILE_DIR}}/scripts/task-generate-dotfiles.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
+      - '{{.TASKFILE_DIR}}/scripts/task-generate-dotfiles.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
     sources:
-      - "{{.HOST_DIR}}/host-manifest.yml"
-      - "{{.HOST_DIR}}/generated/.env"
-      - "apps/**/dotfiles/**/*"
+      - '{{.HOST_DIR}}/host-manifest.yml'
+      - '{{.HOST_DIR}}/generated/.env'
+      - apps/**/dotfiles/**/*
     generates:
-      - "{{.HOST_DIR}}/generated/dotfiles/**/*"
-
+      - '{{.HOST_DIR}}/generated/dotfiles/**/*'
   # Generate all configurations
   generate-all:
-    desc: "Generate all configurations (env + nix + dotfiles)"
+    desc: Generate all configurations (env + nix + dotfiles)
     silent: true
     summary: |
       Convenience task to generate all configuration files:
@@ -106,10 +101,9 @@ tasks:
       - task: generate-nix-config
       - task: generate-dotfiles
       - echo "✅ All configurations generated successfully"
-
   # Apply Nix configuration
   apply-config:
-    desc: "Apply Nix configuration to system"
+    desc: Apply Nix configuration to system
     silent: true
     summary: |
       Applies the generated Nix configuration using darwin-rebuild.
@@ -123,20 +117,19 @@ tasks:
       - nix-darwin to be installed (run bootstrap first)
       - sudo password
       - To be run on the host machine (not in dev container)
-    dir: "{{.REPO_ROOT}}"
+    dir: '{{.REPO_ROOT}}'
     preconditions:
-      - sh: "command -v darwin-rebuild &> /dev/null"
-        msg: "darwin-rebuild not found. Run: task bootstrap:bootstrap-host"
+      - sh: command -v darwin-rebuild &> /dev/null
+        msg: 'darwin-rebuild not found. Run: task bootstrap:bootstrap-host'
       - sh: '[ -f "{{.HOST_DIR}}/flake.nix" ]'
-        msg: "flake.nix not found in host directory"
+        msg: flake.nix not found in host directory
       - sh: '[ -f "{{.HOST_DIR}}/generated/configuration.nix" ]'
-        msg: "configuration.nix not found. Run: task bootstrap:generate-nix-config"
+        msg: 'configuration.nix not found. Run: task bootstrap:generate-nix-config'
     cmds:
-      - "{{.TASKFILE_DIR}}/scripts/task-apply-config.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"
-
+      - '{{.TASKFILE_DIR}}/scripts/task-apply-config.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'
   # Unbootstrap
   unbootstrap:
-    desc: "Remove Nix and nix-darwin from system"
+    desc: Remove Nix and nix-darwin from system
     silent: true
     summary: |
       Completely removes Nix and nix-darwin from the system.
@@ -150,7 +143,7 @@ tasks:
       - Clean up system modifications
 
       Make sure to restore dotfiles first if needed.
-    dir: "{{.REPO_ROOT}}"
+    dir: '{{.REPO_ROOT}}'
     prompt: |
       ⚠️  WARNING: This will completely remove Nix and nix-darwin!
 
@@ -160,4 +153,4 @@ tasks:
 
       Are you absolutely sure you want to continue?
     cmds:
-      - "{{.TASKFILE_DIR}}/scripts/task-unbootstrap.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"
+      - '{{.TASKFILE_DIR}}/scripts/task-unbootstrap.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'

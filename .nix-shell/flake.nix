@@ -31,6 +31,7 @@
 
             # === REQUIRED: Script dependencies ===
             yq-go # YAML processor (parses host-manifest.yml in all task scripts)
+            jq # JSON processor (formats JSON files)
             _1password-cli # 1Password CLI (retrieves secrets for .env generation)
 
             # === REQUIRED: Shell script quality tools ===

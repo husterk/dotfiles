@@ -14,10 +14,11 @@
   # Import all required modules.
   imports = [
     # Modules
-    {{MANIFEST_SYSTEM_MODULES}}
-    # Apps
-    {{MANIFEST_APPS_MODULES}}
-  ];
+    {
+      {MANIFEST_SYSTEM_MODULES}}
+      # Apps
+      {{MANIFEST_APPS_MODULES}}
+      ];
 
       # =========================================================================
       # Host-specific Settings

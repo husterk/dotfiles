@@ -3,11 +3,9 @@ config:
   root-relative-path: ../../
   home-dir: ${PATH_USERS}/${USER_USERNAME}
   bootstrap-target: macos-arm64
-
 system:
   modules:
     - /modules/macos-base.nix
-
 apps:
   - name: 1password
     modules:
@@ -15,153 +13,123 @@ apps:
     dotfiles:
       - source: /apps/1password/dotfiles/**/*
         target: ~/.config/1Password/
-
-
   - name: bat
     modules:
       - /apps/bat/bat.nix
     dotfiles:
       - source: /apps/bat/dotfiles/**/*
         target: ~/.config/bat/
-
   - name: ca-certificates
     modules:
       - /apps/ca-certificates/ca-certificates.nix
-
   - name: curl
     modules:
       - /apps/curl/curl.nix
     dotfiles:
       - source: /apps/curl/dotfiles/**/*
         target: ~/.config/curl/
-
   - name: davinci-resolve
     modules:
       - /apps/davinci-resolve/davinci-resolve.nix
-
   - name: direnv
     modules:
       - /apps/direnv/direnv.nix
-
   - name: dockutil
     modules:
       - /apps/dockutil/dockutil.nix
-
   - name: dropbox
     modules:
       - /apps/dropbox/dropbox.nix
-
   - name: git
     modules:
       - /apps/git/git.nix
     dotfiles:
       - source: /apps/git/dotfiles/**/*
         target: ~/.config/git/
-
   - name: homebrew
     modules:
       - /apps/homebrew/homebrew.nix
-
   - name: image-plus-tools
     modules:
       - /apps/image-plus-tools/image-plus-tools.nix
-
   - name: inetutils
     modules:
       - /apps/inetutils/inetutils.nix
-
   - name: lazygit
     modules:
       - /apps/lazygit/lazygit.nix
     dotfiles:
       - source: /apps/lazygit/dotfiles/**/*
         target: ~/.config/lazygit/
-
   - name: mas
     modules:
       - /apps/mas/mas.nix
-
   - name: neovim
     modules:
       - /apps/neovim/neovim.nix
     dotfiles:
       - source: /apps/neovim/dotfiles/**/*
         target: ~/.config/nvim/
-
   - name: nix
     modules:
       - /apps/nix/nix.nix
     dotfiles:
       - source: /apps/nix/dotfiles/**/*
         target: ~/.config/nix/
-
   - name: nss
     modules:
       - /apps/nss/nss.nix
-
   - name: nushell
     modules:
       - /apps/nushell/nushell.nix
     dotfiles:
       - source: /apps/nushell/dotfiles/**/*
         target: ~/.config/nushell/
-
   - name: orbstack
     modules:
       - /apps/orbstack/orbstack.nix
     dotfiles:
       - source: /apps/orbstack/docker/**/*
         target: ~/.config/docker/
-
   - name: ripgrep
     modules:
       - /apps/ripgrep/ripgrep.nix
-
   - name: starship
     modules:
       - /apps/starship/starship.nix
     dotfiles:
       - source: /apps/starship/dotfiles/**/*
         target: ~/.config/starship/
-
   - name: stow
     modules:
       - /apps/stow/stow.nix
-
   - name: swaks
     modules:
       - /apps/swaks/swaks.nix
-
-
   - name: visual-studio-code
     modules:
       - /apps/visual-studio-code/visual-studio-code.nix
-
   - name: wezterm
     modules:
       - /apps/wezterm/wezterm.nix
     dotfiles:
       - source: /apps/wezterm/dotfiles/**/*
         target: ~/.config/wezterm/
-
   - name: wget
     modules:
       - /apps/wget/wget.nix
     dotfiles:
       - source: /apps/wget/dotfiles/**/*
         target: ~/.config/wget/
-
   - name: xcode
     modules:
       - /apps/xcode/xcode.nix
-
   - name: yazi
     modules:
       - /apps/yazi/yazi.nix
     dotfiles:
       - source: /apps/yazi/dotfiles/**/*
         target: ~/.config/yazi/
-
   - name: zsh
     modules:
       - /apps/zsh/zsh.nix

@@ -1,0 +1,148 @@
+{
+    // Editor Settings
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.rulers": [120],
+    "editor.wordWrap": "off",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+
+    // Files Settings
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.direnv": true,
+        "**/generated": true,
+        "**/.task": true,
+        "**/result": true,
+        "**/result-*": true
+    },
+    "files.associations": {
+        "*.nix": "nix",
+        "*.nu": "nushell",
+        ".envrc": "shellscript",
+        "Taskfile*.yml": "yaml",
+        "flake.lock": "json"
+    },
+
+    // Language-specific Settings
+    "[nix]": {
+        "editor.defaultFormatter": "jnoortheen.nix-ide",
+        "editor.tabSize": 2
+    },
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.tabSize": 2
+    },
+    "[yaml]": {
+        "editor.tabSize": 2
+    },
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "comments": "on",
+            "strings": "on",
+            "other": "on"
+        }
+    },
+    "[json]": {
+        "editor.tabSize": 2
+    },
+    "[jsonc]": {
+        "editor.tabSize": 2
+    },
+
+    // Nix IDE Settings
+    "nix.enableLanguageServer": true,
+    "nix.serverPath": "nil",
+    "nix.serverSettings": {
+        "nil": {
+            "formatting": {
+                "command": ["nixpkgs-fmt"]
+            }
+        }
+    },
+    "nix.formatterPath": "nixpkgs-fmt",
+    "nix.serverEnv": null,
+
+    // ShellCheck Settings
+    "shellcheck.enable": true,
+    "shellcheck.run": "onSave",
+    "shellcheck.executablePath": "shellcheck",
+
+    // Shell Format Settings
+    "shellformat.flag": "-i 2 -ci",
+
+    // YAML Settings
+    "yaml.schemas": {
+        "https://taskfile.dev/schema.json": ["Taskfile*.yml", "Taskfile*.yaml"],
+        "file:///Users/keithhuster/git-repos/dotfiles/hosts/*/host-manifest.yml": ["hosts/*/host-manifest.yml"]
+    },
+    "yaml.format.enable": true,
+    "yaml.format.singleQuote": false,
+    "yaml.format.proseWrap": "preserve",
+    "yaml.customTags": [],
+
+    // Terminal Settings
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.env.osx": {
+        "TERM": "xterm-256color"
+    },
+
+    // Git Settings
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+
+    // GitHub Copilot Settings
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "plaintext": false,
+        "markdown": true,
+        "nix": true,
+        "shellscript": true
+    },
+
+    // Todo Tree Settings
+    "todo-tree.general.tags": ["TODO", "FIXME", "NOTE", "HACK", "XXX", "BUG"],
+    "todo-tree.highlights.defaultHighlight": {
+        "icon": "alert",
+        "type": "text",
+        "foreground": "#000000",
+        "opacity": 50
+    },
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "check",
+            "foreground": "#ffcc00"
+        },
+        "FIXME": {
+            "foreground": "#ff0000",
+            "iconColour": "#ff0000"
+        },
+        "NOTE": {
+            "icon": "note",
+            "foreground": "#00ccff"
+        }
+    },
+
+    // Error Lens Settings
+    "errorLens.enabledDiagnosticLevels": ["error", "warning", "info"],
+    "errorLens.followCursor": "activeLine",
+
+    // Search Settings
+    "search.exclude": {
+        "**/.git": true,
+        "**/.direnv": true,
+        "**/generated": true,
+        "**/.task": true,
+        "**/result": true,
+        "**/result-*": true,
+        "**/node_modules": true
+    }
+}

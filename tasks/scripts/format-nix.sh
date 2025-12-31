@@ -30,8 +30,19 @@ done
 echo ""
 
 # Format all Nix files
+reformatted_count=0
 for file in "${nix_files[@]}"; do
-  nixpkgs-fmt "$file"
+  # Capture nixpkgs-fmt output and only show if file was reformatted
+  output=$(nixpkgs-fmt "$file" 2>&1)
+  if echo "$output" | grep -q "1 / 1 have been reformatted"; then
+    echo "  ✓ Reformatted: $file"
+    ((reformatted_count++))
+  fi
 done
 
-echo "✅ All ${#nix_files[@]} Nix file(s) formatted!"
+if [ "$reformatted_count" -gt 0 ]; then
+  echo ""
+  echo "✅ Reformatted $reformatted_count of ${#nix_files[@]} Nix file(s)"
+else
+  echo "✅ All ${#nix_files[@]} Nix file(s) already formatted"
+fi

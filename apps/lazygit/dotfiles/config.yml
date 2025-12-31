@@ -1,5 +1,5 @@
 os:
-  editPreset: "nvim"
+  editPreset: nvim
 git:
   # Use delta as the preferred pager
   pagers:
@@ -12,4 +12,4 @@ git:
 # This ensures LazyGit uses the 'nvim-remote' logic
 # so it doesn't open a "Neovim inside a Neovim"
 core:
-  editor: "nvim"
+  editor: nvim

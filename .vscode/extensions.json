@@ -1,0 +1,37 @@
+{
+    "recommendations": [
+        // GitHub Copilot - AI pair programmer
+        "github.copilot",
+        "github.copilot-chat",
+
+        // Nix Development
+        "jnoortheen.nix-ide",
+        "arrterian.nix-env-selector",
+
+        // Shell & Dotfiles
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+
+        // YAML & Configuration Files
+        "redhat.vscode-yaml",
+
+        // Task Runner
+        "task.vscode-task",
+
+        // Markdown
+        "yzhang.markdown-all-in-one",
+
+        // Development Tools
+        "1password.op-vscode",
+        "editorconfig.editorconfig",
+        "usernamehw.errorlens",
+
+        // Git
+        "eamodio.gitlens",
+
+        // Utilities
+        "gruntfuggly.todo-tree",
+        "wayou.vscode-todo-highlight"
+    ],
+    "unwantedRecommendations": []
+}

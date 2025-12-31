@@ -1,5 +1,4 @@
 version: "3"
-
 # ========================================================================
 # Dotfiles Task Runner
 # ========================================================================
@@ -9,16 +8,13 @@ version: "3"
 #
 # Override hostname: task HOSTNAME=my-host [command]
 # ========================================================================
-
 vars:
   # Hostname detection with fallback and override support
   HOSTNAME:
     sh: echo "${HOSTNAME:-$(hostname -s)}"
-
   # Repository root
   REPO_ROOT:
     sh: git rev-parse --show-toplevel 2>/dev/null || pwd
-
   # Bootstrap target from host manifest
   BOOTSTRAP_TARGET:
     sh: |
@@ -31,42 +27,36 @@ vars:
       else
         echo "macos-arm64"
       fi
-
   # Host directory
-  HOST_DIR: "{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}"
-
+  HOST_DIR: '{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}'
   # Bootstrap scripts directory
-  BOOTSTRAP_SCRIPTS_DIR: "{{.REPO_ROOT}}/bootstrap-scripts/{{.BOOTSTRAP_TARGET}}"
-
+  BOOTSTRAP_SCRIPTS_DIR: '{{.REPO_ROOT}}/bootstrap-scripts/{{.BOOTSTRAP_TARGET}}'
 # Include task files for better organization
 includes:
   bootstrap: ./tasks/Taskfile.bootstrap.yml
   dotfiles: ./tasks/Taskfile.dotfiles.yml
   dev: ./tasks/Taskfile.dev.yml
-
 # Default task - show help
 tasks:
   default:
-    desc: "Show available tasks and current configuration"
+    desc: Show available tasks and current configuration
     silent: true
     cmds:
-      - "{{.ROOT_DIR}}/tasks/scripts/show-default.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}"
-
+      - '{{.ROOT_DIR}}/tasks/scripts/show-default.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}'
   # Status check
   check-status:
-    desc: "Show current configuration status"
+    desc: Show current configuration status
     silent: true
     preconditions:
       - sh: '[ -d "{{.HOST_DIR}}" ]'
-        msg: "Host directory not found: {{.HOST_DIR}}"
+        msg: 'Host directory not found: {{.HOST_DIR}}'
       - sh: '[ -f "{{.HOST_DIR}}/host-manifest.yml" ]'
-        msg: "Host manifest not found: {{.HOST_DIR}}/host-manifest.yml"
+        msg: 'Host manifest not found: {{.HOST_DIR}}/host-manifest.yml'
     cmds:
-      - "{{.ROOT_DIR}}/tasks/scripts/show-status.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}"
-
+      - '{{.ROOT_DIR}}/tasks/scripts/show-status.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}'
   # Quick workflow commands
   setup-host:
-    desc: "Complete setup after bootstrap (generate + deploy-nix + deploy-dotfiles)"
+    desc: Complete setup after bootstrap (generate + deploy-nix + deploy-dotfiles)
     silent: true
     summary: |
       Runs the complete setup workflow after bootstrapping:
@@ -87,9 +77,8 @@ tasks:
       - task: bootstrap:generate-all
       - task: bootstrap:apply-config
       - task: dotfiles:deploy
-
   refresh-host:
-    desc: "Regenerate and redeploy everything (no bootstrap)"
+    desc: Regenerate and redeploy everything (no bootstrap)
     silent: true
     summary: |
       Regenerates Nix configuration and dotfiles, then redeploys them:
@@ -106,10 +95,9 @@ tasks:
       - task: bootstrap:generate-dotfiles
       - task: bootstrap:apply-config
       - task: dotfiles:deploy
-
   # Convenience aliases for common tasks
   generate-all:
-    desc: "Generate all configurations (env + nix + dotfiles)"
+    desc: Generate all configurations (env + nix + dotfiles)
     silent: true
     summary: |
       Generates all configuration files from templates:
@@ -120,9 +108,8 @@ tasks:
       This does not apply or deploy anything, just generates files.
     cmds:
       - task: bootstrap:generate-all
-
   deploy-nix:
-    desc: "Deploy Nix configuration to system"
+    desc: Deploy Nix configuration to system
     silent: true
     summary: |
       Applies the generated Nix configuration using darwin-rebuild.
@@ -134,18 +121,16 @@ tasks:
       Requires sudo password.
     cmds:
       - task: bootstrap:apply-config
-
   deploy-dotfiles:
-    desc: "Deploy dotfiles using GNU Stow"
+    desc: Deploy dotfiles using GNU Stow
     silent: true
     summary: |
       Deploys dotfiles to home directory using GNU Stow.
       Creates symlinks from generated dotfiles to their target locations.
     cmds:
       - task: dotfiles:deploy
-
   capture-dotfiles:
-    desc: "Capture dotfiles back to source (with --dry-run option)"
+    desc: Capture dotfiles back to source (with --dry-run option)
     silent: true
     summary: |
       Captures changes from deployed dotfiles back to source templates.
@@ -156,9 +141,8 @@ tasks:
         task capture-dotfiles -- --dry-run  # Preview changes only
     cmds:
       - task: dotfiles:capture
-
   watch-dotfiles:
-    desc: "Watch dotfiles and auto-capture changes"
+    desc: Watch dotfiles and auto-capture changes
     silent: true
     summary: |
       Watches for changes in deployed dotfiles and automatically
@@ -167,9 +151,8 @@ tasks:
       Useful during development when actively editing dotfiles.
     cmds:
       - task: dev:watch-dotfiles
-
   clean-all:
-    desc: "Clean generated files"
+    desc: Clean generated files
     silent: true
     summary: |
       Removes generated files for the current host:
