@@ -67,4 +67,10 @@
     enableKeyMapping = true; # Enable custom key mappings.
     remapCapsLockToControl = false; # Don't remap Caps Lock.
   };
+
+  # =========================================================================
+  # PAM Configuration - Touch ID for sudo
+  # =========================================================================
+
+  security.pam.services.sudo_local.touchIdAuth = true;
 }
