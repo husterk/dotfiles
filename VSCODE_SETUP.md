@@ -56,13 +56,10 @@ _You already have nil in your dev shell. VSCode will find it automatically._
 **Formatting:**
 
 Format-on-save is disabled. Use Task commands instead:
+**Note**: Formatting is also automatically applied by pre-commit hooks.
 
 ```bash
-task dev:format        # Format all files
-task dev:format-nix    # Nix only
-task dev:format-scripts # Shell scripts only
-task dev:format-yaml   # YAML only
-task dev:format-json   # JSON only
+task dev:format         # Format all files
 ```
 
 Or let the pre-commit hook auto-format when you commit.

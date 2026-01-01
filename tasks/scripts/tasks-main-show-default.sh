@@ -8,7 +8,7 @@ BOOTSTRAP_TARGET="${2:?BOOTSTRAP_TARGET required}"
 HOST_DIR="${3:?HOST_DIR required}"
 
 echo "╔══════════════════════════════════════════════════════════════════╗"
-echo "║               Dotfiles Task Runner (2025 Edition)                ║"
+echo "║                       Dotfiles Task Runner                       ║"
 echo "╚══════════════════════════════════════════════════════════════════╝"
 echo ""
 echo "📋 Current Configuration:"

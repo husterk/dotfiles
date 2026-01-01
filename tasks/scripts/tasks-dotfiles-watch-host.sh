@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Watch dotfiles for changes and auto-capture
+# Watch dotfiles (on the host) for changes and auto-capture
 # This script monitors ~/.config for changes and triggers capture when detected
 
 echo "👀 Watching dotfiles for changes..."

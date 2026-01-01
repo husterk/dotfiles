@@ -16,7 +16,7 @@ Declarative macOS system configuration using Nix, nix-darwin, and GNU Stow.
 ## Prerequisites
 
 -   macOS (arm64)
--   1Password CLI: `eval $(op signin)`
+-   1Password CLI: `op signin`
 -   Nix (installed via bootstrap script)
 
 ## Fresh Machine Setup
@@ -25,20 +25,20 @@ Declarative macOS system configuration using Nix, nix-darwin, and GNU Stow.
 # Clone and bootstrap
 git clone https://github.com/husterk/dotfiles ~/git-repos/dotfiles
 cd ~/git-repos/dotfiles
-eval $(op signin)
+op signin
 ./bootstrap-scripts/macos-arm64/bootstrap.sh $(hostname -s)
 
 # Restart shell and complete setup
 exec zsh
-task setup-host
+task set-up-new-host
 ```
 
 ## Already Bootstrapped
 
 ```bash
 cd ~/git-repos/dotfiles
-eval $(op signin)
-task setup-host
+op signin
+task refresh-host
 ```
 
 ## Development Environment
@@ -47,7 +47,7 @@ This repo uses Nix flakes + direnv for automatic environment loading:
 
 ```bash
 cd ~/git-repos/dotfiles  # direnv loads automatically
-task --list              # View available commands
+task                     # View available commands
 ```
 
 **Tools included**: task, yq, jq, shellcheck, shfmt, nixpkgs-fmt, nil, neovim, LSPs
@@ -61,27 +61,23 @@ task --list              # View available commands
 | Command                 | Description                           |
 | ----------------------- | ------------------------------------- |
 | `task`                  | Show status and available tasks       |
-| `task setup-host`       | Full setup (generate + deploy)        |
+| `task set-up-new-host`  | Full setup (generate + deploy)        |
 | `task refresh-host`     | Regenerate and redeploy               |
-| `task deploy-dotfiles`  | Deploy dotfiles with Stow             |
-| `task capture-dotfiles` | Capture dotfiles back to templates    |
-| `task dev:format`       | Format all code (shell/Nix/YAML/JSON) |
-| `task dev:lint`         | Lint all code                         |
 
-### Editing Workflows
+### Dotfiles Editing Workflows
 
 **Quick iteration (machine-first):**
 
 ```bash
 vim ~/.config/nvim/init.lua    # Edit directly (changes apply immediately)
-task capture-dotfiles          # Capture back to templates (secrets removed)
+task dotfiles:capture          # Capture back to templates (secrets removed)
 git commit -am "fix: config"
 ```
 
 **With auto-capture:**
 
 ```bash
-task watch-dotfiles            # Auto-captures changes
+task dotfiles:watch-host       # Auto-captures changes
 vim ~/.config/nvim/init.lua    # Edit and changes auto-capture
 ```
 
@@ -89,8 +85,8 @@ vim ~/.config/nvim/init.lua    # Edit and changes auto-capture
 
 ```bash
 vim apps/neovim/dotfiles/init.lua  # Edit template
-task generate-all                   # Generate with secrets
-task deploy-dotfiles                # Deploy to home directory
+task dotfiles:generate             # Generate with secrets
+task dotfiles:deploy               # Deploy to home directory
 ```
 
 ## Repository Structure
@@ -125,7 +121,7 @@ Then: `task refresh-host`
 ```bash
 cp -r hosts/keith-macbook-pro hosts/$(hostname -s)
 vim hosts/$(hostname -s)/host-manifest.yml
-task setup-host
+task set-up-new-host
 ```
 
 ## Troubleshooting
@@ -139,7 +135,7 @@ direnv reload  # or: nix develop
 **1Password auth:**
 
 ```bash
-eval $(op signin)
+op signin
 ```
 
 **Nix-darwin issues:**
@@ -155,8 +151,8 @@ Ensure you're in dev shell (direnv should auto-load).
 ## Uninstall
 
 ```bash
-task dotfiles:restore      # Restore original dotfiles
-task bootstrap:unbootstrap # Remove Nix and nix-darwin
+task dotfiles:restore   # Restore original dotfiles
+task unbootstrap        # Remove Nix and nix-darwin
 ```
 
 ## Resources
