@@ -68,62 +68,21 @@ tasks:
       - '{{.TASKFILE_DIR}}/scripts/tasks-dev-show-host-config.sh {{.HOST_DIR}} {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.REPO_ROOT}}'
   # Format all code
   format:
-    desc: Format all code (shell scripts + Nix + YAML + JSON)
+    desc: Format all code (shell + Nix + YAML + JSON)
     silent: true
     summary: |
-      Runs all formatters on the repository:
+      Formats all files using treefmt.
+
+      treefmt runs all formatters in parallel and only formats files that have changed:
       - shfmt on shell scripts
       - nixpkgs-fmt on Nix files
       - yq on YAML files
       - jq on JSON files
+
+      Configuration: treefmt.toml
     dir: '{{.REPO_ROOT}}'
     cmds:
-      - task: format-scripts
-      - task: format-nix
-      - task: format-yaml
-      - task: format-json
-  # Format shell scripts
-  format-scripts:
-    desc: Format shell scripts with shfmt
-    silent: true
-    internal: true
-    summary: |
-      Formats all shell scripts in the repository using shfmt.
-    dir: '{{.REPO_ROOT}}'
-    cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dev-format-scripts.sh {{.REPO_ROOT}}'
-  # Format Nix files
-  format-nix:
-    desc: Format Nix files with nixpkgs-fmt
-    silent: true
-    internal: true
-    summary: |
-      Formats all Nix files in the repository using nixpkgs-fmt.
-    dir: '{{.REPO_ROOT}}'
-    cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dev-format-nix.sh {{.REPO_ROOT}}'
-  # Format YAML files
-  format-yaml:
-    desc: Format YAML files with yq
-    silent: true
-    internal: true
-    summary: |
-      Formats all YAML files in the repository using yq.
-      Preserves comments and formatting style.
-    dir: '{{.REPO_ROOT}}'
-    cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dev-format-yaml.sh {{.REPO_ROOT}}'
-  # Format JSON files
-  format-json:
-    desc: Format JSON files with jq
-    silent: true
-    internal: true
-    summary: |
-      Formats all JSON files in the repository using jq.
-      Uses 2-space indentation.
-    dir: '{{.REPO_ROOT}}'
-    cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dev-format-json.sh {{.REPO_ROOT}}'
+      - '{{.TASKFILE_DIR}}/scripts/tasks-dev-format.sh {{.REPO_ROOT}}'
   # Lint all code
   lint:
     desc: Lint all code (shell scripts + Nix files)

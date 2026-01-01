@@ -36,12 +36,12 @@ script_header "macOS ARM Bootstrap" "Installs Nix, nix-darwin, and GNU Stow"
 log_info "Verifying prerequisites..."
 
 # Check for required commands
-if ! command -v curl &>/dev/null; then
+if ! command -v curl &> /dev/null; then
   log_error "curl is required but not installed. Please install curl and re-run this script."
   exit 1
 fi
 
-if ! command -v git &>/dev/null; then
+if ! command -v git &> /dev/null; then
   log_error "git is required but not installed. Please install git and re-run this script."
   exit 1
 fi
@@ -89,7 +89,7 @@ if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
 fi
 
 # Verify Nix is now available
-if ! command -v nix &>/dev/null; then
+if ! command -v nix &> /dev/null; then
   log_error "Nix installation failed or is not in PATH."
   log_info "Please restart your shell and re-run this script."
   exit 1
@@ -114,12 +114,12 @@ ensure_nix_feature() {
 
   if ! has_nix_feature "$feature" "$conf_file"; then
     log_info "Adding experimental feature: $feature"
-    if grep -q "^experimental-features" "$conf_file" 2>/dev/null; then
+    if grep -q "^experimental-features" "$conf_file" 2> /dev/null; then
       # Line exists, append the feature
       sed -i '' "s/^experimental-features = \(.*\)/experimental-features = \1 $feature/" "$conf_file"
     else
       # Line doesn't exist, create it
-      echo "experimental-features = $feature" >>"$conf_file"
+      echo "experimental-features = $feature" >> "$conf_file"
     fi
   else
     log_info "Experimental feature '$feature' already enabled."
@@ -142,7 +142,7 @@ log_success "Nix experimental features configured."
 log_info "Checking configuration repository..."
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -184,7 +184,7 @@ if [ "$SKIP_DARWIN" = false ]; then
   log_info "Setting up nix-darwin..."
 
   # Check if darwin-rebuild is already available
-  if command -v darwin-rebuild &>/dev/null; then
+  if command -v darwin-rebuild &> /dev/null; then
     log_success "nix-darwin is already installed."
   else
     log_info "Installing nix-darwin for the first time..."
@@ -232,7 +232,7 @@ if [ "$SKIP_DARWIN" = false ]; then
   fi
 
   # Verify nix-darwin installation
-  if command -v darwin-rebuild &>/dev/null; then
+  if command -v darwin-rebuild &> /dev/null; then
     log_success "nix-darwin is ready."
   fi
 else
@@ -245,7 +245,7 @@ fi
 log_info "Setting up GNU Stow..."
 
 # Check if stow is available (might be installed via nix-darwin)
-if command -v stow &>/dev/null; then
+if command -v stow &> /dev/null; then
   log_success "GNU Stow is already available ($(stow --version | head -n1))."
 else
   log_warning "GNU Stow not found in PATH."
@@ -260,7 +260,7 @@ else
 fi
 
 # If stow is available and we have a dotfiles directory, offer to stow
-if command -v stow &>/dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
+if command -v stow &> /dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
   log_info "Dotfiles directory found: $REPO_ROOT/dotfiles"
   log_info "To stow your dotfiles, run:"
   log_info "  cd $REPO_ROOT/dotfiles && stow *"
@@ -276,7 +276,7 @@ if [ "$SKIP_DARWIN" = false ]; then
   log_info "1. Review your nix-darwin configuration in $HOST_DIR"
   log_info "2. Make any desired changes to your system configuration"
   log_info "3. Apply changes with: darwin-rebuild switch --flake $HOST_DIR"
-  if command -v stow &>/dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
+  if command -v stow &> /dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
     log_info "4. Stow your dotfiles: cd $REPO_ROOT/dotfiles && stow <packages>"
   fi
 else

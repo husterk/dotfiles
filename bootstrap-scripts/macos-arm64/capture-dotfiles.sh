@@ -103,7 +103,7 @@ log_success "All required files found."
 # ------------------------------------------------------------------------
 log_info "Verifying prerequisites..."
 
-if ! command -v yq &>/dev/null; then
+if ! command -v yq &> /dev/null; then
   log_error "yq is not installed. Please install yq first."
   exit 1
 fi
@@ -140,7 +140,7 @@ while IFS= read -r line || [ -n "$line" ]; do
     # Store value -> placeholder mapping
     SECRET_MAP["$var_value"]="\${$var_name}"
   fi
-done <"$GENERATED_ENV"
+done < "$GENERATED_ENV"
 
 log_success "Found ${#SECRET_MAP[@]} environment variables to replace"
 
@@ -191,7 +191,7 @@ should_ignore_file() {
     if [[ "$file_path" == "$pattern" ]] || [[ "$file_path" == *"/""$pattern" ]]; then
       return 0
     fi
-  done <"$gitignore_file"
+  done < "$gitignore_file"
 
   return 1
 }
@@ -218,7 +218,7 @@ while IFS='|' read -r source target; do
     fi
 
     # Process target path
-    HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2>/dev/null || echo "\$HOME")
+    HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
     target="${target/\~/$HOME_DIR}"
     TARGET_BASE="${target#"$HOME_DIR"/}"
 
@@ -291,14 +291,14 @@ while IFS='|' read -r source target; do
         # Use sed with literal string matching (parameter expansion can't handle escaped patterns)
         # shellcheck disable=SC2001
         CAPTURED_CONTENT=$(echo "$CAPTURED_CONTENT" | sed "s/$escaped_secret/$escaped_placeholder/g")
-      done <<<"$sorted_secrets"
+      done <<< "$sorted_secrets"
 
       # Display source path relative to repo root
       SOURCE_DISPLAY="${SOURCE_PATH#"$REPO_ROOT"}"
 
       # Check if content has changed from source
       if [ -f "$SOURCE_PATH" ]; then
-        if diff -q "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") >/dev/null 2>&1; then
+        if diff -q "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") > /dev/null 2>&1; then
           log_info "  ✓ No changes: $SOURCE_DISPLAY"
           UNCHANGED_COUNT=$((UNCHANGED_COUNT + 1))
         else
@@ -310,7 +310,7 @@ while IFS='|' read -r source target; do
             diff -u --color=always "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") | sed 's/^/      /' || true
             echo ""
           else
-            echo "$CAPTURED_CONTENT" >"$SOURCE_PATH"
+            echo "$CAPTURED_CONTENT" > "$SOURCE_PATH"
             log_success "  ✓ Updated: $SOURCE_DISPLAY"
           fi
         fi
@@ -324,7 +324,7 @@ while IFS='|' read -r source target; do
           echo ""
         else
           mkdir -p "$(dirname "$SOURCE_PATH")"
-          echo "$CAPTURED_CONTENT" >"$SOURCE_PATH"
+          echo "$CAPTURED_CONTENT" > "$SOURCE_PATH"
           log_success "  + Created: $SOURCE_DISPLAY"
         fi
       fi
@@ -339,7 +339,7 @@ while IFS='|' read -r source target; do
   SOURCE_PATH="$REPO_ROOT$source"
 
   # Process target path - expand ~ to home directory path
-  HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2>/dev/null || echo "\$HOME")
+  HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
   target="${target/\~/$HOME_DIR}"
 
   # Get the relative path from home for the generated file
@@ -376,11 +376,11 @@ while IFS='|' read -r source target; do
     # Use sed with literal string matching (parameter expansion can't handle escaped patterns)
     # shellcheck disable=SC2001
     CAPTURED_CONTENT=$(echo "$CAPTURED_CONTENT" | sed "s/$escaped_secret/$escaped_placeholder/g")
-  done <<<"$sorted_secrets"
+  done <<< "$sorted_secrets"
 
   # Check if content has changed from source
   if [ -f "$SOURCE_PATH" ]; then
-    if diff -q "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") >/dev/null 2>&1; then
+    if diff -q "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") > /dev/null 2>&1; then
       log_info "  ✓ No changes: $source"
       UNCHANGED_COUNT=$((UNCHANGED_COUNT + 1))
     else
@@ -392,7 +392,7 @@ while IFS='|' read -r source target; do
         diff -u --color=always "$SOURCE_PATH" <(echo "$CAPTURED_CONTENT") | sed 's/^/      /' || true
         echo ""
       else
-        echo "$CAPTURED_CONTENT" >"$SOURCE_PATH"
+        echo "$CAPTURED_CONTENT" > "$SOURCE_PATH"
         log_success "  ✓ Updated: $source"
       fi
     fi
@@ -406,13 +406,13 @@ while IFS='|' read -r source target; do
       echo ""
     else
       mkdir -p "$(dirname "$SOURCE_PATH")"
-      echo "$CAPTURED_CONTENT" >"$SOURCE_PATH"
+      echo "$CAPTURED_CONTENT" > "$SOURCE_PATH"
       log_success "  + Created: $source"
     fi
   fi
 
   CAPTURED_COUNT=$((CAPTURED_COUNT + 1))
-done < <(yq eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST" 2>/dev/null)
+done < <(yq eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
 
 # ------------------------------------------------------------------------
 # Final Summary

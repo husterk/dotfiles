@@ -23,7 +23,7 @@ echo "📁 Generated Dotfiles:"
 echo "  Location: $HOST_DIR/generated/dotfiles"
 echo ""
 
-if ! command -v yq &>/dev/null; then
+if ! command -v yq &> /dev/null; then
   echo "⚠️  yq not installed - showing directory names only"
   for app in "$HOST_DIR"/generated/dotfiles/.config/*; do
     if [ -d "$app" ]; then
@@ -44,7 +44,7 @@ else
       config_dir=$(echo "$target_normalized" | cut -d'/' -f2)
       target_to_app["$config_dir"]="$app_name"
     fi
-  done < <(yq eval '.apps[] | select(.dotfiles != null) | .name as $app | .dotfiles[] | $app + "|" + .target' "$HOST_MANIFEST" 2>/dev/null)
+  done < <(yq eval '.apps[] | select(.dotfiles != null) | .name as $app | .dotfiles[] | $app + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
 
   # Process each app
   for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do
@@ -76,7 +76,7 @@ else
           fi
         fi
       fi
-    done < <(find ".config/$config_name" -type l 2>/dev/null)
+    done < <(find ".config/$config_name" -type l 2> /dev/null)
 
     if [ "$found_files" = false ]; then
       echo "      ⚠️  No stowed files"
@@ -87,10 +87,10 @@ echo ""
 
 echo "💾 Backups:"
 if [ -d "$HOST_DIR/generated" ]; then
-  backup_count=$(find "$HOST_DIR/generated" -maxdepth 1 -name "dotfiles-backup-*" -type d 2>/dev/null | wc -l)
+  backup_count=$(find "$HOST_DIR/generated" -maxdepth 1 -name "dotfiles-backup-*" -type d 2> /dev/null | wc -l)
   if [ "$backup_count" -gt 0 ]; then
     echo "  Found $backup_count backup(s):"
-    find "$HOST_DIR/generated" -maxdepth 1 -name "dotfiles-backup-*" -type d 2>/dev/null | sort -r | head -5 | while read -r backup; do
+    find "$HOST_DIR/generated" -maxdepth 1 -name "dotfiles-backup-*" -type d 2> /dev/null | sort -r | head -5 | while read -r backup; do
       echo "    • $(basename "$backup")"
     done
     if [ "$backup_count" -gt 5 ]; then

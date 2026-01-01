@@ -58,7 +58,7 @@ should_ignore() {
     if [[ "$file" == $pattern ]] || [[ "$file" == *"/$pattern" ]]; then
       return 0
     fi
-  done <"$gitignore"
+  done < "$gitignore"
 
   return 1
 }
@@ -82,7 +82,7 @@ for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do
   # Build mapping from config directory name to source path using manifest
   if [ -f "$HOST_DIR/host-manifest.yml" ]; then
     # Find the app and source path that has a dotfiles target matching ~/.config/$app_name/
-    manifest_data=$(yq eval ".apps[] | select(.dotfiles != null) | select(.dotfiles[].target == \"~/.config/$app_name/\") | .name + \"|\" + .dotfiles[].source" "$HOST_DIR/host-manifest.yml" 2>/dev/null | head -1)
+    manifest_data=$(yq eval ".apps[] | select(.dotfiles != null) | select(.dotfiles[].target == \"~/.config/$app_name/\") | .name + \"|\" + .dotfiles[].source" "$HOST_DIR/host-manifest.yml" 2> /dev/null | head -1)
 
     if [ -n "$manifest_data" ]; then
       manifest_source="${manifest_data#*|}"
@@ -125,10 +125,10 @@ for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do
     if [ ! -f "$deployed_file" ]; then
       has_diff=true
       echo "Only in generated: $rel_path"
-    elif ! diff -q "$generated_file" "$deployed_file" >/dev/null 2>&1; then
+    elif ! diff -q "$generated_file" "$deployed_file" > /dev/null 2>&1; then
       has_diff=true
       echo "Files differ: $rel_path"
-      diff -u --color=always "$generated_file" "$deployed_file" 2>/dev/null || true
+      diff -u --color=always "$generated_file" "$deployed_file" 2> /dev/null || true
     fi
   done < <(find "$app_dir" -type f)
 
@@ -146,7 +146,7 @@ for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do
       has_diff=true
       echo "Only in deployed: $rel_path"
     fi
-  done < <(find "$HOME/.config/$app_name" -type f 2>/dev/null)
+  done < <(find "$HOME/.config/$app_name" -type f 2> /dev/null)
 
   if [ "$has_diff" = false ]; then
     echo "No differences found (ignored files excluded)"

@@ -10,7 +10,7 @@ echo "   Press Ctrl+C to stop"
 echo ""
 
 # Use fswatch if available, otherwise fall back to a simple loop
-if command -v fswatch &>/dev/null; then
+if command -v fswatch &> /dev/null; then
   fswatch -o "$HOME/.config" | while read -r _; do
     echo "🔄 Change detected, capturing..."
     task dotfiles:capture
@@ -21,7 +21,7 @@ else
   echo ""
   while true; do
     sleep 5
-    if find "$HOME/.config" -newer /tmp/dotfiles-watch-marker 2>/dev/null | grep -q .; then
+    if find "$HOME/.config" -newer /tmp/dotfiles-watch-marker 2> /dev/null | grep -q .; then
       echo "🔄 Change detected, capturing..."
       task dotfiles:capture
       echo ""

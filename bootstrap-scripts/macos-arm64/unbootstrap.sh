@@ -35,7 +35,7 @@ if [ -z "$EXPECTED_HOSTNAME" ]; then
   exit 1
 fi
 
-CURRENT_HOSTNAME=$(hostname -s 2>/dev/null || hostname 2>/dev/null)
+CURRENT_HOSTNAME=$(hostname -s 2> /dev/null || hostname 2> /dev/null)
 
 if [ "$CURRENT_HOSTNAME" != "$EXPECTED_HOSTNAME" ]; then
   log_error "Hostname mismatch!"
@@ -75,11 +75,11 @@ fi
 # ------------------------------------------------------------------------
 log_info "Checking for nix-darwin installation..."
 
-if [ -f "/nix/receipt.json" ] && command -v darwin-rebuild &>/dev/null; then
+if [ -f "/nix/receipt.json" ] && command -v darwin-rebuild &> /dev/null; then
   log_info "Found nix-darwin installation. Uninstalling..."
 
   # Try to uninstall nix-darwin
-  if sudo nix-darwin uninstaller 2>/dev/null || sudo /nix/nix-installer uninstall 2>/dev/null; then
+  if sudo nix-darwin uninstaller 2> /dev/null || sudo /nix/nix-installer uninstall 2> /dev/null; then
     log_success "nix-darwin uninstalled."
   else
     log_warning "Could not uninstall nix-darwin (may not be installed or already removed)."
@@ -112,7 +112,7 @@ else
     # Stop nix-daemon if running
     if sudo launchctl list | grep -q nix-daemon; then
       log_info "Stopping nix-daemon..."
-      sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
+      sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2> /dev/null || true
     fi
 
     # Remove nix-daemon launchd plist
@@ -128,20 +128,20 @@ else
     # Remove nix users and group
     log_info "Removing nix users and group..."
     for u in $(sudo dscl . -list /Users | grep nixbld); do
-      sudo dscl . -delete "/Users/$u" 2>/dev/null || true
+      sudo dscl . -delete "/Users/$u" 2> /dev/null || true
     done
-    sudo dscl . -delete /Groups/nixbld 2>/dev/null || true
+    sudo dscl . -delete /Groups/nixbld 2> /dev/null || true
 
     # Remove nix volume entry from /etc/fstab (if present)
-    if grep -q "nix" /etc/fstab 2>/dev/null; then
+    if grep -q "nix" /etc/fstab 2> /dev/null; then
       log_info "Removing nix entry from /etc/fstab..."
-      sudo sed -i.backup '/nix/d' /etc/fstab 2>/dev/null || true
+      sudo sed -i.backup '/nix/d' /etc/fstab 2> /dev/null || true
     fi
 
     # Remove nix from /etc/synthetic.conf (if present)
     if [ -f "/etc/synthetic.conf" ] && grep -q "^nix" /etc/synthetic.conf; then
       log_info "Removing nix from /etc/synthetic.conf..."
-      sudo sed -i.backup '/^nix/d' /etc/synthetic.conf 2>/dev/null || true
+      sudo sed -i.backup '/^nix/d' /etc/synthetic.conf 2> /dev/null || true
     fi
 
     log_success "Manual Nix cleanup complete."
@@ -165,7 +165,7 @@ for profile in "${PROFILES[@]}"; do
     # Remove nix-daemon sourcing lines
     if grep -q "nix-daemon.sh" "$profile"; then
       log_info "Removing Nix configuration from: $profile"
-      sed -i.backup '/nix-daemon.sh/d' "$profile" 2>/dev/null || true
+      sed -i.backup '/nix-daemon.sh/d' "$profile" 2> /dev/null || true
     fi
   fi
 done

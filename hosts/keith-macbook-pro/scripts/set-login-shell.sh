@@ -24,7 +24,7 @@ set -e # Exit on error
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Load shared script helpers (skip if already sourced by parent)
-if ! command -v script_header &>/dev/null; then
+if ! command -v script_header &> /dev/null; then
   # shellcheck disable=SC1091
   source "${SCRIPT_DIR}/script-helpers.sh"
 fi
@@ -48,7 +48,7 @@ username="${1}"
 shellPath="/run/current-system/sw/bin/zsh"
 
 # Validate username exists
-if ! id "${username}" &>/dev/null; then
+if ! id "${username}" &> /dev/null; then
   log_error "User '${username}' does not exist."
   exit 1
 fi
@@ -75,7 +75,7 @@ echo ""
 
 if ! grep -qxF "${shellPath}" /etc/shells; then
   log_info "Adding ${shellPath} to /etc/shells..."
-  if echo "${shellPath}" | sudo tee -a /etc/shells >/dev/null; then
+  if echo "${shellPath}" | sudo tee -a /etc/shells > /dev/null; then
     log_success "Shell registered in /etc/shells."
   else
     log_error "Failed to add shell to /etc/shells."

@@ -10,7 +10,7 @@ cd "$REPO_ROOT"
 echo "🔍 Linting shell scripts..."
 echo ""
 
-if ! command -v shellcheck &>/dev/null; then
+if ! command -v shellcheck &> /dev/null; then
   echo "❌ shellcheck not installed"
   exit 1
 fi

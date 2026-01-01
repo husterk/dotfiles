@@ -1,0 +1,42 @@
+# treefmt.toml configuration
+# This file should stay in sync with your .editorconfig settings
+
+# Global excludes
+[global]
+excludes = [
+  ".git",
+  ".direnv",
+  ".task",
+  ".nix-shell",
+  "generated",
+  "result",
+  "result-*",
+  "**/generated/**",
+  "**/*-template.nix",
+  "flake.lock",
+  "package-lock.json",
+  ".vscode/*.json",
+  ".vscode/*.jsonc"
+]
+
+[formatter.nix]
+command = "nixpkgs-fmt"
+includes = ["*.nix"]
+
+[formatter.shell]
+command = "shfmt"
+# shfmt with 2-space indent, simplify redirects, and consistent indentation
+options = ["-i", "2", "-sr", "-ci", "-w"]
+includes = ["*.sh", ".envrc"]
+
+[formatter.yaml]
+command = "yq"
+# Using yq to format with 2-space indent to match .editorconfig
+options = ["-i", "--indent", "2", "eval", "."]
+includes = ["*.yml", "*.yaml"]
+
+[formatter.json]
+command = "jq"
+# jq defaults to 2 spaces which matches your .editorconfig
+options = ["."]
+includes = ["*.json"]

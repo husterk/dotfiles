@@ -28,7 +28,7 @@ if [ -f "$HOST_DIR/generated/.env" ]; then
       var_name=$(echo "$line" | cut -d= -f1)
       echo "  $var_name: [set]"
     fi
-  done <"$HOST_DIR/generated/.env"
+  done < "$HOST_DIR/generated/.env"
 else
   echo "⚠️  .env not found"
 fi

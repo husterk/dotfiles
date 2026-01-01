@@ -43,7 +43,7 @@ if [ -z "$HOSTNAME" ]; then
   echo ""
 
   # Determine the git repo root directory
-  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
   if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
     echo "Available hosts:"
@@ -56,7 +56,7 @@ fi
 log_info "Generating dotfiles for host: $HOSTNAME"
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -104,7 +104,7 @@ log_success "All required files found."
 # ------------------------------------------------------------------------
 log_info "Verifying prerequisites..."
 
-if ! command -v yq &>/dev/null; then
+if ! command -v yq &> /dev/null; then
   log_error "yq is required but not installed."
   log_info "Install it with: brew install yq"
   exit 1
@@ -160,7 +160,7 @@ log_info "Generating dotfiles hierarchy..."
 mkdir -p "$GENERATED_DOTFILES_DIR"
 
 # Get count of dotfiles entries
-DOTFILES_COUNT=$(yq eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2>/dev/null | grep -c "source:" || echo "0")
+DOTFILES_COUNT=$(yq eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2> /dev/null | grep -c "source:" || echo "0")
 
 if [ "$DOTFILES_COUNT" -eq 0 ]; then
   log_warning "No dotfiles found in manifest."
@@ -231,7 +231,7 @@ else
         mkdir -p "$(dirname "$DEST_PATH")"
 
         # Copy and substitute environment variables
-        envsubst "$ENVSUBST_VARS" <"$SOURCE_PATH" >"$DEST_PATH"
+        envsubst "$ENVSUBST_VARS" < "$SOURCE_PATH" > "$DEST_PATH"
 
         log_info "  ✓ Generated: $RELATIVE_PATH"
       done
@@ -267,7 +267,7 @@ else
       fi
 
       # Copy and substitute environment variables (only from .env)
-      envsubst "$ENVSUBST_VARS" <"$SOURCE_PATH" >"$DEST_PATH"
+      envsubst "$ENVSUBST_VARS" < "$SOURCE_PATH" > "$DEST_PATH"
 
       log_info "  ✓ Generated: $RELATIVE_PATH"
     fi

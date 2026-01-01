@@ -20,8 +20,8 @@ fi
 
 # Check host-manifest.yml
 if [ -f "$HOST_DIR/host-manifest.yml" ]; then
-  if command -v yq &>/dev/null; then
-    if yq eval . "$HOST_DIR/host-manifest.yml" &>/dev/null; then
+  if command -v yq &> /dev/null; then
+    if yq eval . "$HOST_DIR/host-manifest.yml" &> /dev/null; then
       echo "✅ host-manifest.yml syntax valid"
     else
       echo "❌ host-manifest.yml syntax invalid"

@@ -39,7 +39,7 @@ if [ -z "$HOSTNAME" ]; then
   echo ""
 
   # Determine the git repo root directory
-  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
   if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
     echo "Available hosts:"
@@ -52,7 +52,7 @@ fi
 log_info "Generating .env file for host: $HOSTNAME"
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -94,14 +94,14 @@ log_success "Found template environment file."
 log_info "Verifying prerequisites..."
 
 # Check for required commands
-if ! command -v op &>/dev/null; then
+if ! command -v op &> /dev/null; then
   log_error "1Password CLI (op) is required but not installed."
   log_info "Install it from: https://developer.1password.com/docs/cli/get-started/"
   exit 1
 fi
 
 # Check if op is authenticated
-if ! op account list &>/dev/null; then
+if ! op account list &> /dev/null; then
   log_error "1Password CLI is not authenticated."
   log_info "Run: eval \$(op signin)"
   exit 1

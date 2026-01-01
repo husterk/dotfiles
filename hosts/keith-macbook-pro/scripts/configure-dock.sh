@@ -18,7 +18,7 @@ set -e # Exit on error
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Load shared script helpers (skip if already sourced by parent)
-if ! command -v script_header &>/dev/null; then
+if ! command -v script_header &> /dev/null; then
   # shellcheck disable=SC1091
   source "${SCRIPT_DIR}/script-helpers.sh"
 fi
@@ -44,7 +44,7 @@ dockutilPath="${3}"
 userHomePath="${usersPath}/${username}"
 
 # Validate username exists
-if ! id "${username}" &>/dev/null; then
+if ! id "${username}" &> /dev/null; then
   log_error "User '${username}' does not exist."
   exit 1
 fi
@@ -88,7 +88,7 @@ echo ""
 
 # Get current dock items
 log_info "Checking current Dock configuration..."
-CURRENT_DOCK=$(sudo -u "${username}" "${dockutilPath}" --list "${userHomePath}" 2>/dev/null | grep -E '^\s+file:///') || true
+CURRENT_DOCK=$(sudo -u "${username}" "${dockutilPath}" --list "${userHomePath}" 2> /dev/null | grep -E '^\s+file:///') || true
 
 # Check if we need to make changes
 NEEDS_UPDATE=false
@@ -128,7 +128,7 @@ echo ""
 
 # Remove all existing Dock items
 log_info "Removing all existing Dock items..."
-if sudo -u "${username}" "${dockutilPath}" --no-restart --remove all "${userHomePath}" 2>/dev/null; then
+if sudo -u "${username}" "${dockutilPath}" --no-restart --remove all "${userHomePath}" 2> /dev/null; then
   log_success "Cleared existing Dock items."
 else
   log_warning "Could not clear Dock (it may already be empty)."
@@ -140,7 +140,7 @@ echo ""
 log_info "Adding applications to Dock..."
 for app in "${DOCK_APPS[@]}"; do
   if [ -e "${app}" ]; then
-    if sudo -u "${username}" "${dockutilPath}" --no-restart --add "${app}" "${userHomePath}" 2>/dev/null; then
+    if sudo -u "${username}" "${dockutilPath}" --no-restart --add "${app}" "${userHomePath}" 2> /dev/null; then
       log_success "Added: ${app}"
     else
       log_warning "Failed to add: ${app}"
@@ -154,7 +154,7 @@ echo ""
 
 # Restart Dock to apply changes
 log_info "Restarting Dock to apply changes..."
-if sudo -u "${username}" killall Dock 2>/dev/null; then
+if sudo -u "${username}" killall Dock 2> /dev/null; then
   log_success "Dock restarted successfully."
 else
   log_warning "Could not restart Dock (it may not be running)."

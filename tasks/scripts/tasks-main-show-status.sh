@@ -39,7 +39,7 @@ else
 fi
 echo ""
 echo "🔐 1Password:"
-if op account list &>/dev/null; then
+if op account list &> /dev/null; then
   echo "  ✅ Authenticated"
   op account list | tail -n +2 | while read -r line; do
     echo "     $(echo "$line" | awk '{print $2}') ($(echo "$line" | awk '{print $1}'))"
@@ -50,12 +50,12 @@ else
 fi
 echo ""
 echo "⚙️  Nix:"
-if command -v nix &>/dev/null; then
+if command -v nix &> /dev/null; then
   echo "  ✅ Nix installed ($(nix --version | awk '{print $3}'))"
 else
   echo "  ❌ Nix not installed"
 fi
-if command -v darwin-rebuild &>/dev/null; then
+if command -v darwin-rebuild &> /dev/null; then
   echo "  ✅ nix-darwin installed"
 else
   echo "  ⚠️  nix-darwin not installed"

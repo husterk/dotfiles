@@ -24,7 +24,7 @@ set -e # Exit on error
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Load shared script helpers (skip if already sourced by parent)
-if ! command -v script_header &>/dev/null; then
+if ! command -v script_header &> /dev/null; then
   # shellcheck disable=SC1091
   source "${SCRIPT_DIR}/script-helpers.sh"
 fi
@@ -155,7 +155,7 @@ total=${#SYMLINKS[@]}
 
 # Process all defined symlinks
 for symlink_def in "${SYMLINKS[@]}"; do
-  IFS='|' read -r description source_path target_path requires_sudo <<<"${symlink_def}"
+  IFS='|' read -r description source_path target_path requires_sudo <<< "${symlink_def}"
   if ! create_symlink "${description}" "${source_path}" "${target_path}" "${requires_sudo}"; then
     failed=$((failed + 1))
   fi

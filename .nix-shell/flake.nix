@@ -25,6 +25,7 @@
             gnused # GNU sed (used extensively in bootstrap scripts for text processing)
             gettext # Provides envsubst (used for variable substitution in templates)
             bash # Modern bash 4+ (required for globstar support in scripts)
+            treefmt # Universal formatter multiplexer (formats all file types)
 
             # === REQUIRED: Task runner ===
             go-task # Modern task runner - executes all Taskfile commands
@@ -41,7 +42,7 @@
             # === OPTIONAL: Nix development tools ===
             # Only needed when editing Nix configuration files
             nil # Nix Language Server Protocol (editor support)
-            nixpkgs-fmt # Nix code formatter
+            nixpkgs-fmt # Nix code formatter (used by treefmt)
             statix # Nix linter (static analysis)
 
             # === OPTIONAL: Editor with LSPs ===

@@ -8,7 +8,7 @@ echo "🚀 Dotfiles development environment loaded"
 echo ""
 echo "Available tools:"
 echo "  • task (v$(task --version)): Task runner"
-echo "  • op (v$(op --version 2>/dev/null || echo 'not authenticated')): 1Password CLI"
+echo "  • op (v$(op --version 2> /dev/null || echo 'not authenticated')): 1Password CLI"
 echo "  • nvim (v$(nvim --version | head -n1 | awk '{print $2}')): Neovim"
 echo ""
 
@@ -22,7 +22,7 @@ else
   if [ -f .nix-shell/.env.template ]; then
     if [ ! -f .env ] || [ .nix-shell/.env.template -nt .env ]; then
       echo "📝 Generating .env from 1Password..."
-      if op inject -i .nix-shell/.env.template -o .env &>/dev/null; then
+      if op inject -i .nix-shell/.env.template -o .env &> /dev/null; then
         echo "✅ Generated .env file"
       else
         echo "⚠️  Failed to generate .env (check 1Password vault access)"
@@ -42,7 +42,7 @@ if [ -d .git ] && [ -f hooks/pre-commit ]; then
     echo "🪝 Installing git hooks..."
     if [ -f .git/hooks/pre-commit ] && [ ! -L .git/hooks/pre-commit ]; then
       # Backup existing hook
-      mv .git/hooks/pre-commit .git/hooks/pre-commit.backup 2>/dev/null || true
+      mv .git/hooks/pre-commit .git/hooks/pre-commit.backup 2> /dev/null || true
     fi
     ln -sf ../../hooks/pre-commit .git/hooks/pre-commit
     echo "✅ Git hooks installed (pre-commit: format + lint)"

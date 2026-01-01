@@ -42,7 +42,7 @@ if [ -z "$HOSTNAME" ]; then
   echo ""
 
   # Determine the git repo root directory
-  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
   if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
     echo "Available hosts:"
@@ -55,7 +55,7 @@ fi
 log_info "Applying configuration for host: $HOSTNAME"
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -134,7 +134,7 @@ else
 
   # Clean up even on failure
   log_info "Cleaning up temporary files..."
-  git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" >/dev/null 2>&1
+  git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
   rm -f "$TEMP_CONFIG"
 
   # Restore backup if it exists
@@ -152,7 +152,7 @@ fi
 log_info "Cleaning up temporary files..."
 
 # Unstage the file
-git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" >/dev/null 2>&1
+git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
 log_info "Unstaged configuration from git."
 
 # Remove the temporary file

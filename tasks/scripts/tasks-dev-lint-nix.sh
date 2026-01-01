@@ -10,7 +10,7 @@ cd "$REPO_ROOT"
 echo "🔍 Linting Nix files..."
 echo ""
 
-if ! command -v statix &>/dev/null; then
+if ! command -v statix &> /dev/null; then
   echo "❌ statix not installed"
   exit 1
 fi

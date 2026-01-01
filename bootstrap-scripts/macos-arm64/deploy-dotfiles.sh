@@ -85,7 +85,7 @@ if [ -z "$HOSTNAME" ]; then
   echo ""
 
   # Determine the git repo root directory
-  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
   if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
     echo "Available hosts:"
@@ -98,7 +98,7 @@ fi
 log_info "Deploying dotfiles for host: $HOSTNAME"
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -130,7 +130,7 @@ DOTFILES_DIR="$GENERATED_DIR/dotfiles"
 log_info "Validating prerequisites..."
 
 # Check if stow is installed
-if ! command -v stow &>/dev/null; then
+if ! command -v stow &> /dev/null; then
   log_error "GNU Stow is not installed."
   echo ""
   echo "Please install GNU Stow first. You can do this by:"
@@ -214,7 +214,7 @@ if [ "$RESTORE" = true ]; then
   # Unstow current dotfiles first
   log_info "Removing current dotfile symlinks..."
   cd "$GENERATED_DIR"
-  if stow --verbose=2 --target="$HOME" --dir="$GENERATED_DIR" --delete --no-folding dotfiles 2>/dev/null; then
+  if stow --verbose=2 --target="$HOME" --dir="$GENERATED_DIR" --delete --no-folding dotfiles 2> /dev/null; then
     log_success "Removed existing symlinks."
   else
     log_warning "Some symlinks may not exist (this is normal if not previously stowed)."

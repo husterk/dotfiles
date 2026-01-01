@@ -47,7 +47,7 @@ if [ -z "$HOSTNAME" ]; then
 fi
 
 # Get the repository root
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+REPO_ROOT=$(git rev-parse --show-toplevel 2> /dev/null || echo ".")
 
 # Host-specific directory and flake path
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
@@ -70,7 +70,7 @@ log_error() {
 }
 
 show_help() {
-  cat <<EOF
+  cat << EOF
 nix-darwin Helper Script
 
 Usage: $(basename "$0") [COMMAND]

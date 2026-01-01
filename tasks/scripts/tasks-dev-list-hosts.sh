@@ -16,8 +16,8 @@ for host_dir in "$REPO_ROOT"/hosts/*; do
     hostname=$(basename "$host_dir")
 
     # Get bootstrap target
-    if command -v yq &>/dev/null; then
-      target=$(yq eval '.config.bootstrap-target // "macos-arm64"' "$host_dir/host-manifest.yml" 2>/dev/null)
+    if command -v yq &> /dev/null; then
+      target=$(yq eval '.config.bootstrap-target // "macos-arm64"' "$host_dir/host-manifest.yml" 2> /dev/null)
     else
       target="macos-arm64"
     fi

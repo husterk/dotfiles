@@ -40,7 +40,7 @@ if [ -z "$HOSTNAME" ]; then
   echo ""
 
   # Determine the git repo root directory
-  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+  REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
   if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/hosts" ]; then
     echo "Available hosts:"
@@ -53,7 +53,7 @@ fi
 log_info "Generating nix configuration for host: $HOSTNAME"
 
 # Determine the git repo root directory
-REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null || echo "")
+REPO_ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2> /dev/null || echo "")
 
 if [ -z "$REPO_ROOT" ]; then
   log_error "This script must be run from within a git repository."
@@ -108,20 +108,20 @@ log_success "All required template files found."
 log_info "Verifying prerequisites..."
 
 # Check for required commands
-if ! command -v op &>/dev/null; then
+if ! command -v op &> /dev/null; then
   log_error "1Password CLI (op) is required but not installed."
   log_info "Install it from: https://developer.1password.com/docs/cli/get-started/"
   exit 1
 fi
 
 # Check if op is authenticated
-if ! op account list &>/dev/null; then
+if ! op account list &> /dev/null; then
   log_error "1Password CLI is not authenticated."
   log_info "Run: eval \$(op signin)"
   exit 1
 fi
 
-if ! command -v yq &>/dev/null; then
+if ! command -v yq &> /dev/null; then
   log_error "yq is required but not installed."
   log_info "Install it with: brew install yq"
   exit 1
@@ -223,7 +223,7 @@ if [ -n "$SYSTEM_MODULES" ]; then
     # Remove leading slash if present and combine with root relative path for modules
     module_path="${module#/}"
     echo "    $ROOT_RELATIVE_PATH$module_path"
-  done >"$TEMP_SYSTEM"
+  done > "$TEMP_SYSTEM"
 fi
 SYSTEM_FORMATTED=$(cat "$TEMP_SYSTEM")
 rm "$TEMP_SYSTEM"
@@ -235,7 +235,7 @@ if [ -n "$APP_MODULES" ]; then
     # Remove leading slash if present and combine with root relative path for apps
     module_path="${module#/}"
     echo "    $ROOT_RELATIVE_PATH$module_path"
-  done >"$TEMP_APPS"
+  done > "$TEMP_APPS"
 fi
 APPS_FORMATTED=$(cat "$TEMP_APPS")
 rm "$TEMP_APPS"
@@ -252,7 +252,7 @@ awk -v system_modules="$SYSTEM_FORMATTED" -v app_modules="$APPS_FORMATTED" '
         print $0
     }
 }
-' "$GENERATED_CONFIG" >"$TEMP_CONFIG"
+' "$GENERATED_CONFIG" > "$TEMP_CONFIG"
 
 mv "$TEMP_CONFIG" "$GENERATED_CONFIG"
 
@@ -265,7 +265,7 @@ set +a
 
 # Use envsubst to replace all ${VAR} placeholders
 TEMP_CONFIG=$(mktemp)
-envsubst <"$GENERATED_CONFIG" >"$TEMP_CONFIG"
+envsubst < "$GENERATED_CONFIG" > "$TEMP_CONFIG"
 mv "$TEMP_CONFIG" "$GENERATED_CONFIG"
 
 log_success "Generated configuration.nix: $GENERATED_CONFIG"
