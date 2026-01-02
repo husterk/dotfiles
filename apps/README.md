@@ -103,7 +103,7 @@ apps/<app-name>/
 | `wget`               | Network downloader                                   | Nix            | Yes          |
 | `xcode`              | Apple XCode software development tools               | Mas (Homebrew) | No           |
 | `yazi`               | Awesome TUI for file management                      | Nix            | Yes          |
-| `zoxide`             | Fast, lightweight CLI fuzzy finder for your shell    | Nix            | No           |
+| `zoxide`             | Fast, lightweight CLI fuzzy finder for your shell    | Nix            | Yes          |
 | `zsh`                | Z Shell with Oh My Zsh framework                     | Nix            | Yes          |
 
 ## Notes

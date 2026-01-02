@@ -30,10 +30,12 @@ function y() {
 }
 
 # Initialize zoxide for enhanced directory navigation
-eval "$(zoxide init zsh)"
-
-# Hook direnv into the shell
-eval "$(direnv hook zsh)"
+# and set the command to use 'cd' for changing directories.
+# This overrides the default behavior of 'cd' to use 'z' command.
+eval "$(zoxide init zsh --cmd cd)"
 
 # Enable Starship for a fully customizable terminal prompt.
 eval "$(starship init zsh)"
+
+# Hook direnv into the shell
+eval "$(direnv hook zsh)"

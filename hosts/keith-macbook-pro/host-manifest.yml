@@ -139,6 +139,9 @@ apps:
   - name: zoxide
     modules:
       - /apps/zoxide/zoxide.nix
+    dotfiles:
+      - source: /apps/zoxide/dotfiles/**/*
+        target: ~/.config/zoxide/
   - name: zsh
     modules:
       - /apps/zsh/zsh.nix

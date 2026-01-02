@@ -40,17 +40,19 @@ def --env y [...args] {
 	rm -fp $tmp
 }
 
+# Initialize zoxide for enhanced directory navigation
+# This will take over the default 'cd' command to use zoxide's functionality.
+source "~/.config/zoxide/.zoxide.nu"
+
+# This is the Nushell way to initialize Starship, using the cached
+# init script if it is available.
+source-env "~/.cache/starship/init.nu"
+
 # Hook direnv into the shell
+# This should be at the end of the file to ensure it works correctly.
 $env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt | append {||
   if (which direnv | is-empty) {
     return
   }
   direnv export json | from json | default {} | load-env
 })
-
-# This is the Nushell way to initialize Starship, using the cached
-# init script if it is available.
-let starship_init_cache = $"($env.HOME)/.cache/starship/init.nu"
-if ($starship_init_cache | path exists) {
-  source-env ~/.cache/starship/init.nu
-}
