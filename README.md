@@ -8,16 +8,16 @@ Declarative macOS system configuration using Nix, nix-darwin, and GNU Stow.
 
 ## What This Does
 
--   Manages system packages and configuration via Nix/nix-darwin
--   Manages dotfiles via GNU Stow with template variable substitution
--   Integrates with 1Password for secure secrets
--   Provides automated workflows via Task runner
+- Manages system packages and configuration via Nix/nix-darwin
+- Manages dotfiles via GNU Stow with template variable substitution
+- Integrates with 1Password for secure secrets
+- Provides automated workflows via Task runner
 
 ## Prerequisites
 
--   macOS (arm64)
--   1Password CLI: `op signin`
--   Nix (installed via bootstrap script)
+- macOS (arm64)
+- 1Password CLI: `op signin`
+- Nix (installed via bootstrap script)
 
 ## Fresh Machine Setup
 
@@ -58,11 +58,11 @@ task                     # View available commands
 
 ### Essential Commands
 
-| Command                 | Description                           |
-| ----------------------- | ------------------------------------- |
-| `task`                  | Show status and available tasks       |
-| `task set-up-new-host`  | Full setup (generate + deploy)        |
-| `task refresh-host`     | Regenerate and redeploy               |
+| Command                | Description                     |
+| ---------------------- | ------------------------------- |
+| `task`                 | Show status and available tasks |
+| `task set-up-new-host` | Full setup (generate + deploy)  |
+| `task refresh-host`    | Regenerate and redeploy         |
 
 ### Dotfiles Editing Workflows
 
@@ -157,6 +157,6 @@ task unbootstrap        # Remove Nix and nix-darwin
 
 ## Resources
 
--   [nix-darwin](https://github.com/LnL7/nix-darwin)
--   [Nix Package Search](https://search.nixos.org/packages)
--   [Task](https://taskfile.dev/)
+- [nix-darwin](https://github.com/LnL7/nix-darwin)
+- [Nix Package Search](https://search.nixos.org/packages)
+- [Task](https://taskfile.dev/)

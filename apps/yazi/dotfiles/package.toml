@@ -1,0 +1,11 @@
+[plugin]
+deps = [
+  # Official Git plugin (status indicators)
+  { use = "yazi-rs/plugins:git" },
+  # Official Chmod plugin
+  { use = "yazi-rs/plugins:chmod" },
+  # Full-featured Ouch plugin (archives)
+  { use = "ndtoan96/ouch" },
+  # Relative Motions (Vim-style jumping)
+  { use = "dedukun/relative-motions" },
+]

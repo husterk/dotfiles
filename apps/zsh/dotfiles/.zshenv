@@ -6,7 +6,7 @@ SHELL_SESSIONS_DISABLE="1"
 
 # Ensure the folder exists immediately so that history can be written.
 if [[ ! -d "$ZSH_HISTORY_DIR" ]]; then
-    mkdir -p "$ZSH_HISTORY_DIR"
+  mkdir -p "$ZSH_HISTORY_DIR"
 fi
 
 # Custom themes and plugins location.
@@ -14,7 +14,7 @@ ZSH_CUSTOM="$ZDOTDIR/custom" # Must be named ZSH_CUSTOM for Zsh.
 
 # Ensure the custom folder exists.
 if [[ ! -d "$ZSH_CUSTOM" ]]; then
-    mkdir -p "$ZSH_CUSTOM"
+  mkdir -p "$ZSH_CUSTOM"
 fi
 
 # Add Homebrew to PATH

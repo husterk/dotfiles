@@ -40,7 +40,7 @@
 local wezterm = require("wezterm")
 local config = {}
 if wezterm.config_builder then
-	config = wezterm.config_builder()
+    config = wezterm.config_builder()
 end
 
 -- ============================
@@ -68,19 +68,19 @@ local scheme_colors = {
             blue = "#89b4fa",
             lavender = "#b4befe",
             text = "#cdd6f4",
-			subtext1 = "#bac2de",
-			subtext0 = "#a6adc8",
-			overlay2 = "#9399b2",
-			overlay1 = "#7f849c",
-			overlay0 = "#6c7086",
-			surface2 = "#585b70",
-			surface1 = "#45475a",
-			surface0 = "#313244",
-			base = "#1e1e2e",
-			mantle = "#181825",
+            subtext1 = "#bac2de",
+            subtext0 = "#a6adc8",
+            overlay2 = "#9399b2",
+            overlay1 = "#7f849c",
+            overlay0 = "#6c7086",
+            surface2 = "#585b70",
+            surface1 = "#45475a",
+            surface0 = "#313244",
+            base = "#1e1e2e",
+            mantle = "#181825",
             crust = "#11111b",
-        }
-    }
+        },
+    },
 }
 
 local colors = {
@@ -99,7 +99,7 @@ local leader_prefix = utf8.char(0x1f30a) -- ocean wave
 -- Basic Settings
 config.automatically_reload_config = true
 config.color_scheme = "Catppuccin Mocha"
-config.font = wezterm.font_with_fallback{ "JetBrainsMono Nerd Font", "JetBrainsMono" }
+config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrainsMono" })
 config.front_end = "WebGpu" -- Use WebGPU for better performance
 config.font_size = 15
 
@@ -132,56 +132,57 @@ config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 2000 }
 
 -- Define the Keys directly on the config object
 config.keys = {
-	-- TABS
-	{ key = "c", mods = "LEADER", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
-	{ key = "b", mods = "LEADER", action = wezterm.action.ActivateTabRelative(-1) },
-	{ key = "n", mods = "LEADER", action = wezterm.action.ActivateTabRelative(1) },
-	{ key = "0", mods = "LEADER", action = wezterm.action.ActivateTab(0) },
-	{ key = "1", mods = "LEADER", action = wezterm.action.ActivateTab(1) },
-	{ key = "2", mods = "LEADER", action = wezterm.action.ActivateTab(2) },
-	{ key = "3", mods = "LEADER", action = wezterm.action.ActivateTab(3) },
-	{ key = "4", mods = "LEADER", action = wezterm.action.ActivateTab(4) },
-	{ key = "5", mods = "LEADER", action = wezterm.action.ActivateTab(5) },
-	{ key = "6", mods = "LEADER", action = wezterm.action.ActivateTab(6) },
-	{ key = "7", mods = "LEADER", action = wezterm.action.ActivateTab(7) },
-	{ key = "8", mods = "LEADER", action = wezterm.action.ActivateTab(8) },
-	{ key = "9", mods = "LEADER", action = wezterm.action.ActivateTab(9) },
+    -- TABS
+    { key = "c", mods = "LEADER", action = wezterm.action.SpawnTab("CurrentPaneDomain") },
+    { key = "b", mods = "LEADER", action = wezterm.action.ActivateTabRelative(-1) },
+    { key = "n", mods = "LEADER", action = wezterm.action.ActivateTabRelative(1) },
+    { key = "0", mods = "LEADER", action = wezterm.action.ActivateTab(0) },
+    { key = "1", mods = "LEADER", action = wezterm.action.ActivateTab(1) },
+    { key = "2", mods = "LEADER", action = wezterm.action.ActivateTab(2) },
+    { key = "3", mods = "LEADER", action = wezterm.action.ActivateTab(3) },
+    { key = "4", mods = "LEADER", action = wezterm.action.ActivateTab(4) },
+    { key = "5", mods = "LEADER", action = wezterm.action.ActivateTab(5) },
+    { key = "6", mods = "LEADER", action = wezterm.action.ActivateTab(6) },
+    { key = "7", mods = "LEADER", action = wezterm.action.ActivateTab(7) },
+    { key = "8", mods = "LEADER", action = wezterm.action.ActivateTab(8) },
+    { key = "9", mods = "LEADER", action = wezterm.action.ActivateTab(9) },
 
-	-- SPLITS
-	{ key = "\\", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "|", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "-", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-	{ key = "_", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
+    -- SPLITS
+    { key = "\\", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+    { key = "|", mods = "LEADER", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+    { key = "-", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
+    { key = "_", mods = "LEADER", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
-	-- NAVIGATION
-	{ key = "LeftArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
-	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
-	{ key = "RightArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
-	{ key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
-	{ key = "DownArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
-	{ key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
-	{ key = "UpArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
-	{ key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
+    -- NAVIGATION
+    { key = "LeftArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
+    { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
+    { key = "RightArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
+    { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
+    { key = "DownArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
+    { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
+    { key = "UpArrow", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
+    { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
 
-	-- PANE MANAGEMENT
-	{ key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
-	{ key = "LeftArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize { "Left", 5 } },
-	{ key = "RightArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize { "Right", 5 } },
-	{ key = "DownArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize { "Down", 5 } },
-	{ key = "UpArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize { "Up", 5 } },
+    -- PANE MANAGEMENT
+    { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+    { key = "LeftArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize({ "Left", 5 }) },
+    { key = "RightArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize({ "Right", 5 }) },
+    { key = "DownArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize({ "Down", 5 }) },
+    { key = "UpArrow", mods = "LEADER|SHIFT", action = wezterm.action.AdjustPaneSize({ "Up", 5 }) },
 }
 
 -- Maximize window on startup.
 wezterm.on("gui-startup", function(cmd)
-	local _, _, window = wezterm.mux.spawn_window(cmd or {})
-	window:gui_window():maximize()
+    local _, _, window = wezterm.mux.spawn_window(cmd or {})
+    window:gui_window():maximize()
 end)
 
 --[[
 ============================
 Tab Bar
 ============================
-]] --
+]]
+--
 
 local function tab_title(tab_info)
     local title = tab_info.tab_title
@@ -194,45 +195,43 @@ local function tab_title(tab_info)
     return tab_info.active_pane.title
 end
 
-wezterm.on(
-    "format-tab-title",
-    function(tab, tabs, panes, config, hover, max_width)
-        local title = " " .. tab.tab_index .. ": " .. tab_title(tab) .. " "
-        local left_edge_text = ""
-        local right_edge_text = ""
+wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+    local title = " " .. tab.tab_index .. ": " .. tab_title(tab) .. " "
+    local left_edge_text = ""
+    local right_edge_text = ""
 
-        if tab_style == "rounded" then
-            title = tab.tab_index .. ": " .. tab_title(tab)
-            title = wezterm.truncate_right(title, max_width - 2)
-            left_edge_text = wezterm.nerdfonts.ple_left_half_circle_thick
-            right_edge_text = wezterm.nerdfonts.ple_right_half_circle_thick
-        end
-
-        -- ensure that the titles fit in the available space,
-        -- and that we have room for the edges.
-        -- title = wezterm.truncate_right(title, max_width - 2)
-
-        if tab.is_active then
-            return {
-                { Background = { Color = colors.tab_bar_active_tab_bg } },
-                { Foreground = { Color = colors.tab_bar_active_tab_fg } },
-                { Text = left_edge_text },
-                { Background = { Color = colors.tab_bar_active_tab_fg } },
-                { Foreground = { Color = colors.tab_bar_text } },
-                { Text = title },
-                { Background = { Color = colors.tab_bar_active_tab_bg } },
-                { Foreground = { Color = colors.tab_bar_active_tab_fg } },
-                { Text = right_edge_text },
-            }
-        end
+    if tab_style == "rounded" then
+        title = tab.tab_index .. ": " .. tab_title(tab)
+        title = wezterm.truncate_right(title, max_width - 2)
+        left_edge_text = wezterm.nerdfonts.ple_left_half_circle_thick
+        right_edge_text = wezterm.nerdfonts.ple_right_half_circle_thick
     end
-)
+
+    -- ensure that the titles fit in the available space,
+    -- and that we have room for the edges.
+    -- title = wezterm.truncate_right(title, max_width - 2)
+
+    if tab.is_active then
+        return {
+            { Background = { Color = colors.tab_bar_active_tab_bg } },
+            { Foreground = { Color = colors.tab_bar_active_tab_fg } },
+            { Text = left_edge_text },
+            { Background = { Color = colors.tab_bar_active_tab_fg } },
+            { Foreground = { Color = colors.tab_bar_text } },
+            { Text = title },
+            { Background = { Color = colors.tab_bar_active_tab_bg } },
+            { Foreground = { Color = colors.tab_bar_active_tab_fg } },
+            { Text = right_edge_text },
+        }
+    end
+end)
 
 --[[
 ============================
 Leader Active Indicator
 ============================
-]] --
+]]
+--
 
 wezterm.on("update-status", function(window, _)
     -- leader inactive
@@ -264,14 +263,13 @@ wezterm.on("update-status", function(window, _)
         end
     end
 
-
-    window:set_left_status(wezterm.format {
+    window:set_left_status(wezterm.format({
         { Background = { Color = colors.arrow_foreground_leader } },
         { Text = prefix },
         arrow_foreground,
         arrow_background,
-        { Text = solid_left_arrow }
-    })
+        { Text = solid_left_arrow },
+    }))
 end)
 
 -- Enable debugging of key events

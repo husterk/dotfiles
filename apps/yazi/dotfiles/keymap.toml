@@ -1,1 +1,20 @@
-# Keybindings configuration
+[[mgr.prepend_keymap]]
+desc = "LazyGit"
+on = ["g", "i"]
+run = 'shell "lazygit" --block'
+
+[[mgr.prepend_keymap]]
+desc = "Chmod on selected files"
+on = ["c", "m"]
+run = "plugin chmod"
+
+[[mgr.prepend_keymap]]
+desc = "Compress with ouch"
+on = ["C"]
+run = "plugin ouch"
+
+# Relative motions 'm' trigger (e.g., m 5 j)
+[[mgr.prepend_keymap]]
+desc = "Trigger relative motion"
+on = ["m"]
+run = "plugin relative-motions"

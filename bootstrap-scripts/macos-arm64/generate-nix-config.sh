@@ -193,8 +193,8 @@ fi
 log_info "Generating configuration.nix from template and manifest..."
 
 # Read configuration values from manifest
-ROOT_RELATIVE_PATH=$(yq eval '.config.root-relative-path' "$HOST_MANIFEST")
-HOME_DIR=$(yq eval '.config.home-dir' "$HOST_MANIFEST")
+ROOT_RELATIVE_PATH=$(yq eval -r '.config.root-relative-path' "$HOST_MANIFEST")
+HOME_DIR=$(yq eval -r '.config.home-dir' "$HOST_MANIFEST")
 
 # Expand environment variables in HOME_DIR
 HOME_DIR=$(echo "$HOME_DIR" | envsubst)
@@ -203,11 +203,11 @@ log_info "Root relative path: $ROOT_RELATIVE_PATH"
 log_info "Home directory: $HOME_DIR"
 
 # Extract system modules
-SYSTEM_MODULES=$(yq eval '.system.modules[]' "$HOST_MANIFEST")
+SYSTEM_MODULES=$(yq eval -r '.system.modules[]' "$HOST_MANIFEST")
 SYSTEM_COUNT=$(echo "$SYSTEM_MODULES" | grep -c . || echo "0")
 
 # Extract app modules
-APP_MODULES=$(yq eval '.apps[].modules[]' "$HOST_MANIFEST")
+APP_MODULES=$(yq eval -r '.apps[].modules[]' "$HOST_MANIFEST")
 APP_COUNT=$(echo "$APP_MODULES" | grep -c . || echo "0")
 
 TOTAL_COUNT=$((SYSTEM_COUNT + APP_COUNT))
@@ -244,13 +244,19 @@ rm "$TEMP_APPS"
 TEMP_CONFIG=$(mktemp)
 awk -v system_modules="$SYSTEM_FORMATTED" -v app_modules="$APPS_FORMATTED" '
 {
-    if ($0 ~ /#{{MANIFEST_SYSTEM_MODULES}}/) {
-        print system_modules
-    } else if ($0 ~ /#{{MANIFEST_APPS_MODULES}}/) {
-        print app_modules
-    } else {
-        print $0
+    if ($0 ~ /#\{\{MANIFEST_SYSTEM_MODULES\}\}/) {
+        if (length(system_modules) > 0) {
+            print system_modules
+        }
+        next
     }
+    if ($0 ~ /#\{\{MANIFEST_APPS_MODULES\}\}/) {
+        if (length(app_modules) > 0) {
+            print app_modules
+        }
+        next
+    }
+    print $0
 }
 ' "$GENERATED_CONFIG" > "$TEMP_CONFIG"
 

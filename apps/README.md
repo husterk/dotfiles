@@ -81,6 +81,7 @@ apps/<app-name>/
 | `direnv`             | Nix dev environment management utility               | Nix.           | No           |
 | `dockutil`           | MacOS dock management utility                        | Nix.           | No           |
 | `dropbox`            | File hosting and synchronization service             | Homebrew       | No           |
+| `fzf`                | Command-line fuzzy finder                            | Nix            | No           |
 | `git`                | Distributed version control system                   | Nix            | Yes          |
 | `homebrew`           | Package manager for macOS                            | N/A (Native)   | No           |
 | `image-plus-tools`   | Image file format conversion utility                 | Mas (Homebrew) | No           |
@@ -91,6 +92,7 @@ apps/<app-name>/
 | `nix`                | Nix package manager configuration                    | N/A (Native)   | Yes          |
 | `nss`                | Network Security Services libraries                  | Nix            | No           |
 | `nushell`            | Modern shell with structured data support            | Nix            | Yes          |
+| `ouch`               | Simple CLI for creating and extracting archives.     | Nix            | No           |
 | `orbstack`           | Fast, light, and simple container & Linux VM manager | Homebrew       | Yes          |
 | `ripgrep`            | Better and faster grep (search) utility              | Nix            | No           |
 | `starship`           | Terminal prompt customization utility                | Nix            | Yes          |
@@ -101,6 +103,7 @@ apps/<app-name>/
 | `wget`               | Network downloader                                   | Nix            | Yes          |
 | `xcode`              | Apple XCode software development tools               | Mas (Homebrew) | No           |
 | `yazi`               | Awesome TUI for file management                      | Nix            | Yes          |
+| `zoxide`             | Fast, lightweight CLI fuzzy finder for your shell    | Nix            | No           |
 | `zsh`                | Z Shell with Oh My Zsh framework                     | Nix            | Yes          |
 
 ## Notes

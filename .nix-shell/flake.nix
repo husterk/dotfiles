@@ -39,6 +39,11 @@
             shellcheck # Linter for shell scripts (task dev:lint)
             shfmt # Formatter for shell scripts (task dev:format)
 
+            # === REQUIRED: Additional formatters ===
+            stylua # Lua code formatter (formats Yazi config files)
+            taplo # TOML code formatter (formats treefmt.toml and other TOML files)
+            nodePackages.prettier # Prettier code formatter (formats Markdown, JSON, YAML)
+
             # === OPTIONAL: Nix development tools ===
             # Only needed when editing Nix configuration files
             nil # Nix Language Server Protocol (editor support)

@@ -18,5 +18,8 @@
 
   environment.systemPackages = with pkgs; [
     yazi
+    ffmpegthumbnailer # For video thumbnail previews
+    poppler-utils # For PDF thumbnail previews
+    imagemagick # For image thumbnail previews
   ];
 }

@@ -41,6 +41,9 @@
 
     ${pkgs.bash}/bin/bash ${./scripts}/create-additional-symlinks.sh \
       "${USER_USERNAME}"
+    ${pkgs.bash}/bin/bash ${./scripts}/install-yazi-plugins.sh \
+      "${USER_USERNAME}" \
+      "${pkgs.yazi}/bin/ya"
     ${pkgs.bash}/bin/bash ${./scripts}/set-login-shell.sh \
       "${USER_USERNAME}"
     ${pkgs.bash}/bin/bash ${./scripts}/configure-dock.sh \

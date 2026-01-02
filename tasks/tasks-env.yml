@@ -17,15 +17,15 @@ tasks:
       - When setting up a new host
       - When secrets change in 1Password
       - From the development container (not the host)
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: op account list &> /dev/null
-        msg: '1Password CLI not authenticated. Run: eval $(op signin)'
+        msg: "1Password CLI not authenticated. Run: eval $(op signin)"
       - sh: '[ -f "{{.HOST_DIR}}/template.env" ]'
-        msg: 'template.env not found: {{.HOST_DIR}}/template.env'
+        msg: "template.env not found: {{.HOST_DIR}}/template.env"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-env-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-env-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
     sources:
-      - '{{.HOST_DIR}}/template.env'
+      - "{{.HOST_DIR}}/template.env"
     generates:
-      - '{{.HOST_DIR}}/generated/.env'
+      - "{{.HOST_DIR}}/generated/.env"

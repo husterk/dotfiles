@@ -7,8 +7,8 @@ set -e
 
 # Allow skipping checks
 if [ -n "$SKIP" ]; then
-	echo "⏭️  Skipping pre-commit checks (SKIP is set)"
-	exit 0
+  echo "⏭️  Skipping pre-commit checks (SKIP is set)"
+  exit 0
 fi
 
 # Get repository root
@@ -19,17 +19,21 @@ echo "🔍 Running pre-commit checks..."
 # Run formatters (auto-fixes issues)
 echo "📝 Formatting code..."
 if ! (cd "$REPO_ROOT" && task dev:format); then
-	echo "❌ Formatting failed. Please fix the issues and try again."
-	echo "💡 Tip: Run 'task dev:format' manually to see details"
-	exit 1
+  echo "❌ Formatting failed. Please fix the issues and try again."
+  echo "💡 Tip: Run 'task dev:format' manually to see details"
+  exit 1
 fi
+
+# Stage any files that were formatted
+echo "📦 Staging formatted files..."
+git add -u
 
 # Run linters (checks for issues)
 echo "🔬 Linting code..."
 if ! (cd "$REPO_ROOT" && task dev:lint); then
-	echo "❌ Linting failed. Please fix the issues and try again."
-	echo "💡 Tip: Run 'task dev:lint' manually to see details"
-	exit 1
+  echo "❌ Linting failed. Please fix the issues and try again."
+  echo "💡 Tip: Run 'task dev:lint' manually to see details"
+  exit 1
 fi
 
 echo "✅ All pre-commit checks passed!"

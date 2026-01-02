@@ -4,39 +4,57 @@
 # Global excludes
 [global]
 excludes = [
-  ".git",
-  ".direnv",
-  ".task",
-  ".nix-shell",
-  "generated",
-  "result",
-  "result-*",
-  "**/generated/**",
-  "**/*-template.nix",
-  "flake.lock",
-  "package-lock.json",
-  ".vscode/*.json",
-  ".vscode/*.jsonc"
+  "**/.git/**",
+  "**/flake.lock",
+  "**/.gitignore",
+  "**/.editorconfig",
+  "**/*.tmTheme",
+  "**/*.nu",            # Nushell is not POSIX/Zsh compatible
+  "**/commit-template",
+  "**/ignore",
+  "**/*.env*",
+  "**/*.template",
 ]
 
 [formatter.nix]
 command = "nixpkgs-fmt"
 includes = ["*.nix"]
 
+[formatter.nix-conf]
+command = "shfmt"
+includes = ["**/nix.conf"]
+# shfmt for nix.conf files with 2-space indent
+options = ["-i", "2", "-w"]
+
 [formatter.shell]
 command = "shfmt"
+includes = ["*.sh", "**/.zshrc", "**/.zshenv", "**/.zprofile", "**/.envrc", "**/*rc", "hooks/pre-commit"]
 # shfmt with 2-space indent, simplify redirects, and consistent indentation
-options = ["-i", "2", "-sr", "-ci", "-w"]
-includes = ["*.sh", ".envrc"]
+options = ["-ln", "bash", "-i", "2", "-sr", "-ci", "-w"]
 
-[formatter.yaml]
-command = "yq"
-# Using yq to format with 2-space indent to match .editorconfig
-options = ["-i", "--indent", "2", "eval", "."]
-includes = ["*.yml", "*.yaml"]
+[formatter.lua]
+command = "stylua"
+includes = ["*.lua"]
+# Stylua options to match .editorconfig settings
+options = [
+  "--indent-type",
+  "Spaces",
+  "--indent-width",
+  "2",
+  "--quote-style",
+  "AutoPreferDouble",
+  "--column-width",
+  "120",
+]
 
-[formatter.json]
-command = "jq"
-# jq defaults to 2 spaces which matches your .editorconfig
-options = ["."]
-includes = ["*.json"]
+[formatter.toml]
+command = "taplo"
+includes = ["*.toml", "**/config"]
+# Taplo options to match .editorconfig settings
+options = ["fmt", "-o", "indent_string=  ", "-o", "column_width=120", "-o", "reorder_keys=true"]
+
+[formatter.prettier]
+command = "prettier"
+includes = ["*.md", "*.json", "*.yaml", "*.yml"]
+# Prettier reads .editorconfig for settings
+options = ["--write"]

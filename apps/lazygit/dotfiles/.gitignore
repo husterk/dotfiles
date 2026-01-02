@@ -10,3 +10,6 @@
 
 # lazygit state files
 state.yml
+
+# lazygit development log
+development.log

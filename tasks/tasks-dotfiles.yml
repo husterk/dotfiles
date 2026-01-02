@@ -17,18 +17,18 @@ tasks:
       - When setting up a new host
       - After modifying dotfile templates
       - After modifying host-manifest.yml
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: '[ -f "{{.HOST_DIR}}/generated/.env" ]'
-        msg: '.env not found. Run: task env:generate'
+        msg: ".env not found. Run: task env:generate"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
     sources:
-      - '{{.HOST_DIR}}/host-manifest.yml'
-      - '{{.HOST_DIR}}/generated/.env'
+      - "{{.HOST_DIR}}/host-manifest.yml"
+      - "{{.HOST_DIR}}/generated/.env"
       - apps/**/dotfiles/**/*
     generates:
-      - '{{.HOST_DIR}}/generated/dotfiles/**/*'
+      - "{{.HOST_DIR}}/generated/dotfiles/**/*"
   # Deploy dotfiles
   deploy:
     desc: Deploy dotfiles using GNU Stow
@@ -43,14 +43,14 @@ tasks:
       - On the host machine
 
       Dotfiles are backed up automatically before deployment.
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: command -v stow &> /dev/null
-        msg: 'GNU Stow not found. Run: task nix:apply'
+        msg: "GNU Stow not found. Run: task nix:apply"
       - sh: '[ -d "{{.HOST_DIR}}/generated/dotfiles" ]'
-        msg: 'Dotfiles not found. Run: task dotfiles:generate'
+        msg: "Dotfiles not found. Run: task dotfiles:generate"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-deploy.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-deploy.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"
   # Redeploy dotfiles (unstow + stow)
   redeploy:
     desc: Redeploy dotfiles (remove and reinstall symlinks)
@@ -62,14 +62,14 @@ tasks:
       - Dotfiles were regenerated
       - You want to refresh all symlinks
       - Symlinks may be in an inconsistent state
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: command -v stow &> /dev/null
-        msg: 'GNU Stow not found. Run: task nix:apply'
+        msg: "GNU Stow not found. Run: task nix:apply"
       - sh: '[ -d "{{.HOST_DIR}}/generated/dotfiles" ]'
-        msg: 'Dotfiles not found. Run: task dotfiles:generate'
+        msg: "Dotfiles not found. Run: task dotfiles:generate"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-redeploy.sh {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-redeploy.sh {{.HOST_DIR}}"
   # Capture dotfiles back to source
   capture:
     desc: Capture dotfiles back to source templates
@@ -85,12 +85,12 @@ tasks:
       Usage:
         task dotfiles:capture              # Actually capture
         task dotfiles:capture -- --dry-run # Preview only
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: '[ -d "{{.HOST_DIR}}/generated/dotfiles" ]'
-        msg: 'Dotfiles not found. Run: task dotfiles:generate'
+        msg: "Dotfiles not found. Run: task dotfiles:generate"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-capture.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.CLI_ARGS}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-capture.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.CLI_ARGS}}"
   # Restore dotfiles from backup
   restore:
     desc: Restore dotfiles from backup
@@ -103,7 +103,7 @@ tasks:
       - Before unbootstrapping
       - If you want to revert to pre-Stow state
       - If dotfiles are in a broken state
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     prompt: |
       ⚠️  This will restore dotfiles from backup and remove symlinks.
 
@@ -111,7 +111,7 @@ tasks:
 
       Continue?
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-restore.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-restore.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"
   # Show dotfile status
   status:
     desc: Show dotfile deployment status
@@ -121,9 +121,9 @@ tasks:
       - Which files are symlinked
       - Backup status
       - Stow package info
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-status.sh {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-status.sh {{.HOST_DIR}}"
   # Diff dotfiles
   diff:
     desc: Show differences between source and deployed dotfiles
@@ -132,9 +132,9 @@ tasks:
       Compares source dotfiles with currently deployed versions.
       Useful for seeing what changes you've made.
       Respects .gitignore files in app dotfiles directories.
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-diff.sh {{.HOST_DIR}} {{.REPO_ROOT}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-diff.sh {{.HOST_DIR}} {{.REPO_ROOT}}"
   # Watch for dotfile changes on the host and auto-capture
   watch-host:
     desc: Watch dotfiles on the host and auto-capture changes back to source
@@ -147,10 +147,10 @@ tasks:
       editing dotfiles in your home directory.
 
       Press Ctrl+C to stop watching.
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     interactive: true
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-watch-host.sh'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-watch-host.sh"
   # Watch for dotfile changes in the repo and auto-regenerate
   watch-repo:
     desc: Watch dotfiles in the repo and auto-regenerate dotfiles
@@ -163,10 +163,10 @@ tasks:
       changes immediately.
 
       Press Ctrl+C to stop watching.
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     interactive: true
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-watch-repo.sh {{.REPO_ROOT}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-watch-repo.sh {{.REPO_ROOT}}"
   # Clean all dotfiles backups
   clean-backups:
     desc: Remove all dotfile backups for current host
@@ -177,7 +177,7 @@ tasks:
       This can free up disk space if you have many old backups.
 
       ⚠️  This cannot be undone!
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     prompt: |
       ⚠️  This will delete ALL dotfile backups!
 
@@ -185,4 +185,4 @@ tasks:
 
       Continue?
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-clean-backups.sh {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-dotfiles-clean-backups.sh {{.HOST_DIR}}"

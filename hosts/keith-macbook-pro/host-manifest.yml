@@ -40,6 +40,9 @@ apps:
   - name: dropbox
     modules:
       - /apps/dropbox/dropbox.nix
+  - name: fzf
+    modules:
+      - /apps/fzf/fzf.nix
   - name: git
     modules:
       - /apps/git/git.nix
@@ -91,6 +94,9 @@ apps:
     dotfiles:
       - source: /apps/orbstack/docker/**/*
         target: ~/.config/docker/
+  - name: ouch
+    modules:
+      - /apps/ouch/ouch.nix
   - name: ripgrep
     modules:
       - /apps/ripgrep/ripgrep.nix
@@ -130,6 +136,9 @@ apps:
     dotfiles:
       - source: /apps/yazi/dotfiles/**/*
         target: ~/.config/yazi/
+  - name: zoxide
+    modules:
+      - /apps/zoxide/zoxide.nix
   - name: zsh
     modules:
       - /apps/zsh/zsh.nix

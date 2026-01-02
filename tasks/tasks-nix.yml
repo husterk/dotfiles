@@ -18,20 +18,20 @@ tasks:
       - After modifying configuration-template.nix
       - After modifying host-manifest.yml
       - From the development container (not the host)
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: '[ -f "{{.HOST_DIR}}/configuration-template.nix" ]'
         msg: configuration-template.nix not found
       - sh: '[ -f "{{.HOST_DIR}}/generated/.env" ]'
-        msg: '.env not found. Run: task env:generate'
+        msg: ".env not found. Run: task env:generate"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-nix-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-nix-generate.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}} {{.HOST_DIR}}"
     sources:
-      - '{{.HOST_DIR}}/configuration-template.nix'
-      - '{{.HOST_DIR}}/host-manifest.yml'
-      - '{{.HOST_DIR}}/generated/.env'
+      - "{{.HOST_DIR}}/configuration-template.nix"
+      - "{{.HOST_DIR}}/host-manifest.yml"
+      - "{{.HOST_DIR}}/generated/.env"
     generates:
-      - '{{.HOST_DIR}}/generated/configuration.nix'
+      - "{{.HOST_DIR}}/generated/configuration.nix"
   # Apply Nix configuration
   apply:
     desc: Apply Nix configuration to system
@@ -48,13 +48,13 @@ tasks:
       - nix-darwin to be installed (run bootstrap first)
       - sudo password
       - To be run on the host machine (not in dev container)
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     preconditions:
       - sh: command -v darwin-rebuild &> /dev/null
-        msg: 'darwin-rebuild not found. Run: task bootstrap:bootstrap-host'
+        msg: "darwin-rebuild not found. Run: task bootstrap:bootstrap-host"
       - sh: '[ -f "{{.HOST_DIR}}/flake.nix" ]'
         msg: flake.nix not found in host directory
       - sh: '[ -f "{{.HOST_DIR}}/generated/configuration.nix" ]'
-        msg: 'configuration.nix not found. Run: task bootstrap:generate-nix-config'
+        msg: "configuration.nix not found. Run: task bootstrap:generate-nix-config"
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-nix-apply.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-nix-apply.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"

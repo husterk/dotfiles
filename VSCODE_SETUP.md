@@ -48,10 +48,10 @@ _You already have nil in your dev shell. VSCode will find it automatically._
 
 **Extensions:**
 
--   GitHub Copilot (AI assistance)
--   Nix IDE (Nix language support)
--   ShellCheck + Shell Format (shell scripts)
--   YAML, Markdown, Task, EditorConfig, GitLens, Error Lens, 1Password, Todo Tree
+- GitHub Copilot (AI assistance)
+- Nix IDE (Nix language support)
+- ShellCheck + Shell Format (shell scripts)
+- YAML, Markdown, Task, EditorConfig, GitLens, Error Lens, 1Password, Todo Tree
 
 **Formatting:**
 
@@ -68,8 +68,8 @@ Or let the pre-commit hook auto-format when you commit.
 
 Automatically installed by dev shell and run on `git commit`:
 
--   `task dev:format` (auto-fixes formatting)
--   `task dev:lint` (checks code quality)
+- `task dev:format` (auto-fixes formatting)
+- `task dev:lint` (checks code quality)
 
 Skip with: `SKIP=1 git commit` or `git commit --no-verify`
 
@@ -92,7 +92,7 @@ Manually install via Extensions sidebar (**Cmd+Shift+X**) or see [extensions.jso
 
 ## Additional Resources
 
--   [VSCode Profiles Documentation](https://code.visualstudio.com/docs/editor/profiles)
--   [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
--   [Nix IDE Extension](https://marketplace.visualstudio.com/items?itemName=jnoortheen.nix-ide)
--   [nil Language Server](https://github.com/oxalica/nil) (provided by your dev shell)
+- [VSCode Profiles Documentation](https://code.visualstudio.com/docs/editor/profiles)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
+- [Nix IDE Extension](https://marketplace.visualstudio.com/items?itemName=jnoortheen.nix-ide)
+- [nil Language Server](https://github.com/oxalica/nil) (provided by your dev shell)

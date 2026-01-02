@@ -17,20 +17,11 @@ vars:
     sh: git rev-parse --show-toplevel 2>/dev/null || pwd
   # Bootstrap target from host manifest
   BOOTSTRAP_TARGET:
-    sh: |
-      if [ -f "{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}/host-manifest.yml" ]; then
-        if command -v yq &> /dev/null; then
-          yq eval '.config.bootstrap-target // "macos-arm64"' "{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}/host-manifest.yml" 2>/dev/null || echo "macos-arm64"
-        else
-          awk '/^config:/,/^[^ ]/ {if ($1 == "bootstrap-target:") print $2}' "{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}/host-manifest.yml" | tr -d '\r' || echo "macos-arm64"
-        fi
-      else
-        echo "macos-arm64"
-      fi
+    sh: "{{.REPO_ROOT}}/tasks/scripts/tasks-main-get-bootstrap-target.sh {{.REPO_ROOT}}/hosts/{{.HOSTNAME}}/host-manifest.yml"
   # Host directory
-  HOST_DIR: '{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}'
+  HOST_DIR: "{{.REPO_ROOT}}/hosts/{{.HOSTNAME}}"
   # Bootstrap scripts directory
-  BOOTSTRAP_SCRIPTS_DIR: '{{.REPO_ROOT}}/bootstrap-scripts/{{.BOOTSTRAP_TARGET}}'
+  BOOTSTRAP_SCRIPTS_DIR: "{{.REPO_ROOT}}/bootstrap-scripts/{{.BOOTSTRAP_TARGET}}"
 # Include task files for better organization
 includes:
   dev: ./tasks/tasks-dev.yml
@@ -43,18 +34,18 @@ tasks:
     desc: Show available tasks and current configuration
     silent: true
     cmds:
-      - '{{.ROOT_DIR}}/tasks/scripts/tasks-main-show-default.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}'
+      - "{{.REPO_ROOT}}/tasks/scripts/tasks-main-show-default.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}"
   # Status check
   show-status:
     desc: Show current configuration status
     silent: true
     preconditions:
       - sh: '[ -d "{{.HOST_DIR}}" ]'
-        msg: 'Host directory not found: {{.HOST_DIR}}'
+        msg: "Host directory not found: {{.HOST_DIR}}"
       - sh: '[ -f "{{.HOST_DIR}}/host-manifest.yml" ]'
-        msg: 'Host manifest not found: {{.HOST_DIR}}/host-manifest.yml'
+        msg: "Host manifest not found: {{.HOST_DIR}}/host-manifest.yml"
     cmds:
-      - '{{.ROOT_DIR}}/tasks/scripts/tasks-main-show-status.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}'
+      - "{{.REPO_ROOT}}/tasks/scripts/tasks-main-show-status.sh {{.HOSTNAME}} {{.BOOTSTRAP_TARGET}} {{.HOST_DIR}}"
   # Set up new host for nix and dotfiles
   set-up-new-host:
     desc: Complete set up steps after bootstrap (generate + apply-nix-config + deploy-dotfiles)
@@ -127,7 +118,7 @@ tasks:
       - Clean up system modifications
 
       Make sure to restore dotfiles first if needed.
-    dir: '{{.REPO_ROOT}}'
+    dir: "{{.REPO_ROOT}}"
     prompt: |
       ⚠️  WARNING: This will completely remove Nix and nix-darwin!
 
@@ -137,4 +128,4 @@ tasks:
 
       Are you absolutely sure you want to continue?
     cmds:
-      - '{{.TASKFILE_DIR}}/scripts/tasks-main-unbootstrap.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}'
+      - "{{.TASKFILE_DIR}}/scripts/tasks-main-unbootstrap.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"

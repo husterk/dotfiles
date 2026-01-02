@@ -1,1 +1,21 @@
-# General configuration
+[manager]
+# This ensures Yazi refreshes when it regains focus after closing LazyGit
+refresh_threshold = 0
+
+[opener]
+# Use neovim as the default text editor
+edit = [{ run = 'nvim "$@"', block = true, for = "unix" }]
+
+[[plugin.prepend_fetchers]]
+id = "git"
+run = "git"
+url = "*"
+
+[[plugin.prepend_fetchers]]
+id = "git"
+run = "git"
+url = "*/"
+
+[[plugin.prepend_previewers]]
+mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}"
+run = "ouch"

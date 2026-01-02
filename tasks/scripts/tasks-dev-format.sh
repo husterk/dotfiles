@@ -48,7 +48,7 @@ fi
 # Run treefmt and capture output
 # treefmt outputs files that were formatted to stderr
 temp_output=$(mktemp)
-if treefmt 2>&1 | tee "$temp_output"; then
+if treefmt --verbose 2>&1 | tee "$temp_output"; then
   # Check if any files were formatted
   if grep -q "formatted" "$temp_output" 2> /dev/null; then
     echo ""
