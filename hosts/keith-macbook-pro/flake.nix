@@ -9,7 +9,12 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs =
+    inputs@{
+      self,
+      nix-darwin,
+      nixpkgs,
+    }:
     {
       darwinConfigurations."keith-macbook-pro" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";

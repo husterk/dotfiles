@@ -58,3 +58,29 @@ tasks:
         msg: "configuration.nix not found. Run: task bootstrap:generate-nix-config"
     cmds:
       - "{{.TASKFILE_DIR}}/scripts/tasks-nix-apply.sh {{.BOOTSTRAP_SCRIPTS_DIR}} {{.HOSTNAME}}"
+  # Update Nix flake inputs
+  update:
+    desc: Update flake inputs and lock file
+    silent: true
+    summary: |
+      Updates the flake.lock file by fetching the latest versions of all inputs.
+
+      This will:
+      - Update all flake inputs to their latest versions
+      - Regenerate the flake.lock file
+      - Not apply changes (run apply afterwards to apply updates)
+
+      Requires:
+      - Nix to be installed with flake support
+      - Internet connection to fetch updates
+      - To be run on the host machine (not in dev container)
+
+      After updating, run 'task nix:apply' to apply the changes.
+    dir: "{{.REPO_ROOT}}"
+    preconditions:
+      - sh: command -v nix &> /dev/null
+        msg: "nix command not found. Install Nix first."
+      - sh: '[ -f "{{.HOST_DIR}}/flake.nix" ]'
+        msg: flake.nix not found in host directory
+    cmds:
+      - "{{.TASKFILE_DIR}}/scripts/tasks-nix-update.sh {{.HOST_DIR}}"

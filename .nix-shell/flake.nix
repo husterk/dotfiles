@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -46,8 +52,8 @@
 
             # === OPTIONAL: Nix development tools ===
             # Only needed when editing Nix configuration files
-            nil # Nix Language Server Protocol (editor support)
-            nixpkgs-fmt # Nix code formatter (used by treefmt)
+            nixd # Nix Language Server Protocol (editor support)
+            nixfmt-rfc-style # Nix code formatter (used by treefmt)
             statix # Nix linter (static analysis)
 
             # === OPTIONAL: Editor with LSPs ===

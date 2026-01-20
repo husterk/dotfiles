@@ -16,8 +16,8 @@ excludes = [
   "**/*.template",
 ]
 
-[formatter.nix]
-command = "nixpkgs-fmt"
+[formatter.nixftm-rfc-style]
+command = "nixfmt"
 includes = ["*.nix"]
 
 [formatter.nix-conf]

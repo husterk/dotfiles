@@ -75,7 +75,7 @@ tasks:
 
       treefmt runs all formatters in parallel and only formats files that have changed:
       - shfmt on shell scripts
-      - nixpkgs-fmt on Nix files
+      - nixfmt on Nix files
       - yq on YAML files
       - jq on JSON files
 

@@ -1,6 +1,11 @@
 # Host-specific configuration for 'keith-macbook-pro'.
 # This file is imported by the associated flake.nix.
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   # Set the system primary user, required for some darwin modules

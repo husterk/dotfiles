@@ -31,7 +31,9 @@
     # Garbage collection
     gc = {
       automatic = true;
-      interval = { Weekday = 7; }; # Run on Sundays
+      interval = {
+        Weekday = 7;
+      }; # Run on Sundays
       options = "--delete-older-than 30d";
     };
   };

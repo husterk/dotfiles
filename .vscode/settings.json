@@ -41,15 +41,18 @@
 
   // Nix IDE Settings
   "nix.enableLanguageServer": true,
-  "nix.serverPath": "nil",
+  "nix.serverPath": "nixd",
   "nix.serverSettings": {
-    "nil": {
+    "nixd": {
       "formatting": {
-        "command": ["nixpkgs-fmt"]
+        "command": ["nixfmt"]
+      },
+      "nixpkgs": {
+        "expr": "import <nixpkgs> { }"
       }
     }
   },
-  "nix.formatterPath": "nixpkgs-fmt",
+  "nix.formatterPath": "nixfmt",
 
   // ShellCheck Settings
   "shellcheck.enable": true,

@@ -50,7 +50,7 @@ cd ~/git-repos/dotfiles  # direnv loads automatically
 task                     # View available commands
 ```
 
-**Tools included**: task, yq, jq, shellcheck, shfmt, nixpkgs-fmt, nil, neovim, LSPs
+**Tools included**: task, yq, jq, shellcheck, shfmt, nixfmt, nixd, neovim, LSPs
 
 **Git hooks**: Automatically installed by dev shell (pre-commit checks: format + lint).
 
