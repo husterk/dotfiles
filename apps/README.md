@@ -88,6 +88,7 @@ apps/<app-name>/
 | `inetutils`          | Network utilities (telnet, ftp, etc.)                | Nix            | No           |
 | `lazygit`            | Awesome TUI for Git that integrates with Neovim      | Nix            | Yes          |
 | `mas`                | macOS app store CLI                                  | Nix            | No           |
+| `mise`               | Polyglot tool version manager and task runner        | Nix            | No           |
 | `neovim`             | Awesome TUI for editing files and acting as an IDE   | Nix            | Yes          |
 | `nix`                | Nix package manager configuration                    | N/A (Native)   | Yes          |
 | `nss`                | Network Security Services libraries                  | Nix            | No           |

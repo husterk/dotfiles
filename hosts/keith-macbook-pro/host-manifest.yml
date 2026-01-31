@@ -67,6 +67,12 @@ apps:
   - name: mas
     modules:
       - /apps/mas/mas.nix
+  - name: mise
+    modules:
+      - /apps/mise/mise.nix
+    dotfiles:
+      - source: /apps/mise/dotfiles/**/*
+        target: ~/.config/mise/
   - name: neovim
     modules:
       - /apps/neovim/neovim.nix

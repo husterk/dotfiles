@@ -37,5 +37,7 @@ eval "$(zoxide init zsh --cmd cd)"
 # Enable Starship for a fully customizable terminal prompt.
 eval "$(starship init zsh)"
 
-# Hook direnv into the shell
-eval "$(direnv hook zsh)"
+# Hook mise into the shell (replaces direnv)
+if [ -f "$HOME/.config/mise/.mise-activation.sh" ]; then
+  eval "$(mise activate zsh)"
+fi

@@ -48,11 +48,8 @@ source "~/.config/zoxide/.zoxide.nu"
 # init script if it is available.
 source-env "~/.cache/starship/init.nu"
 
-# Hook direnv into the shell
+# Hook mise into the shell (replaces direnv)
 # This should be at the end of the file to ensure it works correctly.
-$env.config.hooks.pre_prompt = ($env.config.hooks.pre_prompt | append {||
-  if (which direnv | is-empty) {
-    return
-  }
-  direnv export json | from json | default {} | load-env
-})
+if ("~/.config/mise/activate.nu" | path exists) {
+  source-env "~/.config/mise/activate.nu"
+}
