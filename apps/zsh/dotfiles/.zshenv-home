@@ -1,0 +1,3 @@
+# This file must exist in ~/.zshenv (home directory) to set ZDOTDIR
+# before zsh loads any other configuration files.
+export ZDOTDIR="$HOME/.config/zsh"

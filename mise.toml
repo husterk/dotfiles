@@ -1,0 +1,362 @@
+# mise configuration for dotfiles repository
+# Replaces Nix shells + direnv + task runner for simplified development tooling
+
+# Since mise is installed via Nix, ensure minimum version is met
+# that aligns with the version managed via Nix packages
+min_version = "2026.1.2"
+
+# =========================================================================
+# Development Tools (pinned versions for reproducibility)
+# =========================================================================
+[tools]
+# Script dependencies
+jq = "1.8.1"  # JSON processor
+op = "2.32.0" # 1Password CLI
+yq = "4.52.1" # YAML processor
+
+# Shell script quality tools
+shellcheck = "0.11.0"
+shfmt = "3.12.0"
+
+# Code formatters
+prettier = "3.8.1" # Markdown, JSON, YAML formatter
+stylua = "2.3.1"   # Lua formatter
+taplo = "0.10.0"   # TOML formatter
+
+# Language servers for IDE integration
+lua-language-server = "3.17.1"
+"npm:bash-language-server" = "5.6.0"
+"npm:vscode-langservers-extracted" = "4.10.0"
+
+# Editor
+neovim = "0.11.6"
+
+# Note: Nix development tools (nixd, nixfmt, statix) are installed
+# via nix-darwin system packages, not mise. See modules/macos-base.nix
+
+# =========================================================================
+# Settings
+# =========================================================================
+[settings]
+
+# Enable lockfile to pin tool versions
+# The experimental flag is required for lockfile support
+experimental = true
+lockfile = true
+
+# Automatically install missing tools when entering directory
+not_found_auto_install = true
+
+# Use parallel jobs for faster tool installation
+jobs = 4
+
+# Show tools status when changing directories
+[settings.status]
+missing_tools = "if_other_versions_installed"
+show_env = false
+show_tools = true
+
+# =========================================================================
+# Tasks
+# =========================================================================
+# All tasks use mise's native task system
+
+# Default task - show help
+[tasks.default]
+description = "Show available tasks and current configuration"
+raw = true
+run = '''
+#!/usr/bin/env bash
+HOSTNAME="${HOSTNAME:-$(hostname -s)}"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
+BOOTSTRAP_TARGET="$($REPO_ROOT/tasks/scripts/tasks-main-get-bootstrap-target.sh $HOST_DIR/host-manifest.yml 2>/dev/null || echo 'unknown')"
+
+echo "📦 Dotfiles Repository"
+echo ""
+echo "Current Configuration:"
+echo "  • Hostname: $HOSTNAME"
+echo "  • Bootstrap Target: $BOOTSTRAP_TARGET"
+echo "  • Host Directory: $HOST_DIR"
+echo ""
+echo "Common Tasks:"
+echo "  mise run setup              - Complete setup after bootstrap"
+echo "  mise run refresh            - Regenerate and redeploy everything"
+echo "  mise run nix:generate       - Generate Nix configuration"
+echo "  mise run nix:apply          - Apply Nix configuration"
+echo "  mise run dotfiles:generate  - Generate dotfiles"
+echo "  mise run dotfiles:deploy    - Deploy dotfiles"
+echo ""
+echo "Development Tasks:"
+echo "  mise run dev:format         - Format code"
+echo "  mise run dev:lint           - Lint code"
+echo "  mise run dev:clean          - Clean generated files"
+echo ""
+echo "To see all available tasks: mise tasks"
+'''
+
+# --------------------------------------------------------------------------
+# Environment tasks
+# --------------------------------------------------------------------------
+[tasks."env:generate"]
+description = "Generate .env from 1Password"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-env-generate.sh \
+  {{ config_root }}/bootstrap-scripts/macos-arm64 \
+  "$HOSTNAME" \
+  "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+# --------------------------------------------------------------------------
+# Nix tasks
+# --------------------------------------------------------------------------
+[tasks."nix:generate"]
+depends = ["env:generate"]
+description = "Generate Nix configuration from template"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-nix-generate.sh \
+  {{ config_root }}/bootstrap-scripts/macos-arm64 \
+  "$HOSTNAME" \
+  "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+[tasks."nix:apply"]
+description = "Apply Nix configuration to system"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-nix-apply.sh \
+  {{ config_root }}/bootstrap-scripts/macos-arm64 \
+  "$HOSTNAME"
+'''
+
+[tasks."nix:update"]
+description = "Update flake inputs and lock file"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-nix-update.sh "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+[tasks."nix:check"]
+description = "Check Nix flake"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+nix flake check "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+# --------------------------------------------------------------------------
+# Dotfiles tasks
+# --------------------------------------------------------------------------
+[tasks."dotfiles:generate"]
+depends = ["env:generate"]
+description = "Generate dotfiles from templates"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/bootstrap-scripts/macos-arm64/generate-dotfiles.sh "$HOSTNAME"
+'''
+
+[tasks."dotfiles:deploy"]
+description = "Deploy dotfiles using GNU Stow"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/bootstrap-scripts/macos-arm64/deploy-dotfiles.sh "$HOSTNAME"
+'''
+
+[tasks."dotfiles:redeploy"]
+description = "Redeploy dotfiles (remove and reinstall symlinks)"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dotfiles-redeploy.sh "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+[tasks."dotfiles:capture"]
+description = "Capture dotfiles back to source templates"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/bootstrap-scripts/macos-arm64/capture-dotfiles.sh "$HOSTNAME" "$@"
+'''
+
+[tasks."dotfiles:restore"]
+description = "Restore dotfiles from backup"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dotfiles-restore.sh \
+  {{ config_root }}/bootstrap-scripts/macos-arm64 \
+  "$HOSTNAME"
+'''
+
+[tasks."dotfiles:diff"]
+description = "Show diff between deployed and source dotfiles"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dotfiles-diff.sh \
+  "{{ config_root }}/hosts/$HOSTNAME" \
+  {{ config_root }}
+'''
+
+[tasks."dotfiles:status"]
+description = "Show dotfiles deployment status"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dotfiles-status.sh "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+[tasks."dotfiles:watch-host"]
+description = "Watch dotfiles on host and auto-capture changes"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dotfiles-watch-host.sh"
+
+[tasks."dotfiles:watch-repo"]
+description = "Watch dotfiles in repo and auto-regenerate"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dotfiles-watch-repo.sh {{ config_root }}"
+
+[tasks."dotfiles:clean-backups"]
+description = "Remove all dotfile backups for current host"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dotfiles-clean-backups.sh "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+# --------------------------------------------------------------------------
+# Development tasks
+# --------------------------------------------------------------------------
+[tasks."dev:format"]
+description = "Format all code (shell + Nix + YAML + JSON)"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-format.sh {{ config_root }}"
+
+[tasks."dev:lint"]
+depends = ["dev:lint-scripts", "dev:lint-nix"]
+description = "Lint all code (shell scripts + Nix files)"
+raw = true
+
+[tasks."dev:lint-scripts"]
+description = "Lint shell scripts with shellcheck"
+hide = true
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-lint-scripts.sh {{ config_root }}"
+
+[tasks."dev:lint-nix"]
+description = "Lint Nix files with statix"
+hide = true
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-lint-nix.sh {{ config_root }}"
+
+[tasks."dev:clean"]
+description = "Clean generated files for current host"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dev-clean.sh "{{ config_root }}/hosts/$HOSTNAME"
+'''
+
+[tasks."dev:list-hosts"]
+description = "List all available hosts"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dev-list-hosts.sh {{ config_root }} "$HOSTNAME"
+'''
+
+[tasks."dev:validate-host-config"]
+description = "Validate host configuration and manifests"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dev-validate-host-config.sh \
+  "{{ config_root }}/hosts/$HOSTNAME" \
+  "$HOSTNAME"
+'''
+
+[tasks."dev:show-host-config"]
+description = "Show current host configuration"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-dev-show-host-config.sh \
+  "{{ config_root }}/hosts/$HOSTNAME" \
+  "$HOSTNAME" \
+  "macos-arm64" \
+  {{ config_root }}
+'''
+
+# --------------------------------------------------------------------------
+# Composite tasks
+# --------------------------------------------------------------------------
+[tasks.setup]
+alias = "set-up-new-host"
+depends = ["env:generate", "nix:generate", "dotfiles:generate"]
+description = "Complete setup after bootstrap (generate + apply + deploy)"
+raw = true
+run = '''
+#!/usr/bin/env bash
+echo "✅ Configuration generated"
+echo ""
+echo "📦 Applying Nix configuration..."
+mise run nix:apply
+echo ""
+echo "🔗 Deploying dotfiles..."
+mise run dotfiles:deploy
+echo ""
+echo "✅ Setup complete!"
+'''
+
+[tasks.refresh]
+alias = "refresh-host"
+depends = ["nix:generate", "dotfiles:generate"]
+description = "Regenerate and redeploy everything"
+raw = true
+run = '''
+#!/usr/bin/env bash
+echo "✅ Configuration regenerated"
+echo ""
+echo "📦 Applying Nix configuration..."
+mise run nix:apply
+echo ""
+echo "🔗 Deploying dotfiles..."
+mise run dotfiles:deploy
+echo ""
+echo "✅ Refresh complete!"
+'''
+
+[tasks."generate-all"]
+depends = ["env:generate", "nix:generate", "dotfiles:generate"]
+description = "Generate all configuration files (env + nix + dotfiles)"
+raw = true
+run = 'echo "✅ All configurations generated successfully"'
+
+[tasks.unbootstrap]
+description = "Remove Nix and nix-darwin from system"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-main-unbootstrap.sh \
+  {{ config_root }}/bootstrap-scripts/macos-arm64 \
+  "$HOSTNAME"
+'''
+
+[tasks.show-status]
+description = "Show current configuration status"
+raw = true
+run = '''
+HOSTNAME=$(hostname -s)
+{{ config_root }}/tasks/scripts/tasks-main-show-status.sh \
+  "$HOSTNAME" \
+  "macos-arm64" \
+  "{{ config_root }}/hosts/$HOSTNAME"
+'''

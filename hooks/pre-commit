@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pre-commit hook that runs formatting and linting checks
-# Installed via: task dev:install-hooks
+# Installed automatically by mise
 # Skip with: SKIP=1 git commit or git commit --no-verify
 
 set -e
@@ -18,9 +18,9 @@ echo "🔍 Running pre-commit checks..."
 
 # Run formatters (auto-fixes issues)
 echo "📝 Formatting code..."
-if ! (cd "$REPO_ROOT" && task dev:format); then
+if ! (cd "$REPO_ROOT" && mise run dev:format); then
   echo "❌ Formatting failed. Please fix the issues and try again."
-  echo "💡 Tip: Run 'task dev:format' manually to see details"
+  echo "💡 Tip: Run 'mise run dev:format' manually to see details"
   exit 1
 fi
 
@@ -30,9 +30,9 @@ git add -u
 
 # Run linters (checks for issues)
 echo "🔬 Linting code..."
-if ! (cd "$REPO_ROOT" && task dev:lint); then
+if ! (cd "$REPO_ROOT" && mise run dev:lint); then
   echo "❌ Linting failed. Please fix the issues and try again."
-  echo "💡 Tip: Run 'task dev:lint' manually to see details"
+  echo "💡 Tip: Run 'mise run dev:lint' manually to see details"
   exit 1
 fi
 

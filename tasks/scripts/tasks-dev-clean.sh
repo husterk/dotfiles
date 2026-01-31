@@ -25,4 +25,4 @@ fi
 
 echo "✅ Clean complete!"
 echo ""
-echo "To regenerate: task generate-all"
+echo "To regenerate: mise run generate-all"

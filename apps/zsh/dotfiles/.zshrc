@@ -11,33 +11,25 @@ autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
 
 # Activate syntax highlighting
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-[[ -v ZSH_HIGHLIGHT_STYLES ]] || typeset -A ZSH_HIGHLIGHT_STYLES
-ZSH_HIGHLIGHT_STYLES[path]=none
-ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+if command -v brew &> /dev/null; then
+  local syntax_highlighting="$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  if [ -f "$syntax_highlighting" ]; then
+    source "$syntax_highlighting"
+    [[ -v ZSH_HIGHLIGHT_STYLES ]] || typeset -A ZSH_HIGHLIGHT_STYLES
+    ZSH_HIGHLIGHT_STYLES[path]=none
+    ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+  fi
+fi
 
 # Activate autosuggestions
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if command -v brew &> /dev/null; then
+  local autosuggestions="$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  if [ -f "$autosuggestions" ]; then
+    source "$autosuggestions"
+  fi
+fi
 
-# This y shell wrapper that provides the ability to change the current working directory when
-# exiting Yazi.
-function y() {
-  local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-  command yazi "$@" --cwd-file="$tmp"
-  IFS= read -r -d '' cwd < "$tmp"
-  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
-  rm -f -- "$tmp"
-}
-
-# Initialize zoxide for enhanced directory navigation
-# and set the command to use 'cd' for changing directories.
-# This overrides the default behavior of 'cd' to use 'z' command.
-eval "$(zoxide init zsh --cmd cd)"
-
-# Enable Starship for a fully customizable terminal prompt.
-eval "$(starship init zsh)"
-
-# Hook mise into the shell (replaces direnv)
-if [ -f "$HOME/.config/mise/.mise-activation.sh" ]; then
-  eval "$(mise activate zsh)"
+# Load shell integrations (starship, mise, zoxide, yazi, etc.)
+if [ -f "$ZDOTDIR/.zsh-integrations.sh" ]; then
+  source "$ZDOTDIR/.zsh-integrations.sh"
 fi

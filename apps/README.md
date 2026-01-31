@@ -71,41 +71,42 @@ apps/<app-name>/
 
 ## Available Apps
 
-| App                  | Description                                          | Installs Via   | Has Dotfiles |
-| -------------------- | ---------------------------------------------------- | -------------- | ------------ |
-| `1password`          | Password manager and CLI tool                        | Homebrew       | Yes          |
-| `bat`                | A better `cat` command                               | Nix            | Yes          |
-| `ca-certificates`    | SSL/TLS certificate management system                | Homebrew       | No           |
-| `curl`               | Command-line tool for transferring data with URLs    | Nix            | Yes          |
-| `davinci-resolve`    | Advanced video editor system                         | Mas (Homebrew) | No           |
-| `direnv`             | Nix dev environment management utility               | Nix.           | No           |
-| `dockutil`           | MacOS dock management utility                        | Nix.           | No           |
-| `dropbox`            | File hosting and synchronization service             | Homebrew       | No           |
-| `fzf`                | Command-line fuzzy finder                            | Nix            | No           |
-| `git`                | Distributed version control system                   | Nix            | Yes          |
-| `homebrew`           | Package manager for macOS                            | N/A (Native)   | No           |
-| `image-plus-tools`   | Image file format conversion utility                 | Mas (Homebrew) | No           |
-| `inetutils`          | Network utilities (telnet, ftp, etc.)                | Nix            | No           |
-| `lazygit`            | Awesome TUI for Git that integrates with Neovim      | Nix            | Yes          |
-| `mas`                | macOS app store CLI                                  | Nix            | No           |
-| `mise`               | Polyglot tool version manager and task runner        | Nix            | No           |
-| `neovim`             | Awesome TUI for editing files and acting as an IDE   | Nix            | Yes          |
-| `nix`                | Nix package manager configuration                    | N/A (Native)   | Yes          |
-| `nss`                | Network Security Services libraries                  | Nix            | No           |
-| `nushell`            | Modern shell with structured data support            | Nix            | Yes          |
-| `ouch`               | Simple CLI for creating and extracting archives.     | Nix            | No           |
-| `orbstack`           | Fast, light, and simple container & Linux VM manager | Homebrew       | Yes          |
-| `ripgrep`            | Better and faster grep (search) utility              | Nix            | No           |
-| `starship`           | Terminal prompt customization utility                | Nix            | Yes          |
-| `stow`               | GNU Stow symlink farm manager                        | Nix            | No           |
-| `swaks`              | Swiss Army Knife SMTP testing tool                   | Nix            | No           |
-| `visual-studio-code` | Code editor and IDE                                  | Homebrew       | No           |
-| `wezterm`            | Modern, fast, and customizable terminal emulator     | Nix            | Yes          |
-| `wget`               | Network downloader                                   | Nix            | Yes          |
-| `xcode`              | Apple XCode software development tools               | Mas (Homebrew) | No           |
-| `yazi`               | Awesome TUI for file management                      | Nix            | Yes          |
-| `zoxide`             | Fast, lightweight CLI fuzzy finder for your shell    | Nix            | Yes          |
-| `zsh`                | Z Shell with Oh My Zsh framework                     | Nix            | Yes          |
+| App                  | Description                                            | Installs Via   | Has Dotfiles |
+| -------------------- | ------------------------------------------------------ | -------------- | ------------ |
+| `1password`          | Password manager and CLI tool                          | Homebrew       | Yes          |
+| `bat`                | A better `cat` command                                 | Nix            | Yes          |
+| `ca-certificates`    | SSL/TLS certificate management system                  | Homebrew       | No           |
+| `curl`               | Command-line tool for transferring data with URLs      | Nix            | Yes          |
+| `davinci-resolve`    | Advanced video editor system                           | Mas (Homebrew) | No           |
+| `direnv`             | Environment switcher for the shell                     | Nix            | No           |
+| `dockutil`           | MacOS dock management utility                          | Nix.           | No           |
+| `dropbox`            | File hosting and synchronization service               | Homebrew       | No           |
+| `fzf`                | Command-line fuzzy finder                              | Nix            | No           |
+| `gettext`            | GNU internationalization utilities (provides envsubst) | Nix            | No           |
+| `git`                | Distributed version control system                     | Nix            | Yes          |
+| `homebrew`           | Package manager for macOS                              | N/A (Native)   | No           |
+| `image-plus-tools`   | Image file format conversion utility                   | Mas (Homebrew) | No           |
+| `inetutils`          | Network utilities (telnet, ftp, etc.)                  | Nix            | No           |
+| `lazygit`            | Awesome TUI for Git that integrates with Neovim        | Nix            | Yes          |
+| `mas`                | macOS app store CLI                                    | Nix            | No           |
+| `mise`               | Polyglot tool version manager and task runner          | Nix            | No           |
+| `neovim`             | Awesome TUI for editing files and acting as an IDE     | Nix            | Yes          |
+| `nix`                | Nix package manager configuration                      | N/A (Native)   | Yes          |
+| `nss`                | Network Security Services libraries                    | Nix            | No           |
+| `nushell`            | Modern shell with structured data support              | Nix            | Yes          |
+| `ouch`               | Simple CLI for creating and extracting archives.       | Nix            | No           |
+| `orbstack`           | Fast, light, and simple container & Linux VM manager   | Homebrew       | Yes          |
+| `ripgrep`            | Better and faster grep (search) utility                | Nix            | No           |
+| `starship`           | Terminal prompt customization utility                  | Nix            | Yes          |
+| `stow`               | GNU Stow symlink farm manager                          | Nix            | No           |
+| `swaks`              | Swiss Army Knife SMTP testing tool                     | Nix            | No           |
+| `visual-studio-code` | Code editor and IDE                                    | Homebrew       | No           |
+| `wezterm`            | Modern, fast, and customizable terminal emulator       | Nix            | Yes          |
+| `wget`               | Network downloader                                     | Nix            | Yes          |
+| `xcode`              | Apple XCode software development tools                 | Mas (Homebrew) | No           |
+| `yazi`               | Awesome TUI for file management                        | Nix            | Yes          |
+| `zoxide`             | Fast, lightweight CLI fuzzy finder for your shell      | Nix            | Yes          |
+| `zsh`                | Z Shell with Oh My Zsh framework                       | Nix            | Yes          |
 
 ## Notes
 

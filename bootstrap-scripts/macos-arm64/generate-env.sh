@@ -22,6 +22,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 # shellcheck disable=SC1091
 source "${REPO_ROOT}/scripts/script-helpers.sh"
 
+# Default configuration
+FORCE_OVERWRITE="${FORCE_OVERWRITE:-false}"
+
 # Display script header
 script_header "Generate Environment" "Creates .env file from 1Password secrets"
 
@@ -114,12 +117,17 @@ log_success "All prerequisites verified."
 # ------------------------------------------------------------------------
 if [ -f "$GENERATED_ENV" ]; then
   log_warning "Generated .env file already exists: $GENERATED_ENV"
-  echo -n "Overwrite? (y/N): "
-  read -r response
 
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
-    log_info "Generation cancelled by user."
-    exit 0
+  if [ "$FORCE_OVERWRITE" = false ]; then
+    echo -n "Overwrite? (y/N): "
+    read -r response
+
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      log_info "Generation cancelled by user."
+      exit 0
+    fi
+  else
+    log_info "Force overwrite enabled, removing existing .env file..."
   fi
 
   log_info "Removing existing .env file..."
@@ -152,6 +160,6 @@ log_info "  • .env: $GENERATED_ENV"
 echo ""
 
 log_info "Next steps:"
-log_info "1. Generate Nix configuration: task bootstrap:generate-nix-config"
-log_info "2. Generate dotfiles: task bootstrap:generate-dotfiles"
+log_info "1. Generate Nix configuration: mise run nix:generate"
+log_info "2. Generate dotfiles: mise run dotfiles:generate"
 script_footer "success"

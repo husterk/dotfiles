@@ -4,12 +4,14 @@ Minimal setup for this dotfiles repository using a custom VSCode profile.
 
 ## Prerequisites
 
-**⚠️ CRITICAL**: Always open this project from the terminal so VSCode inherits the dev shell environment:
+**⚠️ CRITICAL**: Always open this project from the terminal so VSCode inherits the mise environment:
 
 ```bash
 cd ~/git-repos/dotfiles
 code .
 ```
+
+**Note**: mise should be activated automatically when you `cd` into this directory (configured in your shell rc file).
 
 ## Setup Steps
 
@@ -30,11 +32,11 @@ When prompted "This workspace has extension recommendations", click **"Install A
 
 If no prompt: **Cmd+Shift+P** → `Extensions: Show Recommended Extensions` → **"Install All Workspace Recommendations"**
 
-### 4. Decline nil Installation
+### 4. Decline LSP Installation (if prompted)
 
-When **Nix IDE** prompts to install `nil`, click **"Don't show again"**.
+When **Nix IDE** or other extensions prompt to install language servers, click **"Don't show again"**.
 
-_You already have nil in your dev shell. VSCode will find it automatically._
+_You already have language servers installed via mise. VSCode will find them automatically._
 
 ### 5. Reload Window
 
@@ -55,32 +57,33 @@ _You already have nil in your dev shell. VSCode will find it automatically._
 
 **Formatting:**
 
-Format-on-save is disabled. Use Task commands instead:
+Format-on-save is disabled. Use mise tasks instead:
 **Note**: Formatting is also automatically applied by pre-commit hooks.
 
 ```bash
-task dev:format         # Format all files
+mise run dev:format     # Format all files
 ```
 
 Or let the pre-commit hook auto-format when you commit.
 
 **Pre-commit hooks:**
 
-Automatically installed by dev shell and run on `git commit`:
+Automatically installed by mise and run on `git commit`:
 
-- `task dev:format` (auto-fixes formatting)
-- `task dev:lint` (checks code quality)
+- `mise run dev:format` (auto-fixes formatting)
+- `mise run dev:lint` (checks code quality)
 
 Skip with: `SKIP=1 git commit` or `git commit --no-verify`
 
 ## Troubleshooting
 
-**Nix LSP not working?**
+**Language servers not working?**
 
 1. Close VSCode
 2. Open terminal: `cd ~/git-repos/dotfiles`
-3. Launch VSCode: `code .`
-4. Verify: `which nil` (should show `/nix/store/.../bin/nil`)
+3. Verify mise is activated: `mise doctor`
+4. Launch VSCode: `code .`
+5. Verify tools are available: `which shellcheck yq jq`
 
 **Profile not switching?**
 **Cmd+Shift+P** → `Profiles: Use Profile for Current Workspace` → Select "Dotfiles"
@@ -92,7 +95,7 @@ Manually install via Extensions sidebar (**Cmd+Shift+X**) or see [extensions.jso
 
 ## Additional Resources
 
+- [mise Documentation](https://mise.jdx.dev/)
 - [VSCode Profiles Documentation](https://code.visualstudio.com/docs/editor/profiles)
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 - [Nix IDE Extension](https://marketplace.visualstudio.com/items?itemName=jnoortheen.nix-ide)
-- [nil Language Server](https://github.com/oxalica/nil) (provided by your dev shell)

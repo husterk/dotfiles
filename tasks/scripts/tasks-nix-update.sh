@@ -16,4 +16,4 @@ nix flake update 2>&1 | grep -v "warning: Git tree.*is dirty" || {
   fi
 }
 
-echo "✅ Flake inputs updated. Run 'task nix:apply' to apply changes."
+echo "✅ Flake inputs updated. Run 'mise run nix:apply' to apply changes."

@@ -86,13 +86,13 @@ fi
 
 if [ ! -f "$GENERATED_ENV" ]; then
   log_error "Generated .env file not found: $GENERATED_ENV"
-  log_info "Please run: task bootstrap:generate-env"
+  log_info "Please run: mise run env:generate"
   exit 1
 fi
 
 if [ ! -d "$GENERATED_DOTFILES_DIR" ]; then
   log_error "Generated dotfiles directory not found: $GENERATED_DOTFILES_DIR"
-  log_info "Please run: task bootstrap:generate-dotfiles"
+  log_info "Please run: mise run dotfiles:generate"
   exit 1
 fi
 
@@ -430,14 +430,14 @@ echo ""
 if [ "$DRY_RUN" = true ]; then
   log_warning "This was a dry run. No files were modified."
   log_info "Run without --dry-run to apply changes:"
-  log_info "  task capture-dotfiles"
+  log_info "  mise run dotfiles:capture"
 else
   if [ $CHANGED_COUNT -gt 0 ]; then
     log_success "Successfully captured $CHANGED_COUNT dotfile(s) back to source"
     echo ""
     log_info "Next steps:"
     log_info "1. Review changes: git diff"
-    log_info "2. Test that files still work: task bootstrap:generate-dotfiles"
+    log_info "2. Test that files still work: mise run dotfiles:generate"
     log_info "3. Commit changes: git add . && git commit -m 'feat: update dotfiles'"
   else
     log_success "All dotfiles are already up to date"

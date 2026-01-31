@@ -13,11 +13,7 @@
 # Ignore symlinks to generated dotfiles (created during deployment)
 hosts/**/.config
 
-# direnv
-.direnv/
-.envrc.cache
-
-# Task runner state
+# mise task runner state
 .task/
 
 # Nix build results

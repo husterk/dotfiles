@@ -8,9 +8,12 @@ $env.config.buffer_editor = "code"
 use std/util "path add"
 
 # -------------------------------------------------------------------------
-# Add your custom paths
+# Add your custom paths (with existence checks)
 # -------------------------------------------------------------------------
-path add "~/.orbstack/bin"
+# OrbStack command-line tools
+if ("~/.orbstack/bin" | path expand | path exists) {
+    path add "~/.orbstack/bin"
+}
 
 # Corrected NIX_PATH for your specific dotfiles setup.
 $env.NIX_PATH = $"darwin-config=($env.HOME)/dotfiles/darwin-configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
@@ -28,28 +31,7 @@ if ($onepassword_ssh_sock | path exists) {
     $env.SSH_AUTH_SOCK = $onepassword_ssh_sock
 }
 
-# This y shell wrapper that provides the ability to change the current working directory
-# when exiting Yazi.
-def --env y [...args] {
-	let tmp = (mktemp -t "yazi-cwd.XXXXXX")
-	^yazi ...$args --cwd-file $tmp
-	let cwd = (open $tmp)
-	if $cwd != "" and $cwd != $env.PWD {
-		cd $cwd
-	}
-	rm -fp $tmp
-}
-
-# Initialize zoxide for enhanced directory navigation
-# This will take over the default 'cd' command to use zoxide's functionality.
-source "~/.config/zoxide/.zoxide.nu"
-
-# This is the Nushell way to initialize Starship, using the cached
-# init script if it is available.
-source-env "~/.cache/starship/init.nu"
-
-# Hook mise into the shell (replaces direnv)
-# This should be at the end of the file to ensure it works correctly.
-if ("~/.config/mise/activate.nu" | path exists) {
-  source-env "~/.config/mise/activate.nu"
+# Load shell integrations (starship, mise, zoxide, yazi, etc.)
+if ("~/.config/nushell/integrations.nu" | path expand | path exists) {
+  source "~/.config/nushell/integrations.nu"
 }

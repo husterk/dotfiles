@@ -11,7 +11,7 @@ Declarative macOS system configuration using Nix, nix-darwin, and GNU Stow.
 - Manages system packages and configuration via Nix/nix-darwin
 - Manages dotfiles via GNU Stow with template variable substitution
 - Integrates with 1Password for secure secrets
-- Provides automated workflows via Task runner
+- Provides automated workflows via mise tasks
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ op signin
 
 # Restart shell and complete setup
 exec zsh
-task set-up-new-host
+mise run setup
 ```
 
 ## Already Bootstrapped
@@ -38,55 +38,56 @@ task set-up-new-host
 ```bash
 cd ~/git-repos/dotfiles
 op signin
-task refresh-host
+mise run refresh
 ```
 
 ## Development Environment
 
-This repo uses Nix flakes + direnv for automatic environment loading:
+This repo uses mise for development tooling and task management:
 
 ```bash
-cd ~/git-repos/dotfiles  # direnv loads automatically
-task                     # View available commands
+cd ~/git-repos/dotfiles  # mise activates automatically
+mise run                 # View available commands
+mise tasks               # List all tasks
 ```
 
-**Tools included**: task, yq, jq, shellcheck, shfmt, nixfmt, nixd, neovim, LSPs
+**Tools included**: task, yq, jq, shellcheck, shfmt, prettier, stylua, taplo, neovim, LSPs
 
-**Git hooks**: Automatically installed by dev shell (pre-commit checks: format + lint).
+**Git hooks**: Automatically installed by mise (pre-commit checks: format + lint).
 
 ## Common Tasks
 
 ### Essential Commands
 
-| Command                | Description                     |
-| ---------------------- | ------------------------------- |
-| `task`                 | Show status and available tasks |
-| `task set-up-new-host` | Full setup (generate + deploy)  |
-| `task refresh-host`    | Regenerate and redeploy         |
+| Command            | Description                     |
+| ------------------ | ------------------------------- |
+| `mise run`         | Show status and available tasks |
+| `mise run setup`   | Full setup (generate + deploy)  |
+| `mise run refresh` | Regenerate and redeploy         |
 
 ### Dotfiles Editing Workflows
 
 **Quick iteration (machine-first):**
 
 ```bash
-vim ~/.config/nvim/init.lua    # Edit directly (changes apply immediately)
-task dotfiles:capture          # Capture back to templates (secrets removed)
+vim ~/.config/nvim/init.lua       # Edit directly (changes apply immediately)
+mise run dotfiles:capture         # Capture back to templates (secrets removed)
 git commit -am "fix: config"
 ```
 
 **With auto-capture:**
 
 ```bash
-task dotfiles:watch-host       # Auto-captures changes
-vim ~/.config/nvim/init.lua    # Edit and changes auto-capture
+mise run dotfiles:watch-host      # Auto-captures changes (if available)
+vim ~/.config/nvim/init.lua       # Edit and changes auto-capture
 ```
 
 **Code-first:**
 
 ```bash
 vim apps/neovim/dotfiles/init.lua  # Edit template
-task dotfiles:generate             # Generate with secrets
-task dotfiles:deploy               # Deploy to home directory
+mise run dotfiles:generate         # Generate with secrets
+mise run dotfiles:deploy           # Deploy to home directory
 ```
 
 ## Repository Structure
@@ -114,22 +115,23 @@ hosts/<hostname>/        # Host-specific configuration
 environment.systemPackages = with pkgs; [ ripgrep ];
 ```
 
-Then: `task refresh-host`
+Then: `mise run refresh`
 
 **Add new host:**
 
 ```bash
 cp -r hosts/keith-macbook-pro hosts/$(hostname -s)
 vim hosts/$(hostname -s)/host-manifest.yml
-task set-up-new-host
+mise run setup
 ```
 
 ## Troubleshooting
 
-**Task not found:**
+**mise not activating:**
 
 ```bash
-direnv reload  # or: nix develop
+exec zsh  # Restart shell
+mise doctor  # Check mise status
 ```
 
 **1Password auth:**
@@ -146,17 +148,17 @@ nix flake check
 ```
 
 **LSP/formatting not working:**
-Ensure you're in dev shell (direnv should auto-load).
+Ensure mise is activated and tools are installed: `mise doctor`
 
 ## Uninstall
 
 ```bash
-task dotfiles:restore   # Restore original dotfiles
-task unbootstrap        # Remove Nix and nix-darwin
+mise run dotfiles:restore   # Restore original dotfiles (if task exists)
+mise run unbootstrap        # Remove Nix and nix-darwin (if task exists)
 ```
 
 ## Resources
 
+- [mise](https://mise.jdx.dev/)
 - [nix-darwin](https://github.com/LnL7/nix-darwin)
 - [Nix Package Search](https://search.nixos.org/packages)
-- [Task](https://taskfile.dev/)

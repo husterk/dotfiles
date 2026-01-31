@@ -23,6 +23,9 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 # shellcheck disable=SC1091
 source "${REPO_ROOT}/scripts/script-helpers.sh"
 
+# Default configuration
+FORCE_OVERWRITE="${FORCE_OVERWRITE:-false}"
+
 # Display script header
 script_header "Generate Nix Configuration" "Creates configuration.nix from template and manifest"
 
@@ -134,7 +137,7 @@ log_success "All prerequisites verified."
 # ------------------------------------------------------------------------
 if [ -f "$GENERATED_ENV" ]; then
   log_info "Using existing .env file: $GENERATED_ENV"
-  log_info "To regenerate .env from 1Password, run: task bootstrap:generate-env"
+  log_info "To regenerate .env from 1Password, run: mise run env:generate"
 else
   log_info "No .env file found. Generating from 1Password..."
 
@@ -147,7 +150,7 @@ else
   else
     log_error "Failed to generate .env file using 1Password CLI."
     log_info "Ensure you are signed in to 1Password and have access to the secrets."
-    log_info "Or run: task bootstrap:generate-env"
+    log_info "Or run: mise run env:generate"
     exit 1
   fi
 fi
@@ -225,8 +228,6 @@ if [ -n "$SYSTEM_MODULES" ]; then
     echo "    $ROOT_RELATIVE_PATH$module_path"
   done > "$TEMP_SYSTEM"
 fi
-SYSTEM_FORMATTED=$(cat "$TEMP_SYSTEM")
-rm "$TEMP_SYSTEM"
 
 # Build the app modules list in proper Nix format
 TEMP_APPS=$(mktemp)
@@ -237,30 +238,18 @@ if [ -n "$APP_MODULES" ]; then
     echo "    $ROOT_RELATIVE_PATH$module_path"
   done > "$TEMP_APPS"
 fi
-APPS_FORMATTED=$(cat "$TEMP_APPS")
-rm "$TEMP_APPS"
 
-# Use awk to replace both placeholders (comment-based format)
-TEMP_CONFIG=$(mktemp)
-awk -v system_modules="$SYSTEM_FORMATTED" -v app_modules="$APPS_FORMATTED" '
-{
-    if ($0 ~ /#\{\{MANIFEST_SYSTEM_MODULES\}\}/) {
-        if (length(system_modules) > 0) {
-            print system_modules
-        }
-        next
-    }
-    if ($0 ~ /#\{\{MANIFEST_APPS_MODULES\}\}/) {
-        if (length(app_modules) > 0) {
-            print app_modules
-        }
-        next
-    }
-    print $0
-}
-' "$GENERATED_CONFIG" > "$TEMP_CONFIG"
+# Use sed to replace both placeholders (comment-based format)
+# First replace system modules
+sed -i.bak "/#{{MANIFEST_SYSTEM_MODULES}}/r $TEMP_SYSTEM" "$GENERATED_CONFIG"
+sed -i.bak "/#{{MANIFEST_SYSTEM_MODULES}}/d" "$GENERATED_CONFIG"
 
-mv "$TEMP_CONFIG" "$GENERATED_CONFIG"
+# Then replace app modules
+sed -i.bak "/#{{MANIFEST_APPS_MODULES}}/r $TEMP_APPS" "$GENERATED_CONFIG"
+sed -i.bak "/#{{MANIFEST_APPS_MODULES}}/d" "$GENERATED_CONFIG"
+
+# Clean up temp files and backup
+rm -f "$TEMP_SYSTEM" "$TEMP_APPS" "${GENERATED_CONFIG}.bak"
 
 # Replace environment variable placeholders using envsubst
 # Export all variables from .env so envsubst can use them

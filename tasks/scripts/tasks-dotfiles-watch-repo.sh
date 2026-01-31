@@ -14,7 +14,7 @@ echo ""
 if command -v fswatch &> /dev/null; then
   fswatch -o "$REPO_ROOT/apps"/*/dotfiles/ | while read -r _; do
     echo "🔄 Template change detected, regenerating..."
-    task bootstrap:generate-dotfiles
+    mise run dotfiles:generate
     echo ""
   done
 else

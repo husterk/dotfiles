@@ -1,7 +1,9 @@
-# Keep Homebrew for other tools that are not managed by Nix, but put it
-# at the END of the PATH. This ensures Nix always wins if there is a conflict.
-export PATH="$PATH:/opt/homebrew/bin"
+# .zprofile - executed for login shells
+# Note: For login interactive shells, both .zprofile and .zshrc run
+# Keep this minimal to avoid duplicate initialization
 
-# Added by OrbStack: command-line tools and integration
-# Comment this line if you don't want it to be added again.
-source ~/.orbstack/shell/init.zsh 2> /dev/null || :
+# Add mise shims to PATH for GUI applications and non-interactive shells
+# This ensures tools like yq are available in terminals launched from GUI apps
+if command -v mise &> /dev/null; then
+  export PATH="$HOME/.local/share/mise/shims:$PATH"
+fi

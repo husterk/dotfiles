@@ -14,7 +14,7 @@ echo ""
 
 if [ ! -d "$HOST_DIR/generated/dotfiles" ]; then
   echo "⚠️  No generated dotfiles found"
-  echo "   Run: task bootstrap:generate-dotfiles"
+  echo "   Run: mise run dotfiles:generate"
   echo ""
   exit 0
 fi

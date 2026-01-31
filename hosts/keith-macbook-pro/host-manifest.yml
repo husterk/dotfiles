@@ -31,9 +31,6 @@ apps:
   - name: davinci-resolve
     modules:
       - /apps/davinci-resolve/davinci-resolve.nix
-  - name: direnv
-    modules:
-      - /apps/direnv/direnv.nix
   - name: dockutil
     modules:
       - /apps/dockutil/dockutil.nix
@@ -49,6 +46,9 @@ apps:
     dotfiles:
       - source: /apps/git/dotfiles/**/*
         target: ~/.config/git/
+  - name: gettext
+    modules:
+      - /apps/gettext/gettext.nix
   - name: homebrew
     modules:
       - /apps/homebrew/homebrew.nix
@@ -152,5 +152,13 @@ apps:
     modules:
       - /apps/zsh/zsh.nix
     dotfiles:
-      - source: /apps/zsh/dotfiles/**/*
-        target: ~/.config/zsh/
+      - source: /apps/zsh/dotfiles/.zshenv-home
+        target: ~/.zshenv
+      - source: /apps/zsh/dotfiles/.zprofile
+        target: ~/.config/zsh/.zprofile
+      - source: /apps/zsh/dotfiles/.zshenv
+        target: ~/.config/zsh/.zshenv
+      - source: /apps/zsh/dotfiles/.zshrc
+        target: ~/.config/zsh/.zshrc
+      - source: /apps/zsh/dotfiles/.zsh-integrations.sh
+        target: ~/.config/zsh/.zsh-integrations.sh

@@ -6,7 +6,7 @@
 # This script provides convenient shortcuts for low-level nix-darwin operations.
 # Use this for direct darwin-rebuild commands without the full workflow.
 #
-# For high-level operations, use the Task runner instead (e.g., task deploy-nix).
+# For high-level operations, use mise instead (e.g., mise run nix:apply).
 #
 # Usage: ./darwin-helper.sh <command> <hostname>
 # ========================================================================

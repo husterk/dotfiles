@@ -8,7 +8,7 @@ BOOTSTRAP_TARGET="${2:?BOOTSTRAP_TARGET required}"
 HOST_DIR="${3:?HOST_DIR required}"
 
 echo "╔══════════════════════════════════════════════════════════════════╗"
-echo "║                       Dotfiles Task Runner                       ║"
+echo "║                        Dotfiles Repository                       ║"
 echo "╚══════════════════════════════════════════════════════════════════╝"
 echo ""
 echo "📋 Current Configuration:"
@@ -24,9 +24,9 @@ fi
 echo ""
 echo "📚 Available Commands:"
 echo ""
-task --list
+mise tasks
 echo ""
-echo "💡 Override hostname: task HOSTNAME=my-host [command]"
-echo "💡 Set up new host: task setup-host (for new hosts)"
-echo "💡 Refresh existing host: task refresh-host (regenerate and redeploy)"
+echo "💡 Override hostname: HOSTNAME=my-host mise run [command]"
+echo "💡 Set up new host: mise run setup (for new hosts)"
+echo "💡 Refresh existing host: mise run refresh (regenerate and redeploy)"
 echo ""

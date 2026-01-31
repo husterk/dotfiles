@@ -64,7 +64,7 @@
 
   // YAML Settings
   "yaml.schemas": {
-    "https://taskfile.dev/schema.json": ["tasks-*.yml", "tasks-*.yaml"],
+    "https://mise.jdx.dev/schema/mise.json": ["mise.toml", "mise.*.toml"],
     "file:///Users/keithhuster/git-repos/dotfiles/hosts/*/host-manifest.yml": [
       "hosts/*/host-manifest.yml"
     ]
@@ -76,6 +76,10 @@
 
   // Terminal Settings
   "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.automationProfile.osx": {
+    "path": "/bin/zsh",
+    "args": ["--login"]
+  },
   "terminal.integrated.env.osx": {
     "TERM": "xterm-256color"
   },
@@ -125,11 +129,9 @@
   // Search Settings
   "search.exclude": {
     "**/.git": true,
-    "**/.direnv": true,
     "**/generated": true,
     "**/.task": true,
     "**/result": true,
-    "**/result-*": true,
-    "**/node_modules": true
+    "**/result-*": true
   }
 }

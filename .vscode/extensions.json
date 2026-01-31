@@ -15,8 +15,8 @@
     // YAML & Configuration Files
     "redhat.vscode-yaml",
 
-    // Task Runner
-    "task.vscode-task",
+    // mise - Tool version manager and task runner
+    "hverlin.mise-vscode",
 
     // Markdown
     "yzhang.markdown-all-in-one",

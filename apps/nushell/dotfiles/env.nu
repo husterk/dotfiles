@@ -26,11 +26,11 @@ $env.PATH = [
     '/sbin'                                          # basic system admin binaries
 ]
 
-# Add Homebrew to Nushell PATH
-# Note: Use prepend to ensure brew takes priority over system defaults
+# Add Homebrew to Nushell PATH at the END (after Nix)
+# This ensures Nix always wins if there is a conflict, consistent with zsh approach
 let brew_path = "/opt/homebrew/bin"
 if ($brew_path | path exists) {
-    $env.PATH = ($env.PATH | split row (char esep) | prepend $brew_path)
+    $env.PATH = ($env.PATH | append $brew_path)
 }
 
 # This is the Nushell way to initialize Starship, creating the cached

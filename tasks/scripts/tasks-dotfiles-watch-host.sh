@@ -13,7 +13,7 @@ echo ""
 if command -v fswatch &> /dev/null; then
   fswatch -o "$HOME/.config" | while read -r _; do
     echo "🔄 Change detected, capturing..."
-    task dotfiles:capture
+    mise run dotfiles:capture
     echo ""
   done
 else
@@ -23,7 +23,7 @@ else
     sleep 5
     if find "$HOME/.config" -newer /tmp/dotfiles-watch-marker 2> /dev/null | grep -q .; then
       echo "🔄 Change detected, capturing..."
-      task dotfiles:capture
+      mise run dotfiles:capture
       echo ""
     fi
     touch /tmp/dotfiles-watch-marker
