@@ -106,6 +106,9 @@ apps:
   - name: ripgrep
     modules:
       - /apps/ripgrep/ripgrep.nix
+  - name: sshpass
+    modules:
+      - /apps/sshpass/sshpass.nix
   - name: starship
     modules:
       - /apps/starship/starship.nix

@@ -98,6 +98,7 @@ apps/<app-name>/
 | `orbstack`           | Fast, light, and simple container & Linux VM manager   | Homebrew       | Yes          |
 | `ripgrep`            | Better and faster grep (search) utility                | Nix            | No           |
 | `starship`           | Terminal prompt customization utility                  | Nix            | Yes          |
+| `sshpass`            | Non-interactive ssh password auth                      | Nix            | No           |
 | `stow`               | GNU Stow symlink farm manager                          | Nix            | No           |
 | `swaks`              | Swiss Army Knife SMTP testing tool                     | Nix            | No           |
 | `visual-studio-code` | Code editor and IDE                                    | Homebrew       | No           |
