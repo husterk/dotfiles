@@ -4,6 +4,9 @@
   "labels": ["dependencies"],
   "rangeStrategy": "pin",
   "schedule": ["* 0-5 1 */2 *"],
+  "nix": {
+    "enabled": true
+  },
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
