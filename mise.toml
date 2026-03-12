@@ -12,7 +12,7 @@ min_version = "2026.1.2"
 # Script dependencies
 jq = "1.8.1"  # JSON processor
 op = "2.32.0" # 1Password CLI
-yq = "4.52.1" # YAML processor
+yq = "4.52.4" # YAML processor
 
 # Shell script quality tools
 shellcheck = "0.11.0"
