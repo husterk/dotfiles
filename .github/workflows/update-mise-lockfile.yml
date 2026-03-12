@@ -1,0 +1,68 @@
+name: Update mise Lockfile
+
+# Update mise Lockfile Workflow
+# -----------------------------
+#
+# This workflow automatically runs `mise lock` to update the mise.lock file
+# whenever Renovate updates tool versions in mise.toml. It commits the
+# updated lockfile back to the Renovate PR branch.
+#
+# Trigger:
+# - Runs on pushes to branches matching the Renovate branch prefix
+#   that modify mise.toml
+#
+# Required Permissions:
+# - contents: write (to push the updated lockfile back to the branch)
+#
+# Important Notes:
+# - Only runs when mise.toml is modified on a Renovate branch
+# - Skips execution if mise.lock is already up to date
+# - Uses the github-actions[bot] identity for commits
+# - Does NOT use [skip ci] in commit messages — other required checks
+#   (e.g., theme-ci-cd-pipeline) must run against the latest PR commit.
+#   No loop risk: this workflow triggers on mise.toml changes only, and the
+#   lockfile commit modifies only mise.lock.
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - "renovate/**"
+    paths:
+      - "mise.toml"
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-lockfile:
+    name: Update mise.lock
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Install mise
+        uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3.6.3
+        with:
+          install: false
+
+      - name: Update mise lockfile
+        run: mise lock
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet mise.lock; then
+            echo "mise.lock is already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add mise.lock
+          git commit -m "chore: update mise.lock"
+          git push

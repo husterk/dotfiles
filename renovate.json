@@ -1,0 +1,58 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "labels": ["dependencies"],
+  "rangeStrategy": "pin",
+  "schedule": ["* 0-5 1 */2 *"],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["dependencies", "security"],
+    "schedule": ["* 0-5 1,15 * *"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 0-5 1 */2 *"]
+  },
+  "packageRules": [
+    {
+      "description": "Group GitHub Actions minor and patch updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "github actions"
+    },
+    {
+      "description": "Group Nix flake inputs",
+      "matchManagers": ["nix"],
+      "groupName": "nix flake inputs"
+    },
+    {
+      "description": "Group mise formatters and linters",
+      "matchManagers": ["mise"],
+      "matchPackageNames": [
+        "shellcheck",
+        "shfmt",
+        "prettier",
+        "stylua",
+        "taplo"
+      ],
+      "groupName": "mise formatters and linters"
+    },
+    {
+      "description": "Group mise language servers",
+      "matchManagers": ["mise"],
+      "matchPackageNames": [
+        "lua-language-server",
+        "npm:bash-language-server",
+        "npm:vscode-langservers-extracted"
+      ],
+      "groupName": "mise language servers"
+    },
+    {
+      "description": "Group mise CLI utilities",
+      "matchManagers": ["mise"],
+      "matchPackageNames": ["jq", "op", "yq", "neovim"],
+      "groupName": "mise cli tools"
+    }
+  ]
+}
