@@ -128,8 +128,8 @@ apps:
     modules:
       - /apps/starship/starship.nix
     dotfiles:
-      - source: /apps/starship/dotfiles/**/*
-        target: ~/.config/starship/
+      - source: /apps/starship/dotfiles/starship.toml
+        target: ~/.config/starship.toml
   - name: stow
     modules:
       - /apps/stow/stow.nix

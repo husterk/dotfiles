@@ -1,1 +1,65 @@
+# Starship Prompt Configuration
+# https://starship.rs/config/
 
+# Timeout for commands executed by starship (in milliseconds)
+command_timeout = 1000
+
+# A blank line between shell prompts
+add_newline = true
+
+# Format string for the prompt
+# Info line: dir > branch status | lang | infra
+# Input line: ❯ character on its own line
+format = """
+$directory$git_branch$git_status$dotnet$python$nodejs$terraform$docker_context$line_break$character"""
+
+[character]
+error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold green)"
+
+[directory]
+read_only = " 󰌾"
+style = "bold cyan"
+truncate_to_repo = true
+truncation_length = 4
+
+[git_branch]
+format = "on [$symbol$branch(:$remote_branch)]($style) "
+style = "bold purple"
+symbol = " "
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold red"
+
+[dotnet]
+detect_extensions = ["csproj", "fsproj", "xproj", "sln"]
+detect_files = ["global.json", "project.json", "Directory.Build.props", "Directory.Build.targets", "Packages.props"]
+format = "via [$symbol($version )(🎯 $tfm )]($style)"
+style = "bold blue"
+symbol = " "
+
+[python]
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+style = "bold yellow"
+symbol = " "
+
+[nodejs]
+detect_extensions = ["js", "mjs", "cjs", "ts", "mts", "cts"]
+format = "via [$symbol($version )]($style)"
+style = "bold green"
+symbol = " "
+
+[terraform]
+format = "via [$symbol$workspace]($style) "
+style = "bold 105"
+symbol = " "
+
+[docker_context]
+format = "via [$symbol$context]($style) "
+only_with_files = true
+style = "bold blue"
+symbol = " "
+
+[shell]
+disabled = true
