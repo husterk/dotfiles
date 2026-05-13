@@ -6,3 +6,4 @@
 - Editor: Neovim.
 - When you suggest commands, prefer paths that work in a non-interactive shell
   (don't assume mise has activated).
+- Never add "Co-Authored-By" trailers to commits or PRs. Do not list Claude as an author or co-author.
