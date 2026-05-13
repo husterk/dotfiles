@@ -13,6 +13,12 @@ apps:
     dotfiles:
       - source: /apps/1password/dotfiles/**/*
         target: ~/.config/1Password/
+  - name: agent-of-empires
+    modules:
+      - /apps/agent-of-empires/agent-of-empires.nix
+    dotfiles:
+      - source: /apps/agent-of-empires/dotfiles/**/*
+        target: ~/.agent-of-empires/
   - name: bat
     modules:
       - /apps/bat/bat.nix
@@ -22,6 +28,12 @@ apps:
   - name: ca-certificates
     modules:
       - /apps/ca-certificates/ca-certificates.nix
+  - name: claude
+    modules:
+      - /apps/claude/claude.nix
+    dotfiles:
+      - source: /apps/claude/dotfiles/**/*
+        target: ~/.claude/
   - name: curl
     modules:
       - /apps/curl/curl.nix

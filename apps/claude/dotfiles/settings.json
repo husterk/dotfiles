@@ -1,0 +1,11 @@
+{
+  "theme": "dark",
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline.sh",
+    "padding": 2
+  }
+}

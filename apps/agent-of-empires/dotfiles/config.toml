@@ -1,0 +1,22 @@
+# agent-of-empires global config
+# Schema: https://www.agent-of-empires.com/docs/guides/configuration/
+
+[theme]
+name = "empire"
+
+[session]
+default_tool = "claude"
+
+[worktree]
+auto_cleanup = true
+enabled = true
+path_template = "../{repo-name}-worktrees/{branch}"
+
+[tmux]
+clipboard = "auto"
+mouse = "auto"
+status_bar = "auto"
+
+[updates]
+auto_update = false
+check_enabled = true

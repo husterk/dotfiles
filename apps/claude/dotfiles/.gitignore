@@ -1,0 +1,13 @@
+# Transient Claude Code state — never check in
+settings.local.json
+sessions/
+projects/
+plugins/
+cache/
+shell-snapshots/
+session-env/
+backups/
+plans/
+history.jsonl
+*.jsonl
+.DS_Store

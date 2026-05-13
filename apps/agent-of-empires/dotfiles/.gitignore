@@ -1,0 +1,4 @@
+# Per-profile config and runtime state — managed by aoe, not by dotfiles
+profiles/
+*.log
+.DS_Store

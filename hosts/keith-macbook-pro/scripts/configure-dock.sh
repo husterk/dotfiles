@@ -72,9 +72,10 @@ declare -a DOCK_APPS=(
   "/System/Applications/Messages.app"
   "/Applications/Fork.app"
   "/Applications/Nix Apps/WezTerm.app"
+  "/Applications/Claude.app"
   "/Applications/Visual Studio Code.app"
   "/Applications/1Password.app"
-  "/Applications/Davinci Resolve.app"
+  "/Applications/DaVinci Resolve.app"
   "/Applications/Insta360 Studio.app"
   "/System/Applications/Notes.app"
 )
@@ -86,30 +87,43 @@ declare -a DOCK_APPS=(
 log_info "Configuring Dock for ${username}..."
 echo ""
 
-# Get current dock items
+# Get current dock items as decoded /path/to/.app strings.
+# dockutil --list emits TAB-separated rows: <name>\t<url>\t<section>\t<plist>\t<bundle_id>
+# The url column is percent-encoded (e.g. file:///Applications/Google%20Chrome.app/),
+# so decode it before comparing against DOCK_APPS entries.
 log_info "Checking current Dock configuration..."
-CURRENT_DOCK=$(sudo -u "${username}" "${dockutilPath}" --list "${userHomePath}" 2> /dev/null | grep -E '^\s+file:///') || true
+CURRENT_DOCK_PATHS=()
+while IFS=$'\t' read -r _name url _rest; do
+  [[ "${url}" == file:///* ]] || continue
+  path="${url#file://}"
+  path="${path%/}"
+  # URL-decode %XX sequences (e.g. %20 -> space) via printf's \x interpretation.
+  path="$(printf '%b' "${path//%/\\x}")"
+  CURRENT_DOCK_PATHS+=("${path}")
+done < <(sudo -u "${username}" "${dockutilPath}" --list "${userHomePath}" 2> /dev/null || true)
 
 # Check if we need to make changes
 NEEDS_UPDATE=false
-
-# Count expected apps (only those that exist)
 EXPECTED_COUNT=0
 for app in "${DOCK_APPS[@]}"; do
   if [ -e "${app}" ]; then
     EXPECTED_COUNT=$((EXPECTED_COUNT + 1))
-    # Check if this app is in the current dock at the correct position
-    if ! echo "${CURRENT_DOCK}" | grep -qF "${app}"; then
+    found=false
+    for current in "${CURRENT_DOCK_PATHS[@]+"${CURRENT_DOCK_PATHS[@]}"}"; do
+      if [ "${current}" = "${app}" ]; then
+        found=true
+        break
+      fi
+    done
+    if [ "${found}" = false ]; then
       NEEDS_UPDATE=true
       break
     fi
   fi
 done
 
-# Count current dock items
-CURRENT_COUNT=$(echo "${CURRENT_DOCK}" | grep -c 'file:///' || echo "0")
-
 # If counts don't match, we need to update
+CURRENT_COUNT=${#CURRENT_DOCK_PATHS[@]}
 if [ "${CURRENT_COUNT}" -ne "${EXPECTED_COUNT}" ]; then
   NEEDS_UPDATE=true
 fi

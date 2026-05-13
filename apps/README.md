@@ -74,8 +74,10 @@ apps/<app-name>/
 | App                  | Description                                            | Installs Via   | Has Dotfiles |
 | -------------------- | ------------------------------------------------------ | -------------- | ------------ |
 | `1password`          | Password manager and CLI tool                          | Homebrew       | Yes          |
+| `agent-of-empires`   | Terminal session manager for AI coding agents (TUI)    | Homebrew       | Yes          |
 | `bat`                | A better `cat` command                                 | Nix            | Yes          |
 | `ca-certificates`    | SSL/TLS certificate management system                  | Homebrew       | No           |
+| `claude`             | Anthropic's AI assistant                               | Homebrew       | Yes          |
 | `curl`               | Command-line tool for transferring data with URLs      | Nix            | Yes          |
 | `davinci-resolve`    | Advanced video editor system                           | Mas (Homebrew) | No           |
 | `direnv`             | Environment switcher for the shell                     | Nix            | No           |
