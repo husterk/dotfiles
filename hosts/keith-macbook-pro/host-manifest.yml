@@ -61,6 +61,9 @@ apps:
   - name: gettext
     modules:
       - /apps/gettext/gettext.nix
+  - name: gh
+    modules:
+      - /apps/gh/gh.nix
   - name: homebrew
     modules:
       - /apps/homebrew/homebrew.nix
