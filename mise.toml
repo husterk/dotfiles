@@ -374,3 +374,33 @@ HOSTNAME=$(hostname -s)
   "macos-arm64" \
   "{{ config_root }}/hosts/$HOSTNAME"
 '''
+
+[tasks.verify]
+depends = ["dev:validate-host-config", "nix:check", "dotfiles:status"]
+description = "End-to-end smoke test: host config, Nix flake, dotfile deployment, brew presence"
+raw = true
+run = '''
+#!/usr/bin/env bash
+set -uo pipefail
+echo ""
+echo "🍺 Checking declared Homebrew formulae are installed..."
+declared=$(grep -rEho 'brews = \[[^]]*\]|casks = \[[^]]*\]' "{{ config_root }}/apps/" \
+  | grep -oE '"[^"]+"' \
+  | tr -d '"' \
+  | sort -u)
+missing=0
+for pkg in $declared; do
+  if ! /opt/homebrew/bin/brew list --formula --cask 2>/dev/null | grep -qFx "$pkg"; then
+    echo "  ❌ missing: $pkg"
+    missing=$((missing + 1))
+  fi
+done
+if [[ $missing -eq 0 ]]; then
+  echo "  ✅ all declared Homebrew packages present"
+else
+  echo "  ⚠️  $missing declared package(s) not installed — run 'mise run nix:apply'"
+  exit 1
+fi
+echo ""
+echo "✅ Verification complete"
+'''
