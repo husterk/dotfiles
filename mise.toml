@@ -16,7 +16,7 @@ yq = "4.52.4" # YAML processor
 
 # Shell script quality tools
 shellcheck = "0.11.0"
-shfmt = "3.13.0"
+shfmt = "3.13.1"
 
 # Code formatters
 prettier = "3.8.1" # Markdown, JSON, YAML formatter
