@@ -163,7 +163,7 @@ url = "https://cache.agilebits.com/dist/1P/op2/pkg/v2.32.0/op_darwin_arm64_v2.32
 url = "https://cache.agilebits.com/dist/1P/op2/pkg/v2.32.0/op_darwin_arm64_v2.32.0.zip"
 
 [[tools.prettier]]
-version = "3.8.1"
+version = "3.8.3"
 backend = "npm:prettier"
 
 [[tools.shellcheck]]
