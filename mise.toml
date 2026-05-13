@@ -29,7 +29,7 @@ lua-language-server = "3.17.1"
 "npm:vscode-langservers-extracted" = "4.10.0"
 
 # Editor
-neovim = "0.11.6"
+"aqua:neovim/neovim" = "0.11.6"
 
 # Note: Nix development tools (nixd, nixfmt, statix) are installed
 # via nix-darwin system packages, not mise. See modules/macos-base.nix
