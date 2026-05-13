@@ -1,5 +1,5 @@
 [include]
-	path = ~/git-repos/delta/catppuccin.gitconfig
+	path = ~/.config/git/catppuccin.gitconfig
 [user]
 	name = ${USER_FIRST_NAME} ${USER_LAST_NAME}
 	email = ${USER_EMAIL}
