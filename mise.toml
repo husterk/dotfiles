@@ -233,6 +233,14 @@ HOSTNAME=$(hostname -s)
 '''
 
 # --------------------------------------------------------------------------
+# VSCode tasks
+# --------------------------------------------------------------------------
+[tasks."vscode:install-extensions"]
+description = "Install required VSCode extensions (Claude Code)"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-vscode-install-extensions.sh"
+
+# --------------------------------------------------------------------------
 # Development tasks
 # --------------------------------------------------------------------------
 [tasks."dev:format"]
@@ -313,6 +321,9 @@ echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
 echo ""
+echo "🧩 Installing VSCode extensions..."
+mise run vscode:install-extensions
+echo ""
 echo "✅ Setup complete!"
 '''
 
@@ -330,6 +341,9 @@ mise run nix:apply
 echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
+echo ""
+echo "🧩 Installing VSCode extensions..."
+mise run vscode:install-extensions
 echo ""
 echo "✅ Refresh complete!"
 '''

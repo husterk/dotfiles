@@ -16,8 +16,9 @@ hosts/**/.config
 # mise task runner state
 .task/
 
-# Claude Code per-project local settings (auto-created, not for sharing)
-.claude/
+# Claude Code per-project local overrides only (shared project config
+# lives at .claude/settings.json, commands/, agents/, etc.)
+.claude/settings.local.json
 
 # Nix build results
 result
