@@ -121,6 +121,9 @@ apps:
   - name: ripgrep
     modules:
       - /apps/ripgrep/ripgrep.nix
+    dotfiles:
+      - source: /apps/ripgrep/dotfiles/**/*
+        target: ~/.config/ripgrep/
   - name: sshpass
     modules:
       - /apps/sshpass/sshpass.nix
