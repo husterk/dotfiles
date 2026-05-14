@@ -33,3 +33,6 @@ fi
 if [ -f "$ZDOTDIR/.zsh-integrations.sh" ]; then
   source "$ZDOTDIR/.zsh-integrations.sh"
 fi
+
+# Aliases
+command -v lazygit &> /dev/null && alias lg="lazygit"
