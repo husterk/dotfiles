@@ -240,6 +240,11 @@ description = "Install required VSCode extensions (Claude Code)"
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-vscode-install-extensions.sh"
 
+[tasks."vscode:merge-settings"]
+description = "Merge Claude Code + Copilot settings into VSCode settings.json (non-destructive)"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-vscode-merge-settings.sh {{ config_root }}"
+
 # --------------------------------------------------------------------------
 # Development tasks
 # --------------------------------------------------------------------------
@@ -324,6 +329,9 @@ echo ""
 echo "🧩 Installing VSCode extensions..."
 mise run vscode:install-extensions
 echo ""
+echo "⚙️  Merging VSCode settings..."
+mise run vscode:merge-settings
+echo ""
 echo "✅ Setup complete!"
 '''
 
@@ -344,6 +352,9 @@ mise run dotfiles:deploy
 echo ""
 echo "🧩 Installing VSCode extensions..."
 mise run vscode:install-extensions
+echo ""
+echo "⚙️  Merging VSCode settings..."
+mise run vscode:merge-settings
 echo ""
 echo "✅ Refresh complete!"
 '''

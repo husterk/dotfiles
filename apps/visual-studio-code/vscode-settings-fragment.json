@@ -1,0 +1,9 @@
+{
+  "claudeCode.initialPermissionMode": "default",
+  "claudeCode.preferredLocation": "panel",
+  "claudeCode.autosave": true,
+  "github.copilot.enable": {
+    "*": true
+  },
+  "github.copilot.nextEditSuggestions.enabled": false
+}
