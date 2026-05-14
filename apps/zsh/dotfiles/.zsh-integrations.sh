@@ -2,6 +2,12 @@
 # Shell integrations for zsh
 # This file is sourced by .zshrc if it exists
 
+# fzf zsh keybindings: Ctrl-T file picker, Ctrl-R history, Alt-C cd
+if command -v fzf &> /dev/null; then
+  # shellcheck disable=SC1090  # `fzf --zsh` emits init script at runtime
+  source <(fzf --zsh)
+fi
+
 # Yazi shell wrapper for changing directory when exiting
 if command -v yazi &> /dev/null; then
   function y() {
