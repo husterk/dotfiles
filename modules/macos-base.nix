@@ -15,6 +15,28 @@
     XDG_STATE_HOME = "$HOME/.local/state";
   };
 
+  # nix-darwin's environment.variables only writes /etc/zshenv, so GUI apps
+  # spawned by launchd (Finder/Dock/Spotlight, GUI editors, etc.) don't see
+  # these XDG vars. A user LaunchAgent runs at login to push them into
+  # launchd's env so any app launchd later spawns inherits them.
+  launchd.user.agents.xdg-env = {
+    serviceConfig = {
+      Label = "com.user.xdg-env";
+      RunAtLoad = true;
+      KeepAlive = false;
+      ProgramArguments = [
+        "/bin/sh"
+        "-c"
+        ''
+          /bin/launchctl setenv XDG_CONFIG_HOME "$HOME/.config"
+          /bin/launchctl setenv XDG_CACHE_HOME "$HOME/Library/Caches"
+          /bin/launchctl setenv XDG_DATA_HOME "$HOME/.local/share"
+          /bin/launchctl setenv XDG_STATE_HOME "$HOME/.local/state"
+        ''
+      ];
+    };
+  };
+
   # =========================================================================
   # macOS System Defaults
   # =========================================================================
