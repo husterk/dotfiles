@@ -15,8 +15,15 @@
   # Required System Packages
   # =========================================================================
 
+  # Yazi is sourced from Homebrew because nixpkgs lags upstream releases,
+  # and recent Yazi plugins require versions newer than what nixpkgs ships.
+  homebrew = {
+    brews = [
+      "yazi"
+    ];
+  };
+
   environment.systemPackages = with pkgs; [
-    yazi
     ffmpegthumbnailer # For video thumbnail previews
     poppler-utils # For PDF thumbnail previews
     imagemagick # For image thumbnail previews
