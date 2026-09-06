@@ -17,6 +17,11 @@ set -euo pipefail
 
 REPO_ROOT="${1:?REPO_ROOT required}"
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=../../scripts/gha-helpers.sh
+source "${SCRIPT_DIR}/../../scripts/gha-helpers.sh"
+
 cd "$REPO_ROOT"
 
 echo "🔍 Checking mise.toml pins against mise.lock..."
@@ -70,6 +75,9 @@ report="$(jq -rn --argjson pinned "$pinned" --argjson locked "$locked" '
     end
 ')"
 
+gha_summary_heading "Tool pins (mise.toml vs mise.lock)"
+gha_summary_table "" "Tool" "mise.toml" "mise.lock"
+
 failures=0
 checked=0
 while IFS=$'\t' read -r status tool pin lock; do
@@ -77,14 +85,18 @@ while IFS=$'\t' read -r status tool pin lock; do
     OK)
       checked=$((checked + 1))
       printf '  ✅ %-34s %s\n' "$tool" "$pin"
+      gha_summary_row "✅" "\`$tool\`" "$pin" "$lock"
       ;;
     SKIP)
       printf '  ⏭️  %-34s %-12s %s\n' "$tool" "$pin" "$lock"
+      gha_summary_row "⏭️" "\`$tool\`" "$pin" "$lock"
       ;;
     FAIL)
       checked=$((checked + 1))
       failures=$((failures + 1))
       printf '  ❌ %-34s mise.toml=%-12s mise.lock=%s\n' "$tool" "$pin" "$lock"
+      gha_summary_row "❌" "\`$tool\`" "**$pin**" "**$lock**"
+      gha_error "$tool: mise.toml pins $pin but mise.lock records $lock - run 'mise lock'" "mise.toml"
       ;;
   esac
 done <<< "$report"
@@ -93,7 +105,9 @@ echo ""
 
 if [ "$failures" -eq 0 ]; then
   echo "✅ All $checked exact pin(s) match mise.lock"
+  gha_summary_result ok "All $checked exact pin(s) match mise.lock"
 else
+  gha_summary_result fail "$failures of $checked exact pin(s) disagree with mise.lock"
   echo "❌ $failures of $checked exact pin(s) disagree with mise.lock"
   echo ""
   echo "Run 'mise lock' to regenerate the lockfile from mise.toml."

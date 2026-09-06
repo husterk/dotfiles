@@ -15,6 +15,11 @@ set -euo pipefail
 
 REPO_ROOT="${1:?REPO_ROOT required}"
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=../../scripts/gha-helpers.sh
+source "${SCRIPT_DIR}/../../scripts/gha-helpers.sh"
+
 cd "$REPO_ROOT"
 
 # Where nix-darwin puts system packages. Absent on CI and non-darwin machines.
@@ -33,6 +38,8 @@ echo ""
 
 if [ ! -d "$NIX_BIN" ]; then
   echo "⚠️  $NIX_BIN not found - skipping (not a nix-darwin machine)"
+  gha_summary_heading "mise/Nix tool sync"
+  gha_summary "⏭️ Skipped - \`$NIX_BIN\` is absent, so there is no Nix side to compare against. This gate only runs on a nix-darwin machine."
   exit 0
 fi
 
@@ -49,6 +56,9 @@ extract_version() {
 
 mise_versions="$(mise ls --current --json | jq -r \
   'to_entries[] | "\(.key)\t\(.value[0].requested_version // .value[0].version)"')"
+
+gha_summary_heading "mise/Nix tool sync"
+gha_summary_table "" "Tool" "mise" "Nix" "Nix module"
 
 drift=0
 checked=0
@@ -78,7 +88,10 @@ for entry in "${DUAL_MANAGED[@]}"; do
 
   if [ "$mise_version" = "$nix_version" ]; then
     printf '  ✅ %-8s mise=%-10s nix=%-10s\n' "$binary" "$mise_version" "$nix_version"
+    gha_summary_row "✅" "\`$binary\`" "$mise_version" "$nix_version" "\`$nix_module\`"
   else
+    gha_summary_row "❌" "\`$binary\`" "**$mise_version**" "**$nix_version**" "\`$nix_module\`"
+    gha_error "$binary: mise pins $mise_version but Nix provides $nix_version" "mise.toml"
     printf '  ❌ %-8s mise=%-10s nix=%-10s  DRIFT\n' "$binary" "$mise_version" "$nix_version"
     echo "       mise pin: mise.toml ($mise_key)"
     echo "       nix side: $nix_module"
@@ -90,7 +103,9 @@ echo ""
 
 if [ "$drift" -eq 0 ]; then
   echo "✅ All $checked dual-managed tool(s) in sync!"
+  gha_summary_result ok "All $checked dual-managed tool(s) in sync"
 else
+  gha_summary_result fail "$drift of $checked dual-managed tool(s) have drifted"
   echo "❌ $drift of $checked dual-managed tool(s) have drifted"
   echo ""
   echo "The Nix side follows nixpkgs and moves with 'mise run nix:update'."

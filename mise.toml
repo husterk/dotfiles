@@ -264,7 +264,7 @@ raw = true
 # it to gate, not to preview - `git diff` afterwards shows what it fixed.
 description = "Fail if formatting is not clean (treefmt --ci)"
 raw = true
-run = "cd {{ config_root }} && treefmt --ci"
+run = "{{ config_root }}/tasks/scripts/tasks-dev-format-check.sh {{ config_root }}"
 
 [tasks."dev:check-tool-sync"]
 description = "Check tools managed by both mise and Nix agree on a version"
