@@ -96,8 +96,9 @@ jobs:
       - name: Formatting is clean
         run: mise run dev:format-check
 
-      # shellcheck + statix + the mise/Nix tool-sync check. The sync check
-      # no-ops here: it exits 0 when /run/current-system/sw/bin is absent, so
-      # it stays a nix-darwin-only gate.
+      # shellcheck, statix, the mise/Nix tool-sync check, the US spelling
+      # scanner, and the Claude skill/agent audit. The sync check no-ops here:
+      # it exits 0 when /run/current-system/sw/bin is absent, so it stays a
+      # nix-darwin-only gate. The last two need python3, which the runner has.
       - name: Lint
         run: mise run dev:lint

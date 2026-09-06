@@ -61,13 +61,18 @@ mise tasks               # List all tasks
 enforcing the same gates as the pre-commit hook so that automated PRs (Renovate)
 can't land code that would trip the hook on someone else's next commit.
 
-| Check                        | Task                              |
-| ---------------------------- | --------------------------------- |
-| Lockfile checksums are valid | `mise install --locked`           |
-| `mise.lock` matches pins     | `mise run dev:check-tool-pins`    |
-| Host manifests are valid     | `mise run dev:validate-all-hosts` |
-| Formatting is clean          | `mise run dev:format-check`       |
-| Shell + Nix lint, tool sync  | `mise run dev:lint`               |
+| Check                          | Task                              |
+| ------------------------------ | --------------------------------- |
+| Lockfile checksums are valid   | `mise install --locked`           |
+| `mise.lock` matches pins       | `mise run dev:check-tool-pins`    |
+| Host manifests are valid       | `mise run dev:validate-all-hosts` |
+| Formatting is clean            | `mise run dev:format-check`       |
+| Lint, tool sync, prose, skills | `mise run dev:lint`               |
+
+`dev:lint` fans out to shellcheck, statix, the mise/Nix tool-sync check, the US
+spelling scanner over tracked Markdown, and a structural audit of the Claude
+skill and agent definitions. Run any of them alone with
+`mise run dev:check-spelling` or `mise run dev:check-skills`.
 
 Every task above is runnable locally, and CI installs `nixfmt`/`statix`/
 `treefmt` from the same nixpkgs revision the host builds from, so results match

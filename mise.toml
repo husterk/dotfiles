@@ -254,8 +254,8 @@ raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-format.sh {{ config_root }}"
 
 [tasks."dev:lint"]
-depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync"]
-description = "Lint all code (shell scripts + Nix files)"
+depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync", "dev:check-spelling", "dev:check-skills"]
+description = "Lint all code (shell + Nix + Markdown + Claude definitions)"
 raw = true
 
 [tasks."dev:format-check"]
@@ -265,6 +265,20 @@ raw = true
 description = "Fail if formatting is not clean (treefmt --ci)"
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-format-check.sh {{ config_root }}"
+
+[tasks."dev:check-spelling"]
+# Enforces the "Always US English" rule in the deployed
+# apps/claude/dotfiles/rules/communication.md. The scanner blanks code spans
+# and fenced blocks first, so identifiers are never flagged.
+description = "Fail on British spellings in tracked Markdown"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-check-spelling.sh {{ config_root }}"
+
+[tasks."dev:check-skills"]
+# Bad skill frontmatter fails silently: Claude just never loads the file.
+description = "Validate Claude Code skill and agent definitions"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-check-skills.sh {{ config_root }}"
 
 [tasks."dev:check-tool-sync"]
 description = "Check tools managed by both mise and Nix agree on a version"

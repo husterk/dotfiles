@@ -1,12 +1,12 @@
 ---
 name: remove-app
-description: Remove an application from this dotfiles repo. Use when the user asks to "remove", "uninstall", "drop", or "delete" a macOS app/tool from the Nix-darwin + mise config. Deletes apps/<name>/ and unregisters it from hosts/<hostname>/host-manifest.yml. Does NOT run `mise run refresh` — the user does that.
+description: Remove an application from this dotfiles repo. Use when the user asks to "remove", "uninstall", "drop", or "delete" a macOS app/tool from the Nix-darwin + mise config. Deletes apps/<name>/ and unregisters it from hosts/<hostname>/host-manifest.yml. Does NOT run `mise run refresh`; the user does that.
 allowed-tools: Read, Write, Edit, Bash, AskUserQuestion
 ---
 
 # remove-app
 
-Unregister an app from the host manifest and delete its `apps/<name>/` directory. Stop after files are changed — never run `mise run refresh` yourself.
+Unregister an app from the host manifest and delete its `apps/<name>/` directory. Stop after files are changed. Never run `mise run refresh` yourself.
 
 ## When to use
 
@@ -14,7 +14,7 @@ User says any of: "remove `<app>`", "uninstall `<app>`", "drop `<app>` from the 
 
 ## Inputs to gather
 
-1. **App name** — if not specified, list the current apps from `apps/` (`ls apps/`) and `AskUserQuestion` for the right one.
+1. **App name**: if not specified, list the current apps from `apps/` (`ls apps/`) and `AskUserQuestion` for the right one.
 
 ## Steps
 
@@ -23,7 +23,7 @@ User says any of: "remove `<app>`", "uninstall `<app>`", "drop `<app>` from the 
 - Confirm `apps/<name>/` exists.
 - Confirm an entry with `name: <name>` exists in `hosts/keith-macbook-pro/host-manifest.yml`.
 
-If only one of those is true, surface the inconsistency and ask the user whether to proceed (likely yes — the repo is partially out of sync).
+If only one of those is true, surface the inconsistency and ask the user whether to proceed (likely yes, since the repo is partially out of sync).
 
 ### 2. Scan for cross-references
 
@@ -75,5 +75,5 @@ Mention the Homebrew zap behavior if the removed app declared `homebrew.brews` /
 ## Notes
 
 - The change is fully recoverable from git until committed (`git restore -SW .` to undo manifest edits + `git restore apps/<name>/` is not enough for a deleted dir; use `git checkout HEAD -- apps/<name>/`).
-- Never edit `hosts/keith-macbook-pro/generated/` — that's machine-generated and gitignored.
+- Never edit `hosts/keith-macbook-pro/generated/`. That's machine-generated and gitignored.
 - For hosts other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.yml`. Detect via `hostname -s`.
