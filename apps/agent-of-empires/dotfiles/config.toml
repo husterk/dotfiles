@@ -18,5 +18,8 @@ mouse = "auto"
 status_bar = "auto"
 
 [updates]
-auto_update = false
-check_enabled = true
+# Replaces the old auto_update/check_enabled pair (removed in aoe's config
+# schema). "notify" == the previous check_enabled = true + auto_update = false:
+# check for releases and report, never install on its own. Homebrew owns the
+# actual upgrade.
+update_check_mode = "notify"
