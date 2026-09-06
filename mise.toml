@@ -258,10 +258,28 @@ depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync"]
 description = "Lint all code (shell scripts + Nix files)"
 raw = true
 
+[tasks."dev:format-check"]
+# treefmt --ci implies --no-cache and --fail-on-change. Note it still writes:
+# the formatters run in place and the run then fails if anything changed. Use
+# it to gate, not to preview - `git diff` afterwards shows what it fixed.
+description = "Fail if formatting is not clean (treefmt --ci)"
+raw = true
+run = "cd {{ config_root }} && treefmt --ci"
+
 [tasks."dev:check-tool-sync"]
 description = "Check tools managed by both mise and Nix agree on a version"
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-sync.sh {{ config_root }}"
+
+[tasks."dev:check-tool-pins"]
+description = "Check mise.lock records the versions pinned in mise.toml"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-pins.sh {{ config_root }}"
+
+[tasks."dev:validate-all-hosts"]
+description = "Validate every host's configuration and manifests"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-validate-all-hosts.sh {{ config_root }}"
 
 [tasks."dev:lint-scripts"]
 description = "Lint shell scripts with shellcheck"
