@@ -71,7 +71,7 @@ declare -a DOCK_APPS=(
   "/Applications/Google Chrome.app"
   "/System/Applications/Messages.app"
   "/Applications/Fork.app"
-  "/Applications/Nix Apps/WezTerm.app"
+  "/Applications/WezTerm.app"
   "/Applications/Claude.app"
   "/Applications/Visual Studio Code.app"
   "/Applications/1Password.app"

@@ -104,7 +104,7 @@ apps/<app-name>/
 | `stow`               | GNU Stow symlink farm manager                          | Nix            | No           |
 | `swaks`              | Swiss Army Knife SMTP testing tool                     | Nix            | No           |
 | `visual-studio-code` | Code editor and IDE                                    | Homebrew       | No           |
-| `wezterm`            | Modern, fast, and customizable terminal emulator       | Nix            | Yes          |
+| `wezterm`            | Modern, fast, and customizable terminal emulator       | Homebrew       | Yes          |
 | `wget`               | Network downloader                                     | Nix            | Yes          |
 | `xcode`              | Apple XCode software development tools                 | Mas (Homebrew) | No           |
 | `yazi`               | Awesome TUI for file management                        | Nix            | Yes          |
