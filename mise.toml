@@ -11,7 +11,7 @@ min_version = "2026.1.2"
 [tools]
 # Script dependencies
 jq = "1.8.2"  # JSON processor
-op = "2.32.0" # 1Password CLI
+op = "2.39.0" # 1Password CLI
 yq = "4.53.2" # YAML processor
 
 # Shell script quality tools
@@ -29,7 +29,7 @@ lua-language-server = "3.18.2"
 "npm:vscode-langservers-extracted" = "4.10.0"
 
 # Editor
-"aqua:neovim/neovim" = "0.11.6"
+"aqua:neovim/neovim" = "0.12.5"
 
 # Note: Nix development tools (nixd, nixfmt, statix) are installed
 # via nix-darwin system packages, not mise. See modules/macos-base.nix
