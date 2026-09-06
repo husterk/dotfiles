@@ -271,7 +271,6 @@
       "Bash(sudo *)"
     ],
     "deny": [
-      "Read(hosts/*/generated/**)",
       "Edit(hosts/*/generated/**)",
       "Write(hosts/*/generated/**)",
       "Read(./.env)",
