@@ -46,9 +46,20 @@ locked="$(taplo get -o json 'tools' -f mise.lock |
 report="$(jq -rn --argjson pinned "$pinned" --argjson locked "$locked" '
   $pinned
   | to_entries[]
+  # A pin is either a bare string ("1.2.3") or mise'"'"'s table form
+  # ({ version = "1.2.3", ... }). Normalise before comparing; anything else
+  # has no version to check.
+  | {
+      key: .key,
+      value: (if (.value | type) == "string" then .value
+              elif (.value | type) == "object" then (.value.version // null)
+              else null end)
+    }
   | . as $entry
   | ($locked[$entry.key]) as $lock
-  | if ($entry.value | test("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$") | not) then
+  | if $entry.value == null then
+      "SKIP\t\($entry.key)\t-\t(no version to check)"
+    elif ($entry.value | test("^[0-9]+\\.[0-9]+(\\.[0-9]+)?$") | not) then
       "SKIP\t\($entry.key)\t\($entry.value)\t(not an exact pin)"
     elif $lock == null then
       "FAIL\t\($entry.key)\t\($entry.value)\t(missing from mise.lock)"
