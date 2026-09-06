@@ -25,7 +25,9 @@ while IFS= read -r line; do F+=("$line"); done < <(
     (.cost.total_lines_removed                // 0),
     (.pr.number                               // ""),
     (.pr.url                                  // ""),
-    (.pr.review_state                         // "")'
+    (.pr.review_state                         // ""),
+    (.rate_limits.five_hour.used_percentage   // "" | if . == "" then "" else floor end),
+    (.rate_limits.seven_day.used_percentage   // "" | if . == "" then "" else floor end)'
 )
 MODEL="${F[0]}"
 EFFORT="${F[1]}"
@@ -42,6 +44,8 @@ LINES_DEL="${F[11]}"
 PR_NUM="${F[12]}"
 PR_URL="${F[13]}"
 PR_STATE="${F[14]}"
+LIMIT_5H="${F[15]}"
+LIMIT_7D="${F[16]}"
 
 CYAN='\033[36m'
 MAGENTA='\033[35m'
@@ -166,6 +170,30 @@ if [ "${LINES_ADD:-0}" -gt 0 ] || [ "${LINES_DEL:-0}" -gt 0 ]; then
   METRICS="${METRICS} · ${GREEN}+${LINES_ADD}${RESET}/${RED}-${LINES_DEL}${RESET}"
 fi
 METRICS="${METRICS} · ${DIM}⏱ ${DURATION_FMT}${RESET}"
+
+# Plan usage. Shown only once it is worth acting on: below half consumed there
+# is nothing to decide, and a permanent segment would just be noise. The
+# seven-day window only appears when it is the tighter of the two, since that
+# is the one that decides whether a long task can finish today.
+show_limit=""
+if [ -n "$LIMIT_5H" ] && [ "$LIMIT_5H" -ge 50 ]; then
+  show_limit="5h ${LIMIT_5H}%"
+fi
+if [ -n "$LIMIT_7D" ] && [ "$LIMIT_7D" -ge 50 ] && [ "${LIMIT_7D:-0}" -gt "${LIMIT_5H:-0}" ]; then
+  show_limit="7d ${LIMIT_7D}%"
+fi
+if [ -n "$show_limit" ]; then
+  worst="${LIMIT_5H:-0}"
+  [ "${LIMIT_7D:-0}" -gt "$worst" ] && worst="${LIMIT_7D:-0}"
+  if [ "$worst" -ge 90 ]; then
+    LIMIT_COLOR="$RED"
+  elif [ "$worst" -ge 75 ]; then
+    LIMIT_COLOR="$YELLOW"
+  else
+    LIMIT_COLOR="$DIM"
+  fi
+  METRICS="${METRICS} · ${LIMIT_COLOR}◷ ${show_limit}${RESET}"
+fi
 
 # Single line: identity/location/git/PR, then a dim divider, then session metrics.
 printf '%b\n' "${LINE1} ${DIM}│${RESET} ${METRICS}"

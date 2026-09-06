@@ -6,9 +6,9 @@
     "sessionUrl": false
   },
   "autoUpdatesChannel": "latest",
+  "autoContinueAtUsageLimit": true,
   "effortLevel": "high",
   "env": {
-    "ENABLE_TOOL_SEARCH": "true",
     "CLAUDE_CODE_NO_FLICKER": "1"
   },
   "hooks": {
@@ -142,7 +142,6 @@
     ],
     "deny": [
       "Edit(hosts/*/generated/**)",
-      "Write(hosts/*/generated/**)",
       "Read(./.env)",
       "Read(./secrets/**)",
       "Read(**/*.key)",
@@ -164,6 +163,5 @@
   "subagentStatusLine": {
     "type": "command",
     "command": "bash ~/.claude/subagent-statusline.sh"
-  },
-  "theme": "dark"
+  }
 }
