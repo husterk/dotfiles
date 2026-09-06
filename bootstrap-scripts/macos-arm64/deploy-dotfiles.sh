@@ -363,6 +363,64 @@ else
 fi
 
 # ------------------------------------------------------------------------
+# Step 3b: Prune symlinks this repo no longer owns
+# ------------------------------------------------------------------------
+# stow only knows about packages present in the source tree, so --restow and
+# --delete cannot remove a symlink whose source is gone. Deleting an app or a
+# skill from the repo therefore leaves its symlink in $HOME forever, pointing
+# at a path generate no longer writes. Claude keeps loading a deleted skill's
+# directory, and nothing else ever cleans it up.
+#
+# Deliberately narrow: only symlinks, only already-broken ones, and only where
+# the link text names this host's generated tree. A broken symlink pointing
+# anywhere else belongs to something other than this repo and is left alone.
+if [ "$DELETE" = false ]; then
+  log_info "Pruning symlinks whose source was removed from the repo..."
+
+  MARKER="hosts/$HOSTNAME/generated/dotfiles/"
+  PRUNED=0
+
+  # Search only the trees stow manages, not all of $HOME.
+  for entry in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.[!.]*; do
+    [ -e "$entry" ] || continue
+    target="$HOME/$(basename "$entry")"
+    [ -e "$target" ] || [ -L "$target" ] || continue
+
+    while IFS= read -r link; do
+      case "$(readlink "$link")" in
+        *"$MARKER"*) ;;
+        *) continue ;;
+      esac
+      if [ "$DRY_RUN" = true ]; then
+        log_info "[DRY RUN] Would remove ${link#"$HOME"/}"
+      else
+        rm -- "$link"
+        log_info "  removed ${link#"$HOME"/}"
+      fi
+      PRUNED=$((PRUNED + 1))
+    done < <(find "$target" -type l ! -exec test -e {} \; -print 2> /dev/null)
+  done
+
+  # Directories left empty by the removals above. Bottom-up so nested ones go
+  # first, and never the managed top-level directory itself.
+  if [ "$DRY_RUN" = false ] && [ "$PRUNED" -gt 0 ]; then
+    for entry in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.[!.]*; do
+      [ -d "$entry" ] || continue
+      target="$HOME/$(basename "$entry")"
+      [ -d "$target" ] || continue
+      find "$target" -mindepth 1 -type d -empty -delete 2> /dev/null || true
+    done
+  fi
+
+  if [ "$PRUNED" -eq 0 ]; then
+    log_success "No orphaned symlinks found."
+  else
+    log_success "Pruned $PRUNED orphaned symlink(s)."
+  fi
+  echo ""
+fi
+
+# ------------------------------------------------------------------------
 # Step 4: Display Summary
 # ------------------------------------------------------------------------
 if [ "$DELETE" = false ]; then
