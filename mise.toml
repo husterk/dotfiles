@@ -20,7 +20,7 @@ shfmt = "3.14.0"
 
 # Code formatters
 prettier = "3.9.6" # Markdown, JSON, YAML formatter
-stylua = "2.3.1"   # Lua formatter
+stylua = "2.5.2"   # Lua formatter
 taplo = "0.10.0"   # TOML formatter
 
 # Language servers for IDE integration
