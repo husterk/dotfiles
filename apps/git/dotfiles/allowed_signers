@@ -1,0 +1,9 @@
+# SSH signing keys trusted to verify commits in my repositories.
+#
+# Without this file git can create signatures but cannot check them:
+# `git log --show-signature` reports "No signature" for commits it in fact
+# signed. Referenced by gpg.ssh.allowedSignersFile in config.
+#
+# The key is the public half of the 1Password-held signing key, so it is safe
+# to commit. Keep it identical to user.signingkey in config.
+${USER_EMAIL} namespaces="git" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCjaJB5AdrWt/WJ0VlZqBXEnG4j8ju/DfLsbJFptoVf

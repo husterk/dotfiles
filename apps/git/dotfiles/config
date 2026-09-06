@@ -6,6 +6,7 @@
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJCjaJB5AdrWt/WJ0VlZqBXEnG4j8ju/DfLsbJFptoVf
 [core]
 	excludesfile = ~/.config/git/ignore
+	pager = delta
 [init]
     defaultBranch = main
 [commit]
@@ -16,7 +17,17 @@
 	format = ssh
 [gpg "ssh"]
 	program = ${GIT_GPG_SSH_PROGRAM}
+	allowedSignersFile = ~/.config/git/allowed_signers
 [credential]
     helper = /run/current-system/sw/bin/git-credential-manager
+[interactive]
+	diffFilter = delta --color-only
+[merge]
+	conflictstyle = zdiff3
+[diff]
+	colorMoved = default
 [delta]
 	features = catppuccin-mocha
+	navigate = true
+	line-numbers = true
+	side-by-side = false
