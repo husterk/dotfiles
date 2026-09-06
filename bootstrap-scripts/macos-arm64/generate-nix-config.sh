@@ -160,12 +160,17 @@ fi
 # ------------------------------------------------------------------------
 if [ -f "$GENERATED_CONFIG" ]; then
   log_warning "Generated configuration file already exists: $GENERATED_CONFIG"
-  echo -n "Overwrite? (y/N): "
-  read -r response
 
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
-    log_info "Generation cancelled by user."
-    exit 0
+  if [ "$FORCE_OVERWRITE" = false ]; then
+    echo -n "Overwrite? (y/N): "
+    read -r response
+
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      log_info "Generation cancelled by user."
+      exit 0
+    fi
+  else
+    log_info "Force overwrite enabled, removing existing configuration file..."
   fi
 
   log_info "Removing existing configuration file..."

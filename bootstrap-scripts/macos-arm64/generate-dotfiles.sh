@@ -22,6 +22,10 @@ set -e # Exit on error
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+# Set to skip the overwrite prompt, so `mise run refresh` works in a shell with
+# no TTY. Matches generate-env.sh and generate-nix-config.sh.
+FORCE_OVERWRITE="${FORCE_OVERWRITE:-false}"
+
 # Load shared script helpers
 # shellcheck disable=SC1091
 source "${REPO_ROOT}/scripts/script-helpers.sh"
@@ -118,12 +122,17 @@ log_success "All prerequisites verified."
 if [ -d "$GENERATED_DOTFILES_DIR" ]; then
   log_warning "Generated dotfiles directory already exists: $GENERATED_DOTFILES_DIR"
   log_warning "All files in this directory will be deleted and regenerated."
-  echo -n "Continue? (y/N): "
-  read -r response
 
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
-    log_info "Generation cancelled by user."
-    exit 0
+  if [ "$FORCE_OVERWRITE" = false ]; then
+    echo -n "Continue? (y/N): "
+    read -r response
+
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      log_info "Generation cancelled by user."
+      exit 0
+    fi
+  else
+    log_info "Force overwrite enabled, regenerating dotfiles directory..."
   fi
 
   log_info "Removing existing dotfiles..."
