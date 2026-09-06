@@ -55,6 +55,29 @@ mise tasks               # List all tasks
 
 **Git hooks**: Automatically installed by mise (pre-commit checks: format + lint).
 
+### Continuous Integration
+
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`,
+enforcing the same gates as the pre-commit hook so that automated PRs (Renovate)
+can't land code that would trip the hook on someone else's next commit.
+
+| Check                        | Task                              |
+| ---------------------------- | --------------------------------- |
+| Lockfile checksums are valid | `mise install --locked`           |
+| `mise.lock` matches pins     | `mise run dev:check-tool-pins`    |
+| Host manifests are valid     | `mise run dev:validate-all-hosts` |
+| Formatting is clean          | `mise run dev:format-check`       |
+| Shell + Nix lint, tool sync  | `mise run dev:lint`               |
+
+Every task above is runnable locally, and CI installs `nixfmt`/`statix`/
+`treefmt` from the same nixpkgs revision the host builds from, so results match
+your machine.
+
+**CI does not build the Nix configuration.** `hosts/<host>/flake.nix` imports
+`./configuration.nix`, which is generated from `configuration-template.nix`
+using 1Password secrets and is gitignored, so a runner can't evaluate the flake.
+CI validates sources; only `mise run nix:apply` proves the system builds.
+
 ## Common Tasks
 
 ### Essential Commands

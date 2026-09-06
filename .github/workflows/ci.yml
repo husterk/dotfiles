@@ -1,0 +1,103 @@
+name: CI
+
+# Continuous Integration
+# ---------------------
+#
+# Runs the same quality gates as the local pre-commit hook, so that pull
+# requests - especially Renovate's, which no human formats - cannot land code
+# that would trip the hook on the next unrelated commit.
+#
+# Scope: this workflow validates the repo's *sources*. It deliberately does NOT
+# build the nix-darwin configuration. hosts/<host>/flake.nix imports
+# ./configuration.nix, which is generated from configuration-template.nix using
+# 1Password secrets and is gitignored, so evaluating the flake would require
+# vault access from a runner.
+#
+# Two jobs rather than one: `tools` needs only mise and reports in seconds,
+# while `quality` additionally installs Nix (nixfmt, statix and treefmt come
+# from nixpkgs via apps/neovim/neovim.nix, not from mise). Splitting them means
+# a bad lockfile fails fast instead of waiting on a Nix install.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tools:
+    name: Tool pins and manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          install: false
+
+      # Verifies every checksum in mise.lock for the platforms this runner
+      # needs - the Linux entries a macOS-only workflow never exercises. This
+      # is the check that would have caught the `op` platform entries that
+      # pointed linux-x64, macos-x64 and windows-x64 at the macOS arm64 zip.
+      - name: Install pinned tools (verifies lockfile checksums)
+        run: mise install --locked
+
+      - name: mise.toml and mise.lock agree
+        run: mise run dev:check-tool-pins
+
+      - name: Validate host manifests
+        run: mise run dev:validate-all-hosts
+
+  quality:
+    name: Format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          install: false
+
+      - name: Install pinned tools
+        run: mise install --locked
+
+      # nixfmt, statix and treefmt are declared in apps/neovim/neovim.nix and
+      # come from nixpkgs, not mise, so CI needs a Nix to run the same checks
+      # the pre-commit hook runs locally.
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      # Pinned to the same nixpkgs revision the host builds from, so CI runs
+      # byte-identical nixfmt/statix/treefmt to the local pre-commit hook. A
+      # bare `nixpkgs#treefmt` would resolve via the runner's flake registry
+      # and could format differently than your machine does - the same version
+      # skew that makes formatter bumps churn.
+      - name: Install Nix-provided formatters
+        run: |
+          lock="$(find hosts -name flake.lock | sort | head -1)"
+          rev="$(jq -r '.nodes.nixpkgs.locked.rev' "$lock")"
+          echo "Using nixpkgs $rev (from $lock)"
+          nix profile install \
+            "github:NixOS/nixpkgs/$rev#treefmt" \
+            "github:NixOS/nixpkgs/$rev#nixfmt" \
+            "github:NixOS/nixpkgs/$rev#statix"
+
+      # treefmt --ci implies --no-cache and --fail-on-change. This is the check
+      # that would have caught shfmt 3.14.0 reformatting a file the Renovate
+      # PR bumping it did not touch.
+      - name: Formatting is clean
+        run: mise run dev:format-check
+
+      # shellcheck + statix + the mise/Nix tool-sync check. The sync check
+      # no-ops here: it exits 0 when /run/current-system/sw/bin is absent, so
+      # it stays a nix-darwin-only gate.
+      - name: Lint
+        run: mise run dev:lint
