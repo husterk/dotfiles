@@ -254,9 +254,14 @@ raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-format.sh {{ config_root }}"
 
 [tasks."dev:lint"]
-depends = ["dev:lint-scripts", "dev:lint-nix"]
+depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync"]
 description = "Lint all code (shell scripts + Nix files)"
 raw = true
+
+[tasks."dev:check-tool-sync"]
+description = "Check tools managed by both mise and Nix agree on a version"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-sync.sh {{ config_root }}"
 
 [tasks."dev:lint-scripts"]
 description = "Lint shell scripts with shellcheck"
