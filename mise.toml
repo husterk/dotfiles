@@ -24,7 +24,7 @@ stylua = "2.5.2"   # Lua formatter
 taplo = "0.10.0"   # TOML formatter
 
 # Language servers for IDE integration
-lua-language-server = "3.17.1"
+lua-language-server = "3.18.2"
 "npm:bash-language-server" = "5.6.0"
 "npm:vscode-langservers-extracted" = "4.10.0"
 
