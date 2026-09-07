@@ -148,9 +148,7 @@
       "Read(**/id_ed25519)",
       "Bash(dd if=* of=/dev/*)",
       "Bash(mkfs *)",
-      "Bash(diskutil erase*)",
-      "Bash(git push --force*)",
-      "Bash(git push -f *)"
+      "Bash(diskutil erase*)"
     ]
   },
   "skipDangerousModePermissionPrompt": true,

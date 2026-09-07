@@ -30,6 +30,33 @@
   the branch needs updating before the merge unlocks. Update it rather than
   reporting the merge as blocked.
 
+# Rebasing and Merging
+
+**Do all rebasing and commit cleanup locally, then force push the branch.**
+Never use GitHub's rebase-merge button.
+
+**Why:** GitHub's rebase-merge rewrites every commit server-side into a new SHA
+and does not re-sign them. Commits that were signed and verified locally land on
+`main` reading `verified=false, reason=unsigned`. Signing is deliberate, so
+losing it at the merge step defeats the point of doing it at all.
+
+What this means in practice:
+
+- Rebase onto the updated base yourself, squash or reword locally, and confirm
+  with `git log --show-signature` that every commit still reports a good
+  signature before pushing.
+- `git push --force-with-lease` on the feature branch, not `--force`. It
+  refuses when the remote moved under you, which is what you want after a
+  rebase.
+- Force-pushing a feature branch is routine and expected. Force-pushing
+  `main` is not: protection rejects it server-side, including for admins.
+- Merge the PR with the merge-commit or squash button only when the branch is
+  already exactly the history you want on `main`. Both make GitHub author a new
+  commit it signs with its own key; rebase-merge is the one that produces
+  unsigned commits.
+- After any rebase, re-read `git log` before reporting success. A push can
+  report success while the commit you meant to send was never created.
+
 # Git Signing (1Password)
 
 Commits are SSH-signed through the 1Password agent. 1Password locks whenever I
