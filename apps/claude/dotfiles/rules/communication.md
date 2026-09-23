@@ -64,9 +64,10 @@ at all is covered by `# Code Comments` in `preferences.md`, which defaults to no
 - No inline-header lists that restate the line ("**Performance:** Performance
   improved..."). A bold lead-in that names an item and is followed by genuinely
   new detail is fine.
-- Prefer structure over prose. Tables, bullet lists, and headings make content
-  easier to scan than a wall of text. Reach for them by default, not as a last
-  resort. A short table beats a dense paragraph carrying the same facts.
+- Use tables, bullet lists, and headings when the content has real structure,
+  such as parallel items, comparisons, or steps. A short table beats a dense
+  paragraph carrying the same facts. A short answer stays plain prose, and a
+  heading or list added for decoration is noise.
 - Emoji are welcome everywhere except code. Use them where they speed up
   reading: status and severity markers (✅ ⚠️ ❌), section markers, row labels.
   The single exception is code comments, banned in `preferences.md` because a

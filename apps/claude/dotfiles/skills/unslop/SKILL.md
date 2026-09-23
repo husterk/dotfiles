@@ -1,6 +1,6 @@
 ---
 name: unslop
-version: 1.5.0
+version: 1.6.0
 description: Apply the user's writing standards to prose being drafted: cut AI tells, prefer structure, keep a human voice. Use when writing or revising a PR description, commit body, issue or comment, ADR, README, design doc, or release notes. Also use when the user says a draft reads like AI, sounds generic or corporate, or asks to unslop, humanize, or tighten text.
 ---
 
@@ -124,5 +124,5 @@ This section applies to multi-paragraph prose, not to short chat replies.
 These are preferences, not defects to hunt.
 
 - **Emoji are welcome everywhere except code.** Use them where they speed up reading: status and severity markers (✅ ⚠️ ❌), section markers, row labels.
-- **Prefer structure over prose.** Tables, lists, and headings by default, not as a last resort. A short table beats a dense paragraph carrying the same facts.
+- **Structure where the content has it.** Tables, lists, and headings for parallel items, comparisons, or steps. A short table beats a dense paragraph carrying the same facts. A short answer stays plain prose.
 - **Technical terms are fine when literal.** harness, API surface, primitive, scaffolding, paradigm. Slop only as filler.
