@@ -18,7 +18,10 @@
   homebrew = {
     casks = [
       "claude"
-      "claude-code"
+      # The plain claude-code cask tracks the stable channel and conflicts
+      # with this one. The release channel comes from the cask name, not from
+      # autoUpdatesChannel in settings.json.
+      "claude-code@latest"
     ];
   };
 }
