@@ -5,7 +5,7 @@
 # and decoded back by Claude Code, so real ESC (\033) bytes are fine here.
 # Row format:  <status> label  model·effort  <tokens · ctx%>  <elapsed>
 #   label = description (what this agent is doing) if present, else the agent name.
-#   model is shortened: us.anthropic.claude-opus-4-8 -> opus-4-8
+#   model is shortened: us.anthropic.claude-opus-5-5 -> opus-5-5
 #   elapsed derived from startTime (epoch ms, epoch seconds, or ISO — auto-detected)
 
 input=$(cat)
@@ -32,7 +32,7 @@ echo "$input" | jq -rc '
     else dim + "○" + reset end;
 
   # shorten model id: strip provider/region prefixes and the "claude-" stem
-  #   us.anthropic.claude-opus-4-8 -> opus-4-8 ; claude-haiku-4-5-20251001 -> haiku-4-5-20251001
+  #   us.anthropic.claude-opus-5-5 -> opus-5-5 ; claude-haiku-4-5-20251001 -> haiku-4-5-20251001
   def shortmodel:
     . | sub("^[a-z]+\\.anthropic\\."; "") | sub("^anthropic\\."; "") | sub("^claude-"; "");
 
