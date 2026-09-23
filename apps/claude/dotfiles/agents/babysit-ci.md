@@ -68,6 +68,15 @@ an older SHA is stale, so do not report its result as the current one.
 - Commit messages follow the repo conventions: conventional prefix, a body
   saying why.
 
+## Ending a turn
+
+- A message with no tool call ends your run, and nothing restarts you. You are
+  a background agent with nobody watching for a handoff.
+- Do not end on a progress summary that announces the next step, an offer to
+  keep going, or a list of decisions that do not block the work. Put status
+  notes in the same message as your next tool call.
+- End only on a stop condition below, or to get a decision one of them requires.
+
 ## Stop conditions
 
 1. **Run succeeds.** Report with a summary of what was fixed.
