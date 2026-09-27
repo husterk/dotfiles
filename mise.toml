@@ -70,7 +70,7 @@ run = '''
 HOSTNAME="${HOSTNAME:-$(hostname -s)}"
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
-BOOTSTRAP_TARGET="$($REPO_ROOT/tasks/scripts/tasks-main-get-bootstrap-target.sh $HOST_DIR/host-manifest.yml 2>/dev/null || echo 'unknown')"
+BOOTSTRAP_TARGET="$($REPO_ROOT/tasks/scripts/tasks-main-get-bootstrap-target.sh $HOST_DIR/host-manifest.toml 2>/dev/null || echo 'unknown')"
 
 echo "📦 Dotfiles Repository"
 echo ""
@@ -82,7 +82,6 @@ echo ""
 echo "Common Tasks:"
 echo "  mise run setup              - Complete setup after bootstrap"
 echo "  mise run refresh            - Regenerate and redeploy everything"
-echo "  mise run nix:generate       - Generate Nix configuration"
 echo "  mise run nix:apply          - Apply Nix configuration"
 echo "  mise run dotfiles:generate  - Generate dotfiles"
 echo "  mise run dotfiles:deploy    - Deploy dotfiles"
@@ -99,7 +98,7 @@ echo "To see all available tasks: mise tasks"
 # Environment tasks
 # --------------------------------------------------------------------------
 [tasks."env:generate"]
-description = "Generate .env from 1Password"
+description = "Generate .env from host-vars.toml"
 raw = true
 run = '''
 HOSTNAME=$(hostname -s)
@@ -112,18 +111,6 @@ HOSTNAME=$(hostname -s)
 # --------------------------------------------------------------------------
 # Nix tasks
 # --------------------------------------------------------------------------
-[tasks."nix:generate"]
-depends = ["env:generate"]
-description = "Generate Nix configuration from template"
-raw = true
-run = '''
-HOSTNAME=$(hostname -s)
-{{ config_root }}/tasks/scripts/tasks-nix-generate.sh \
-  {{ config_root }}/bootstrap-scripts/macos-arm64 \
-  "$HOSTNAME" \
-  "{{ config_root }}/hosts/$HOSTNAME"
-'''
-
 [tasks."nix:apply"]
 description = "Apply Nix configuration to system"
 raw = true
@@ -137,18 +124,12 @@ HOSTNAME=$(hostname -s)
 [tasks."nix:update"]
 description = "Update flake inputs and lock file"
 raw = true
-run = '''
-HOSTNAME=$(hostname -s)
-{{ config_root }}/tasks/scripts/tasks-nix-update.sh "{{ config_root }}/hosts/$HOSTNAME"
-'''
+run = "{{ config_root }}/tasks/scripts/tasks-nix-update.sh {{ config_root }}"
 
 [tasks."nix:check"]
 description = "Check Nix flake"
 raw = true
-run = '''
-HOSTNAME=$(hostname -s)
-nix flake check "{{ config_root }}/hosts/$HOSTNAME"
-'''
+run = 'nix flake check "{{ config_root }}"'
 
 # --------------------------------------------------------------------------
 # Dotfiles tasks
@@ -357,7 +338,7 @@ HOSTNAME=$(hostname -s)
 # --------------------------------------------------------------------------
 [tasks.setup]
 alias = "set-up-new-host"
-depends = ["env:generate", "nix:generate", "dotfiles:generate"]
+depends = ["env:generate", "dotfiles:generate"]
 description = "Complete setup after bootstrap (generate + apply + deploy)"
 raw = true
 run = '''
@@ -381,7 +362,7 @@ echo "✅ Setup complete!"
 
 [tasks.refresh]
 alias = "refresh-host"
-depends = ["nix:generate", "dotfiles:generate"]
+depends = ["env:generate", "dotfiles:generate"]
 description = "Regenerate and redeploy everything"
 raw = true
 run = '''
@@ -404,8 +385,8 @@ echo "✅ Refresh complete!"
 '''
 
 [tasks."generate-all"]
-depends = ["env:generate", "nix:generate", "dotfiles:generate"]
-description = "Generate all configuration files (env + nix + dotfiles)"
+depends = ["env:generate", "dotfiles:generate"]
+description = "Generate all configuration files (env + dotfiles)"
 raw = true
 run = 'echo "✅ All configurations generated successfully"'
 

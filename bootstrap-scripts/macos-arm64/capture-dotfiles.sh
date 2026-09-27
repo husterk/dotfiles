@@ -68,7 +68,7 @@ fi
 # Setup and Validate Paths
 # ------------------------------------------------------------------------
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
-HOST_MANIFEST="$HOST_DIR/host-manifest.yml"
+HOST_MANIFEST="$HOST_DIR/host-manifest.toml"
 GENERATED_DIR="$HOST_DIR/generated"
 GENERATED_ENV="$GENERATED_DIR/.env"
 GENERATED_DOTFILES_DIR="$GENERATED_DIR/dotfiles"
@@ -218,7 +218,7 @@ while IFS='|' read -r source target; do
     fi
 
     # Process target path
-    HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
+    HOME_DIR=$(yq -p toml -o yaml eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
     target="${target/\~/$HOME_DIR}"
     TARGET_BASE="${target#"$HOME_DIR"/}"
 
@@ -339,7 +339,7 @@ while IFS='|' read -r source target; do
   SOURCE_PATH="$REPO_ROOT$source"
 
   # Process target path - expand ~ to home directory path
-  HOME_DIR=$(yq eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
+  HOME_DIR=$(yq -p toml -o yaml eval '.config."home-dir"' "$HOST_MANIFEST" 2> /dev/null || echo "\$HOME")
   target="${target/\~/$HOME_DIR}"
 
   # Get the relative path from home for the generated file
@@ -412,7 +412,7 @@ while IFS='|' read -r source target; do
   fi
 
   CAPTURED_COUNT=$((CAPTURED_COUNT + 1))
-done < <(yq eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
+done < <(yq -p toml -o yaml eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
 
 # ------------------------------------------------------------------------
 # Final Summary

@@ -41,7 +41,7 @@ for host_dir in "${host_dirs[@]}"; do
   else
     failed=$((failed + 1))
     gha_summary_row "❌" "\`$hostname\`" "**failed validation**"
-    gha_error "Host $hostname failed configuration validation" "$host_dir/host-manifest.yml"
+    gha_error "Host $hostname failed configuration validation" "$host_dir/host-manifest.toml"
   fi
   gha_endgroup
   echo ""

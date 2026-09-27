@@ -17,20 +17,15 @@ echo "  • Bootstrap Target:  $BOOTSTRAP_TARGET"
 echo "  • Host Directory:    $HOST_DIR"
 echo ""
 echo "📁 Files:"
-if [ -f "$HOST_DIR/host-manifest.yml" ]; then
-  echo "  ✅ host-manifest.yml"
+if [ -f "$HOST_DIR/host-manifest.toml" ]; then
+  echo "  ✅ host-manifest.toml"
 else
-  echo "  ❌ host-manifest.yml (missing)"
+  echo "  ❌ host-manifest.toml (missing)"
 fi
 if [ -f "$HOST_DIR/generated/.env" ]; then
   echo "  ✅ .env (generated)"
 else
   echo "  ⚠️  .env (not generated)"
-fi
-if [ -f "$HOST_DIR/generated/configuration.nix" ]; then
-  echo "  ✅ configuration.nix (generated)"
-else
-  echo "  ⚠️  configuration.nix (not generated)"
 fi
 if [ -d "$HOST_DIR/generated/dotfiles" ]; then
   echo "  ✅ dotfiles/ (generated)"

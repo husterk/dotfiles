@@ -1,6 +1,6 @@
 ---
 name: add-app
-description: Add a new application to this dotfiles repo. Use when the user asks to "add", "install", or "manage" a macOS app/tool/package in this Nix-darwin + mise repo. Scaffolds apps/<name>/<name>.nix, optional dotfiles, and registers the app in hosts/<hostname>/host-manifest.yml. Does NOT run `mise run refresh`; the user does that.
+description: Add a new application to this dotfiles repo. Use when the user asks to "add", "install", or "manage" a macOS app/tool/package in this Nix-darwin + mise repo. Scaffolds apps/<name>/<name>.nix, optional dotfiles, and registers the app in hosts/<hostname>/host-manifest.toml. Does NOT run `mise run refresh`; the user does that.
 allowed-tools: Read, Write, Edit, Bash, WebSearch, AskUserQuestion
 ---
 
@@ -31,7 +31,7 @@ Frame the choice in the question; do not pick silently.
 
 ### 1. Validate
 
-- Read `hosts/keith-macbook-pro/host-manifest.yml` and confirm no existing entry has `name: <name>`.
+- Read `hosts/keith-macbook-pro/host-manifest.toml` and confirm no existing `[[apps]]` entry has `name = "<name>"`.
 - Confirm `apps/<name>/` does not already exist (`ls apps/<name>` should fail).
 
 If either check fails, stop and tell the user. Do not overwrite.
@@ -93,29 +93,31 @@ Only when the user requested dotfiles.
     - Modify (user provides additions/changes inline)
     - Skip dotfiles (write only the `.nix` module)
 4. Write the files under `apps/<name>/dotfiles/`. Mirror the in-config directory layout (so a glob deploy lands files in the right place).
-5. **Secrets reminder**: if the config will contain secrets (API keys, emails, tokens), replace them with `${VAR_NAME}` placeholders and tell the user to add the var to `hosts/keith-macbook-pro/template.env` (1Password reference). Do not write real secrets.
+5. **Host values**: if the config needs a per-host value (user name, email), replace it with a `${VAR_NAME}` placeholder and add `VAR_NAME = "<value>"` to `hosts/keith-macbook-pro/host-vars.toml`. That file is public. If the config needs a real secret (API key, token), stop and ask the user; do not write it anywhere in this repo.
 
-### 4. Register in `hosts/keith-macbook-pro/host-manifest.yml`
+### 4. Register in `hosts/keith-macbook-pro/host-manifest.toml`
 
-Insert the new app block under `apps:`, keeping rough alphabetical order (the existing manifest is mostly alphabetical, so find the right slot rather than reordering the whole file).
+Insert a new `[[apps]]` block, keeping rough alphabetical order (the existing manifest is mostly alphabetical, so find the right slot rather than reordering the whole file).
+
+Edit the file as text. Do not rewrite it with `yq -i`, which drops the blank lines between blocks. Keys inside a block are alphabetical because taplo runs with `reorder_keys`.
 
 **Without dotfiles:**
 
-```yaml
-- name: <name>
-  modules:
-      - /apps/<name>/<name>.nix
+```toml
+[[apps]]
+modules = ["/apps/<name>/<name>.nix"]
+name = "<name>"
 ```
 
 **With dotfiles** (glob form, which matches the dominant style in the manifest):
 
-```yaml
-- name: <name>
-  modules:
-      - /apps/<name>/<name>.nix
-  dotfiles:
-      - source: /apps/<name>/dotfiles/**/*
-        target: ~/.config/<name>/
+```toml
+[[apps]]
+modules = ["/apps/<name>/<name>.nix"]
+name = "<name>"
+[[apps.dotfiles]]
+source = "/apps/<name>/dotfiles/**/*"
+target = "~/.config/<name>/"
 ```
 
 Critical: glob targets **must end with `/`**. Use explicit per-file mapping only when files deploy to different destinations (see the `zsh` entry for an example).
@@ -128,7 +130,7 @@ Print exactly:
 Created:
   apps/<name>/<name>.nix
   apps/<name>/dotfiles/...   (if applicable)
-Registered in hosts/keith-macbook-pro/host-manifest.yml.
+Registered in hosts/keith-macbook-pro/host-manifest.toml.
 
 Next (run yourself):
   mise run dev:validate-host-config
@@ -141,5 +143,5 @@ Next (run yourself):
 
 - Homebrew is `cleanup = "zap"` in this repo, so anything not declared in a Nix module gets uninstalled on apply. Adding an app here is the only correct way to keep it.
 - Never edit `hosts/keith-macbook-pro/generated/`. It's gitignored and regenerated.
-- If the user is on a host other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.yml`. Use `hostname -s` to detect.
+- If the user is on a host other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.toml`. Use `hostname -s` to detect.
 - Templates here use 2-space indent (per `treefmt.toml` / `.editorconfig`); `mise run check` fails on unformatted output, so produce clean output.

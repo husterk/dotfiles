@@ -1,0 +1,8 @@
+# Non-secret per-host values. Nix reads this file with builtins.fromTOML and
+# the dotfile scripts export each key as an environment variable for envsubst.
+GIT_GPG_SSH_PROGRAM = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+PATH_USERS = "/Users"
+USER_EMAIL = "husterk@gmail.com"
+USER_FIRST_NAME = "Keith"
+USER_LAST_NAME = "Huster"
+USER_USERNAME = "keithhuster"

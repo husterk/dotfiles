@@ -3,10 +3,10 @@ set -euo pipefail
 
 # Update Nix flake inputs and lock file
 
-HOST_DIR="${1:?HOST_DIR required}"
+REPO_ROOT="${1:?REPO_ROOT required}"
 
 echo "⚙️  Updating flake inputs..."
-cd "$HOST_DIR"
+cd "$REPO_ROOT"
 
 # Update flake.lock (suppress Git dirty tree warnings)
 nix flake update 2>&1 | grep -v "warning: Git tree.*is dirty" || {

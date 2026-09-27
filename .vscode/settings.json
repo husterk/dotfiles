@@ -64,10 +64,7 @@
 
   // YAML Settings
   "yaml.schemas": {
-    "https://mise.jdx.dev/schema/mise.json": ["mise.toml", "mise.*.toml"],
-    "file:///Users/keithhuster/git-repos/dotfiles/hosts/*/host-manifest.yml": [
-      "hosts/*/host-manifest.yml"
-    ]
+    "https://mise.jdx.dev/schema/mise.json": ["mise.toml", "mise.*.toml"]
   },
   "yaml.format.enable": false, // Disabled: Use Task commands instead (task dev:format-yaml)
   "yaml.format.singleQuote": false,

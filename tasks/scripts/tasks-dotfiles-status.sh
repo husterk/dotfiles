@@ -5,7 +5,7 @@ set -euo pipefail
 # Lists which files are symlinked, grouped by app
 
 HOST_DIR="${1:?HOST_DIR required}"
-HOST_MANIFEST="$HOST_DIR/host-manifest.yml"
+HOST_MANIFEST="$HOST_DIR/host-manifest.toml"
 
 echo "╔══════════════════════════════════════════════════════════════════╗"
 echo "║                     Dotfiles Status                              ║"
@@ -44,7 +44,7 @@ else
       config_dir=$(echo "$target_normalized" | cut -d'/' -f2)
       target_to_app["$config_dir"]="$app_name"
     fi
-  done < <(yq eval '.apps[] | select(.dotfiles != null) | .name as $app | .dotfiles[] | $app + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
+  done < <(yq -p toml -o yaml eval '.apps[] | select(.dotfiles != null) | .name as $app | .dotfiles[] | $app + "|" + .target' "$HOST_MANIFEST" 2> /dev/null)
 
   # Process each app
   for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do

@@ -8,7 +8,7 @@
 # - Generating dotfiles hierarchy with variable substitution
 # - Creating home-relative paths for GNU Stow compatibility
 #
-# Prerequisites: generate-nix-config.sh must be run first to create .env
+# Prerequisites: generate-env.sh must be run first to create .env
 #
 # Usage: ./generate-dotfiles.sh [hostname]
 # Example: ./generate-dotfiles.sh keith-macbook-pro
@@ -23,7 +23,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Set to skip the overwrite prompt, so `mise run refresh` works in a shell with
-# no TTY. Matches generate-env.sh and generate-nix-config.sh.
+# no TTY.
 FORCE_OVERWRITE="${FORCE_OVERWRITE:-false}"
 
 # Load shared script helpers
@@ -84,7 +84,7 @@ fi
 log_success "Found host directory: $HOST_DIR"
 
 # Define key file paths
-HOST_MANIFEST="$HOST_DIR/host-manifest.yml"
+HOST_MANIFEST="$HOST_DIR/host-manifest.toml"
 GENERATED_DIR="$HOST_DIR/generated"
 GENERATED_ENV="$GENERATED_DIR/.env"
 GENERATED_DOTFILES_DIR="$GENERATED_DIR/dotfiles"
@@ -97,7 +97,7 @@ fi
 
 if [ ! -f "$GENERATED_ENV" ]; then
   log_error "Generated .env file not found: $GENERATED_ENV"
-  log_info "Please run generate-nix-config.sh first to create the .env file."
+  log_info "Please run: mise run env:generate"
   exit 1
 fi
 
@@ -169,7 +169,7 @@ log_info "Generating dotfiles hierarchy..."
 mkdir -p "$GENERATED_DOTFILES_DIR"
 
 # Get count of dotfiles entries
-DOTFILES_COUNT=$(yq eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2> /dev/null | grep -c "source:" || echo "0")
+DOTFILES_COUNT=$(yq -p toml -o yaml eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2> /dev/null | grep -c "source:" || echo "0")
 
 if [ "$DOTFILES_COUNT" -eq 0 ]; then
   log_warning "No dotfiles found in manifest."
@@ -280,7 +280,7 @@ else
 
       log_info "  ✓ Generated: $RELATIVE_PATH"
     fi
-  done < <(yq eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST")
+  done < <(yq -p toml -o yaml eval '.apps[] | select(.dotfiles != null) | .dotfiles[] | .source + "|" + .target' "$HOST_MANIFEST")
 
   log_success "Generated dotfiles in: $GENERATED_DOTFILES_DIR"
 fi

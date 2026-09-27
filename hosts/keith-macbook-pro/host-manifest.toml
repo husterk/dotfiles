@@ -1,0 +1,224 @@
+[config]
+bootstrap-target = "macos-arm64"
+home-dir = "${PATH_USERS}/${USER_USERNAME}"
+root-relative-path = "../../"
+
+[system]
+modules = ["/modules/macos-base.nix"]
+
+[[apps]]
+modules = ["/apps/1password/1password.nix"]
+name = "1password"
+[[apps.dotfiles]]
+source = "/apps/1password/dotfiles/**/*"
+target = "~/.config/1Password/"
+
+[[apps]]
+modules = ["/apps/agent-of-empires/agent-of-empires.nix"]
+name = "agent-of-empires"
+[[apps.dotfiles]]
+source = "/apps/agent-of-empires/dotfiles/**/*"
+target = "~/.agent-of-empires/"
+
+[[apps]]
+modules = ["/apps/bat/bat.nix"]
+name = "bat"
+[[apps.dotfiles]]
+source = "/apps/bat/dotfiles/**/*"
+target = "~/.config/bat/"
+
+[[apps]]
+modules = ["/apps/ca-certificates/ca-certificates.nix"]
+name = "ca-certificates"
+
+[[apps]]
+modules = ["/apps/claude/claude.nix"]
+name = "claude"
+[[apps.dotfiles]]
+source = "/apps/claude/dotfiles/**/*"
+target = "~/.claude/"
+
+[[apps]]
+modules = ["/apps/curl/curl.nix"]
+name = "curl"
+[[apps.dotfiles]]
+source = "/apps/curl/dotfiles/**/*"
+target = "~/.config/curl/"
+
+[[apps]]
+modules = ["/apps/davinci-resolve/davinci-resolve.nix"]
+name = "davinci-resolve"
+
+[[apps]]
+modules = ["/apps/dockutil/dockutil.nix"]
+name = "dockutil"
+
+[[apps]]
+modules = ["/apps/dropbox/dropbox.nix"]
+name = "dropbox"
+
+[[apps]]
+modules = ["/apps/fzf/fzf.nix"]
+name = "fzf"
+
+[[apps]]
+modules = ["/apps/git/git.nix"]
+name = "git"
+[[apps.dotfiles]]
+source = "/apps/git/dotfiles/**/*"
+target = "~/.config/git/"
+
+[[apps]]
+modules = ["/apps/gettext/gettext.nix"]
+name = "gettext"
+
+[[apps]]
+modules = ["/apps/gh/gh.nix"]
+name = "gh"
+
+[[apps]]
+modules = ["/apps/homebrew/homebrew.nix"]
+name = "homebrew"
+
+[[apps]]
+modules = ["/apps/image-plus-tools/image-plus-tools.nix"]
+name = "image-plus-tools"
+
+[[apps]]
+modules = ["/apps/inetutils/inetutils.nix"]
+name = "inetutils"
+
+[[apps]]
+modules = ["/apps/lazygit/lazygit.nix"]
+name = "lazygit"
+[[apps.dotfiles]]
+source = "/apps/lazygit/dotfiles/**/*"
+target = "~/.config/lazygit/"
+
+[[apps]]
+modules = ["/apps/mas/mas.nix"]
+name = "mas"
+
+[[apps]]
+modules = ["/apps/mise/mise.nix"]
+name = "mise"
+[[apps.dotfiles]]
+source = "/apps/mise/dotfiles/**/*"
+target = "~/.config/mise/"
+
+[[apps]]
+modules = ["/apps/neovim/neovim.nix"]
+name = "neovim"
+[[apps.dotfiles]]
+source = "/apps/neovim/dotfiles/**/*"
+target = "~/.config/nvim/"
+
+[[apps]]
+modules = ["/apps/nix/nix.nix"]
+name = "nix"
+[[apps.dotfiles]]
+source = "/apps/nix/dotfiles/**/*"
+target = "~/.config/nix/"
+
+[[apps]]
+modules = ["/apps/nss/nss.nix"]
+name = "nss"
+
+[[apps]]
+modules = ["/apps/nushell/nushell.nix"]
+name = "nushell"
+[[apps.dotfiles]]
+source = "/apps/nushell/dotfiles/**/*"
+target = "~/.config/nushell/"
+
+[[apps]]
+modules = ["/apps/orbstack/orbstack.nix"]
+name = "orbstack"
+[[apps.dotfiles]]
+source = "/apps/orbstack/docker/**/*"
+target = "~/.config/docker/"
+
+[[apps]]
+modules = ["/apps/ouch/ouch.nix"]
+name = "ouch"
+
+[[apps]]
+modules = ["/apps/ripgrep/ripgrep.nix"]
+name = "ripgrep"
+[[apps.dotfiles]]
+source = "/apps/ripgrep/dotfiles/**/*"
+target = "~/.config/ripgrep/"
+
+[[apps]]
+modules = ["/apps/sshpass/sshpass.nix"]
+name = "sshpass"
+
+[[apps]]
+modules = ["/apps/starship/starship.nix"]
+name = "starship"
+[[apps.dotfiles]]
+source = "/apps/starship/dotfiles/starship.toml"
+target = "~/.config/starship.toml"
+
+[[apps]]
+modules = ["/apps/stow/stow.nix"]
+name = "stow"
+
+[[apps]]
+modules = ["/apps/swaks/swaks.nix"]
+name = "swaks"
+
+[[apps]]
+modules = ["/apps/visual-studio-code/visual-studio-code.nix"]
+name = "visual-studio-code"
+
+[[apps]]
+modules = ["/apps/wezterm/wezterm.nix"]
+name = "wezterm"
+[[apps.dotfiles]]
+source = "/apps/wezterm/dotfiles/**/*"
+target = "~/.config/wezterm/"
+
+[[apps]]
+modules = ["/apps/wget/wget.nix"]
+name = "wget"
+[[apps.dotfiles]]
+source = "/apps/wget/dotfiles/**/*"
+target = "~/.config/wget/"
+
+[[apps]]
+modules = ["/apps/xcode/xcode.nix"]
+name = "xcode"
+
+[[apps]]
+modules = ["/apps/yazi/yazi.nix"]
+name = "yazi"
+[[apps.dotfiles]]
+source = "/apps/yazi/dotfiles/**/*"
+target = "~/.config/yazi/"
+
+[[apps]]
+modules = ["/apps/zoxide/zoxide.nix"]
+name = "zoxide"
+[[apps.dotfiles]]
+source = "/apps/zoxide/dotfiles/**/*"
+target = "~/.config/zoxide/"
+
+[[apps]]
+modules = ["/apps/zsh/zsh.nix"]
+name = "zsh"
+[[apps.dotfiles]]
+source = "/apps/zsh/dotfiles/.zshenv-home"
+target = "~/.zshenv"
+[[apps.dotfiles]]
+source = "/apps/zsh/dotfiles/.zprofile"
+target = "~/.config/zsh/.zprofile"
+[[apps.dotfiles]]
+source = "/apps/zsh/dotfiles/.zshenv"
+target = "~/.config/zsh/.zshenv"
+[[apps.dotfiles]]
+source = "/apps/zsh/dotfiles/.zshrc"
+target = "~/.config/zsh/.zshrc"
+[[apps.dotfiles]]
+source = "/apps/zsh/dotfiles/.zsh-integrations.sh"
+target = "~/.config/zsh/.zsh-integrations.sh"

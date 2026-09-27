@@ -80,9 +80,9 @@ for app_dir in "$HOST_DIR"/generated/dotfiles/.config/*; do
   GITIGNORE_FILE=""
 
   # Build mapping from config directory name to source path using manifest
-  if [ -f "$HOST_DIR/host-manifest.yml" ]; then
+  if [ -f "$HOST_DIR/host-manifest.toml" ]; then
     # Find the app and source path that has a dotfiles target matching ~/.config/$app_name/
-    manifest_data=$(yq eval ".apps[] | select(.dotfiles != null) | select(.dotfiles[].target == \"~/.config/$app_name/\") | .name + \"|\" + .dotfiles[].source" "$HOST_DIR/host-manifest.yml" 2> /dev/null | head -1)
+    manifest_data=$(yq -p toml -o yaml eval ".apps[] | select(.dotfiles != null) | select(.dotfiles[].target == \"~/.config/$app_name/\") | .name + \"|\" + .dotfiles[].source" "$HOST_DIR/host-manifest.toml" 2> /dev/null | head -1)
 
     if [ -n "$manifest_data" ]; then
       manifest_source="${manifest_data#*|}"

@@ -12,12 +12,12 @@ echo "╚═══════════════════════�
 echo ""
 
 for host_dir in "$REPO_ROOT"/hosts/*; do
-  if [ -d "$host_dir" ] && [ -f "$host_dir/host-manifest.yml" ]; then
+  if [ -d "$host_dir" ] && [ -f "$host_dir/host-manifest.toml" ]; then
     hostname=$(basename "$host_dir")
 
     # Get bootstrap target
     if command -v yq &> /dev/null; then
-      target=$(yq eval '.config.bootstrap-target // "macos-arm64"' "$host_dir/host-manifest.yml" 2> /dev/null)
+      target=$(yq -p toml -o yaml eval '.config.bootstrap-target // "macos-arm64"' "$host_dir/host-manifest.toml" 2> /dev/null)
     else
       target="macos-arm64"
     fi
@@ -36,12 +36,6 @@ for host_dir in "$REPO_ROOT"/hosts/*; do
       echo "   ✅ .env generated"
     else
       echo "   ⚠️  .env not generated"
-    fi
-
-    if [ -f "$host_dir/generated/configuration.nix" ]; then
-      echo "   ✅ configuration.nix generated"
-    else
-      echo "   ⚠️  configuration.nix not generated"
     fi
 
     if [ -d "$host_dir/generated/dotfiles" ]; then

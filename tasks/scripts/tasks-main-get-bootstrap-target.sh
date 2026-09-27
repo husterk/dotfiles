@@ -17,19 +17,20 @@ fi
 
 # Try to extract bootstrap-target using yq (preferred)
 if command -v yq &> /dev/null; then
-  target=$(yq eval '.config.bootstrap-target // ""' "$MANIFEST_PATH" 2> /dev/null || echo "")
+  target=$(yq -p toml -o yaml eval '.config.bootstrap-target // ""' "$MANIFEST_PATH" 2> /dev/null || echo "")
   if [ -n "$target" ]; then
     echo "$target"
     exit 0
   fi
 fi
 
-# Fallback: use awk to extract from YAML
+# Fallback: use awk to extract from the TOML [config] table
 target=$(awk '
-  /^config:/ { in_config=1; next }
-  in_config && /^[^ ]/ { in_config=0 }
-  in_config && /bootstrap-target:/ {
-    gsub(/^[[:space:]]*bootstrap-target:[[:space:]]*/, "")
+  /^\[config\]/ { in_config=1; next }
+  in_config && /^\[/ { in_config=0 }
+  in_config && /^bootstrap-target[[:space:]]*=/ {
+    sub(/^bootstrap-target[[:space:]]*=[[:space:]]*/, "")
+    gsub(/"/, "")
     gsub(/[[:space:]]*$/, "")
     print
     exit

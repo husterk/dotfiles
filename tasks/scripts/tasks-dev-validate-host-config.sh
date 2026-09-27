@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Validate host configuration and manifests
-# Checks YAML syntax, required files, etc.
+# Checks TOML syntax, required files, etc.
 
 HOST_DIR="${1:?HOST_DIR required}"
 HOSTNAME="${2:?HOSTNAME required}"
@@ -18,44 +18,30 @@ if [ ! -d "$HOST_DIR" ]; then
   errors=$((errors + 1))
 fi
 
-# Check host-manifest.yml
-if [ -f "$HOST_DIR/host-manifest.yml" ]; then
-  if command -v yq &> /dev/null; then
-    if yq eval . "$HOST_DIR/host-manifest.yml" &> /dev/null; then
-      echo "✅ host-manifest.yml syntax valid"
+# Check the TOML files Nix and the dotfile scripts both read
+for toml in host-manifest.toml host-vars.toml; do
+  if [ -f "$HOST_DIR/$toml" ]; then
+    if command -v yq &> /dev/null; then
+      if yq -p toml -o yaml eval . "$HOST_DIR/$toml" &> /dev/null; then
+        echo "✅ $toml syntax valid"
+      else
+        echo "❌ $toml syntax invalid"
+        errors=$((errors + 1))
+      fi
     else
-      echo "❌ host-manifest.yml syntax invalid"
-      errors=$((errors + 1))
+      echo "⚠️  Cannot validate TOML (yq not installed)"
     fi
   else
-    echo "⚠️  Cannot validate YAML (yq not installed)"
+    echo "❌ $toml not found"
+    errors=$((errors + 1))
   fi
-else
-  echo "❌ host-manifest.yml not found"
-  errors=$((errors + 1))
-fi
+done
 
-# Check template.env
-if [ -f "$HOST_DIR/template.env" ]; then
-  echo "✅ template.env exists"
+# Check configuration.nix
+if [ -f "$HOST_DIR/configuration.nix" ]; then
+  echo "✅ configuration.nix exists"
 else
-  echo "❌ template.env not found"
-  errors=$((errors + 1))
-fi
-
-# Check configuration-template.nix
-if [ -f "$HOST_DIR/configuration-template.nix" ]; then
-  echo "✅ configuration-template.nix exists"
-else
-  echo "❌ configuration-template.nix not found"
-  errors=$((errors + 1))
-fi
-
-# Check flake.nix
-if [ -f "$HOST_DIR/flake.nix" ]; then
-  echo "✅ flake.nix exists"
-else
-  echo "❌ flake.nix not found"
+  echo "❌ configuration.nix not found"
   errors=$((errors + 1))
 fi
 

@@ -3,11 +3,9 @@
 # ========================================================================
 # macOS ARM Apply Config Script
 # ========================================================================
-# This script applies a generated nix-darwin configuration by:
-# - Copying generated/configuration.nix to the host directory
-# - Temporarily staging it in git (required by nix flakes)
-# - Running darwin-rebuild switch
-# - Cleaning up the temporary file
+# This script applies the nix-darwin configuration for a host by running
+# darwin-rebuild switch against the repo-root flake. When a private overlay
+# clone exists, it replaces the flake's `private` input for this run only.
 #
 # Usage: ./apply-config.sh [hostname]
 # Example: ./apply-config.sh keith-macbook-pro
@@ -26,7 +24,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 source "${REPO_ROOT}/scripts/script-helpers.sh"
 
 # Display script header
-script_header "Apply Nix Configuration" "Applies generated configuration and runs darwin-rebuild"
+script_header "Apply Nix Configuration" "Runs darwin-rebuild switch for this host"
 
 # ------------------------------------------------------------------------
 # Step 0: Parse Arguments and Setup Paths
@@ -78,100 +76,50 @@ fi
 
 log_success "Found host directory: $HOST_DIR"
 
-# Define key file paths
-GENERATED_CONFIG="$HOST_DIR/generated/configuration.nix"
-TEMP_CONFIG="$HOST_DIR/configuration.nix"
+PRIVATE_DIR="${DOTFILES_PRIVATE_DIR:-$HOME/git-repos/dotfiles-private}"
 
-# Validate generated configuration exists
-if [ ! -f "$GENERATED_CONFIG" ]; then
-  log_error "Generated configuration not found: $GENERATED_CONFIG"
-  log_info "Please run generate-nix-config.sh first to create the configuration."
+if [ ! -f "$HOST_DIR/configuration.nix" ]; then
+  log_error "Host configuration not found: $HOST_DIR/configuration.nix"
   exit 1
 fi
 
-log_success "Found generated configuration: $GENERATED_CONFIG"
-
 # ------------------------------------------------------------------------
-# Step 1: Backup and Copy Configuration
+# Step 1: Resolve the private input
 # ------------------------------------------------------------------------
-log_info "Preparing configuration for darwin-rebuild..."
-
-# Check if temp location already exists and back it up
-if [ -f "$TEMP_CONFIG" ]; then
-  log_warning "Found existing configuration.nix, backing up..."
-  cp "$TEMP_CONFIG" "$TEMP_CONFIG.backup"
-  log_info "Backup saved to: $TEMP_CONFIG.backup"
+# --override-input implies --no-write-lock-file, so flake.lock keeps pointing
+# at the tracked stub. The flag is passed explicitly anyway.
+PRIVATE_FLAGS=()
+if [ -f "$PRIVATE_DIR/default.nix" ]; then
+  log_success "Using private overlay: $PRIVATE_DIR"
+  PRIVATE_FLAGS=(--override-input private "path:$PRIVATE_DIR" --no-write-lock-file)
+elif [ "${ALLOW_PUBLIC_STUB:-}" = "1" ]; then
+  log_warning "ALLOW_PUBLIC_STUB=1: applying without the private overlay."
+else
+  log_error "Private overlay not found at $PRIVATE_DIR."
+  log_info "Clone it: gh repo clone husterk/dotfiles-private \"$PRIVATE_DIR\""
+  log_info "A fresh machine with nothing private installed can set ALLOW_PUBLIC_STUB=1."
+  exit 1
 fi
 
-# Copy generated config to host directory
-cp "$GENERATED_CONFIG" "$TEMP_CONFIG"
-log_success "Copied configuration to: $TEMP_CONFIG"
-
 # ------------------------------------------------------------------------
-# Step 2: Stage Configuration in Git
-# ------------------------------------------------------------------------
-log_info "Staging configuration in git (required by nix flakes)..."
-
-# Stage the file
-git -C "$REPO_ROOT" add "$TEMP_CONFIG"
-log_success "Configuration staged in git."
-
-# ------------------------------------------------------------------------
-# Step 3: Run darwin-rebuild
+# Step 2: Run darwin-rebuild
 # ------------------------------------------------------------------------
 log_info "Running darwin-rebuild switch..."
 log_warning "This may take several minutes and will modify your system."
 echo ""
 
-# Run darwin-rebuild from the repo root
-cd "$REPO_ROOT"
-
-if sudo darwin-rebuild switch --impure --flake "./hosts/$HOSTNAME"; then
+if sudo darwin-rebuild switch --flake "$REPO_ROOT#$HOSTNAME" ${PRIVATE_FLAGS[@]+"${PRIVATE_FLAGS[@]}"}; then
   log_success "darwin-rebuild completed successfully!"
 else
   EXIT_CODE=$?
   log_error "darwin-rebuild failed with exit code: $EXIT_CODE"
-
-  # Clean up even on failure
-  log_info "Cleaning up temporary files..."
-  git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
-  rm -f "$TEMP_CONFIG"
-
-  # Restore backup if it exists
-  if [ -f "$TEMP_CONFIG.backup" ]; then
-    mv "$TEMP_CONFIG.backup" "$TEMP_CONFIG"
-    log_info "Restored original configuration.nix from backup."
-  fi
-
   exit $EXIT_CODE
 fi
 
 # ------------------------------------------------------------------------
-# Step 4: Cleanup
-# ------------------------------------------------------------------------
-log_info "Cleaning up temporary files..."
-
-# Unstage the file
-git -C "$REPO_ROOT" reset HEAD "$TEMP_CONFIG" > /dev/null 2>&1
-log_info "Unstaged configuration from git."
-
-# Remove the temporary file
-rm -f "$TEMP_CONFIG"
-log_info "Removed temporary configuration.nix"
-
-# Remove backup if it exists
-if [ -f "$TEMP_CONFIG.backup" ]; then
-  rm -f "$TEMP_CONFIG.backup"
-  log_info "Removed backup file."
-fi
-
-log_success "Cleanup complete."
-
-# ------------------------------------------------------------------------
-# Step 5: Final Summary
+# Step 3: Final Summary
 # ------------------------------------------------------------------------
 log_info "Your system has been configured with nix-darwin."
-log_info "The generated configuration remains at: $GENERATED_CONFIG"
 log_info ""
 log_info "Next steps:"
 log_info "1. Restart your terminal to load new configurations"

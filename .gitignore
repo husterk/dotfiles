@@ -6,8 +6,8 @@
 # Don't commit local Mac OS cache files
 .DS_Store
 
-# Ignore generated directory as it contains generated files
-# that may contain sensitive information from 1Password secrets.
+# Ignore generated output: dotfiles rendered from templates and the .env
+# derived from host-vars.toml. It is rebuilt on every generate.
 **/generated
 
 # Ignore symlinks to generated dotfiles (created during deployment)

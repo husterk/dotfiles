@@ -7,11 +7,7 @@ name: CI
 # requests - especially Renovate's, which no human formats - cannot land code
 # that fails them.
 #
-# Scope: this workflow validates the repo's *sources*. It deliberately does NOT
-# build the nix-darwin configuration. hosts/<host>/flake.nix imports
-# ./configuration.nix, which is generated from configuration-template.nix using
-# 1Password secrets and is gitignored, so evaluating the flake would require
-# vault access from a runner.
+# Scope: this workflow validates the repo's sources.
 #
 # Two jobs rather than one: `tools` needs only mise and reports in seconds,
 # while `quality` additionally installs Nix (nixfmt, statix and treefmt come
@@ -82,9 +78,8 @@ jobs:
       # skew that makes formatter bumps churn.
       - name: Install Nix-provided formatters
         run: |
-          lock="$(find hosts -name flake.lock | sort | head -1)"
-          rev="$(jq -r '.nodes.nixpkgs.locked.rev' "$lock")"
-          echo "Using nixpkgs $rev (from $lock)"
+          rev="$(jq -r '.nodes.nixpkgs.locked.rev' flake.lock)"
+          echo "Using nixpkgs $rev (from flake.lock)"
           nix profile install \
             "github:NixOS/nixpkgs/$rev#treefmt" \
             "github:NixOS/nixpkgs/$rev#nixfmt" \

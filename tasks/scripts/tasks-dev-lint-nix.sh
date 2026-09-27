@@ -21,7 +21,7 @@ if ! command -v statix &> /dev/null; then
 fi
 
 # Find all Nix files to lint (exclude templates and generated files)
-mapfile -t nix_files < <(find . -type f -name "*.nix" ! -name "*-template.nix" ! -path "./.nix-shell/*" ! -path "./hosts/*/generated/*" | sort)
+mapfile -t nix_files < <(find . -type f -name "*.nix" ! -path "./.nix-shell/*" ! -path "./hosts/*/generated/*" | sort)
 
 if [ "${#nix_files[@]}" -eq 0 ]; then
   echo "⚠️  No Nix files found"

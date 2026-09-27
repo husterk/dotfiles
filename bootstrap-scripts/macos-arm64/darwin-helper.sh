@@ -49,9 +49,9 @@ fi
 # Get the repository root
 REPO_ROOT=$(git rev-parse --show-toplevel 2> /dev/null || echo ".")
 
-# Host-specific directory and flake path
+# Host-specific directory and flake reference
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
-FLAKE_PATH="$HOST_DIR/flake.nix"
+FLAKE_REF="$REPO_ROOT#$HOSTNAME"
 
 log_info() {
   echo -e "${BLUE}[INFO]${NC} $1"
@@ -78,17 +78,17 @@ Usage: $(basename "$0") [COMMAND]
 Commands:
   switch      Build and activate configuration (requires sudo)
   build       Build configuration without activating
-  check       Check flake.nix for errors
+  check       Check the flake for errors
   update      Update flake inputs
   upgrade     Update inputs and rebuild system
   rollback    Rollback to previous generation
   list        List system generations
   clean       Clean old generations (keeps last 7 days)
-  edit        Edit flake.nix
+  edit        Edit the host configuration.nix
   help        Show this help message
 
 Current host: $HOSTNAME
-Flake path: $HOST_DIR
+Flake: $FLAKE_REF
 
 Examples:
   $(basename "$0") switch    # Apply configuration changes
@@ -100,8 +100,8 @@ EOF
 }
 
 # Check if we're in the repo and host configuration exists
-if [ ! -f "$FLAKE_PATH" ]; then
-  log_error "No flake.nix found for host '$HOSTNAME' at: $FLAKE_PATH"
+if [ ! -f "$HOST_DIR/configuration.nix" ]; then
+  log_error "No configuration.nix found for host '$HOSTNAME' at: $HOST_DIR"
   log_info "Available hosts:"
   if [ -d "$REPO_ROOT/hosts" ]; then
     for dir in "$REPO_ROOT/hosts"/*; do
@@ -119,34 +119,34 @@ fi
 case "$COMMAND" in
   switch)
     log_info "Building and activating configuration for host '$HOSTNAME'..."
-    darwin-rebuild switch --flake "$HOST_DIR"
+    darwin-rebuild switch --flake "$FLAKE_REF"
     log_success "System configuration activated!"
     ;;
 
   build)
     log_info "Building configuration (no activation)..."
-    darwin-rebuild build --flake "$HOST_DIR"
+    darwin-rebuild build --flake "$FLAKE_REF"
     log_success "Build successful!"
     ;;
 
   check)
-    log_info "Checking flake.nix for errors..."
-    nix flake check "$HOST_DIR"
+    log_info "Checking the flake for errors..."
+    nix flake check "$REPO_ROOT"
     log_success "No errors found!"
     ;;
 
   update)
     log_info "Updating flake inputs..."
-    nix flake update "$HOST_DIR"
+    nix flake update --flake "$REPO_ROOT"
     log_success "Flake inputs updated!"
     log_info "Run '$(basename "$0") switch' to apply updates"
     ;;
 
   upgrade)
     log_info "Updating flake inputs..."
-    nix flake update "$HOST_DIR"
+    nix flake update --flake "$REPO_ROOT"
     log_info "Rebuilding system with updated inputs..."
-    darwin-rebuild switch --flake "$HOST_DIR"
+    darwin-rebuild switch --flake "$FLAKE_REF"
     log_success "System upgraded!"
     ;;
 
@@ -168,7 +168,7 @@ case "$COMMAND" in
     ;;
 
   edit)
-    ${EDITOR:-vim} "$FLAKE_PATH"
+    ${EDITOR:-vim} "$HOST_DIR/configuration.nix"
     ;;
 
   help | --help | -h)

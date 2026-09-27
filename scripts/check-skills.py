@@ -92,7 +92,7 @@ def referenced_paths(body):
         item = item.split("#", 1)[0].strip()
         if not item or item.startswith(("http://", "https://", "mailto:", "/", "~")):
             continue
-        # `hosts/<hostname>/host-manifest.yml` is a shape, not a path.
+        # `hosts/<hostname>/host-manifest.toml` is a shape, not a path.
         if "<" in item or ">" in item or "*" in item:
             continue
         cleaned.add(item)

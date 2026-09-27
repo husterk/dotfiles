@@ -3,22 +3,30 @@
 Agent guide for this repo. See [README.md](README.md) for setup and the full
 task list.
 
-This is a declarative macOS config: Nix-darwin packages + Stow-deployed
-dotfiles + 1Password secrets, orchestrated by mise tasks.
+This is a declarative macOS config: one root flake builds a nix-darwin system
+per host, Stow deploys dotfiles rendered from templates, and mise tasks
+orchestrate both.
 
 ## Rules
 
 - **Run everything via `mise run <task>`.** Never invoke `tasks/scripts/*.sh`
   or `bootstrap-scripts/**/*.sh` directly. `mise tasks` lists them.
-- **Never edit `hosts/<hostname>/generated/`.** Gitignored, machine-generated,
-  contains 1Password secrets. Regenerate via `mise run nix:generate` or
-  `mise run dotfiles:generate`.
-- **`hosts/<hostname>/host-manifest.yml` is the source of truth** for which
-  apps/modules a host gets. Adding an app = create `apps/<name>/` + add a
-  manifest entry.
+- **Never edit `hosts/<hostname>/generated/`.** Gitignored and
+  machine-generated. Regenerate with `mise run dotfiles:generate`.
+- **`hosts/<hostname>/host-manifest.toml` is the source of truth** for which
+  apps and modules a host gets. Adding an app means creating `apps/<name>/`
+  and adding a manifest entry. Edit the manifest as text; never `yq -i`.
+- **Host values live in `hosts/<hostname>/host-vars.toml`.** They are not
+  secret. Nix reads them directly, and `mise run env:generate` turns them into
+  the `.env` that dotfile templates use.
 - **Homebrew is `cleanup = "zap"`.** Declare GUI apps in `homebrew.casks`,
   CLI tools in `homebrew.brews`. Anything not declared in a Nix module gets
   uninstalled on apply.
+- **Private casks live in a separate private overlay repo**, cloned at
+  `~/git-repos/dotfiles-private` and passed to the flake's `private` input by
+  `mise run nix:apply`. Without the overlay, the tracked stub turns zap off
+  and the apply script refuses to run. Never write private app names in this
+  repo.
 
 ## Apps pattern
 
@@ -28,8 +36,7 @@ apps/<name>/
   dotfiles/      # optional; ${VAR} templates substituted at generation
 ```
 
-Template vars come from `hosts/<hostname>/template.env` (1Password refs).
-Run `op signin` before any `*:generate` task.
+Template vars come from `hosts/<hostname>/host-vars.toml`.
 
 ## Editing dotfiles
 

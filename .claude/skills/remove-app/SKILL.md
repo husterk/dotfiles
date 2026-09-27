@@ -1,6 +1,6 @@
 ---
 name: remove-app
-description: Remove an application from this dotfiles repo. Use when the user asks to "remove", "uninstall", "drop", or "delete" a macOS app/tool from the Nix-darwin + mise config. Deletes apps/<name>/ and unregisters it from hosts/<hostname>/host-manifest.yml. Does NOT run `mise run refresh`; the user does that.
+description: Remove an application from this dotfiles repo. Use when the user asks to "remove", "uninstall", "drop", or "delete" a macOS app/tool from the Nix-darwin + mise config. Deletes apps/<name>/ and unregisters it from hosts/<hostname>/host-manifest.toml. Does NOT run `mise run refresh`; the user does that.
 allowed-tools: Read, Write, Edit, Bash, AskUserQuestion
 ---
 
@@ -21,7 +21,7 @@ User says any of: "remove `<app>`", "uninstall `<app>`", "drop `<app>` from the 
 ### 1. Validate
 
 - Confirm `apps/<name>/` exists.
-- Confirm an entry with `name: <name>` exists in `hosts/keith-macbook-pro/host-manifest.yml`.
+- Confirm an `[[apps]]` entry with `name = "<name>"` exists in `hosts/keith-macbook-pro/host-manifest.toml`.
 
 If only one of those is true, surface the inconsistency and ask the user whether to proceed (likely yes, since the repo is partially out of sync).
 
@@ -30,15 +30,15 @@ If only one of those is true, surface the inconsistency and ask the user whether
 Run:
 
 ```bash
-grep -rn "<name>" hosts/keith-macbook-pro/host-manifest.yml modules/ apps/ \
+grep -rn "<name>" hosts/keith-macbook-pro/host-manifest.toml modules/ apps/ \
   --exclude-dir=apps/<name>
 ```
 
 This surfaces unrelated mentions (other apps depending on it, module imports, README references). Show any hits to the user and confirm before continuing. If only manifest hits appear, you can proceed without asking.
 
-### 3. Unregister from `hosts/keith-macbook-pro/host-manifest.yml`
+### 3. Unregister from `hosts/keith-macbook-pro/host-manifest.toml`
 
-Remove the `- name: <name>` block, including its `modules:` and any `dotfiles:` children. Use `Edit` with enough surrounding YAML context to make the match unique.
+Remove the `[[apps]]` block whose `name = "<name>"`, including any `[[apps.dotfiles]]` tables that follow it before the next `[[apps]]`. Use `Edit` with enough surrounding context to make the match unique. Do not use `yq -i`, which drops the blank lines between blocks.
 
 ### 4. Delete the app directory
 
@@ -59,7 +59,7 @@ rm -rf apps/<name>
 Print:
 
 ```
-Removed apps/<name>/ and its entry from hosts/keith-macbook-pro/host-manifest.yml.
+Removed apps/<name>/ and its entry from hosts/keith-macbook-pro/host-manifest.toml.
 
 Next (run yourself):
   mise run dev:validate-host-config
@@ -76,4 +76,4 @@ Mention the Homebrew zap behavior if the removed app declared `homebrew.brews` /
 
 - The change is fully recoverable from git until committed (`git restore -SW .` to undo manifest edits + `git restore apps/<name>/` is not enough for a deleted dir; use `git checkout HEAD -- apps/<name>/`).
 - Never edit `hosts/keith-macbook-pro/generated/`. That's machine-generated and gitignored.
-- For hosts other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.yml`. Detect via `hostname -s`.
+- For hosts other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.toml`. Detect via `hostname -s`.

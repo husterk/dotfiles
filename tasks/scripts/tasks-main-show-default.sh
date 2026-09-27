@@ -16,7 +16,7 @@ echo "  • Hostname:          $HOSTNAME"
 echo "  • Bootstrap Target:  $BOOTSTRAP_TARGET"
 echo "  • Host Directory:    $HOST_DIR"
 echo ""
-if [ -f "$HOST_DIR/host-manifest.yml" ]; then
+if [ -f "$HOST_DIR/host-manifest.toml" ]; then
   echo "✅ Host manifest found"
 else
   echo "⚠️  Host manifest not found"

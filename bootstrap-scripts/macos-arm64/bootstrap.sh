@@ -152,12 +152,12 @@ fi
 
 log_info "Repository root: $REPO_ROOT"
 
-# Check if host-specific flake.nix exists
+# Check if the host configuration exists
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
-FLAKE_PATH="$HOST_DIR/flake.nix"
+HOST_CONFIG="$HOST_DIR/configuration.nix"
 
-if [ ! -f "$FLAKE_PATH" ]; then
-  log_warning "No flake.nix found for host '$HOSTNAME' at: $FLAKE_PATH"
+if [ ! -f "$HOST_CONFIG" ]; then
+  log_warning "No configuration.nix found for host '$HOSTNAME' at: $HOST_CONFIG"
   log_info "Available hosts:"
   if [ -d "$REPO_ROOT/hosts" ]; then
     for dir in "$REPO_ROOT/hosts"/*; do
@@ -169,11 +169,11 @@ if [ ! -f "$FLAKE_PATH" ]; then
   log_info ""
   log_info "Please create a host configuration:"
   log_info "  mkdir -p $HOST_DIR"
-  log_info "  # Create $FLAKE_PATH and $HOST_DIR/configuration.nix"
-  log_info "See: https://github.com/LnL7/nix-darwin#flakes"
+  log_info "  # Create $HOST_CONFIG, host-manifest.toml and host-vars.toml"
+  log_info "See: https://github.com/nix-darwin/nix-darwin#flakes"
   SKIP_DARWIN=true
 else
-  log_success "Found flake.nix for host '$HOSTNAME'."
+  log_success "Found configuration for host '$HOSTNAME'."
   SKIP_DARWIN=false
 fi
 
@@ -217,16 +217,14 @@ if [ "$SKIP_DARWIN" = false ]; then
     log_info "Running initial nix-darwin build..."
     log_info "This may take several minutes on first run..."
 
-    cd "$HOST_DIR"
-
-    # Run nix-darwin switch with the host-specific flake (requires sudo for system activation)
+    # Run nix-darwin switch with the repo-root flake (requires sudo for system activation)
     # Pass experimental features since root user doesn't inherit user config
-    if sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake "." 2>&1; then
+    if sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake "$REPO_ROOT#$HOSTNAME" 2>&1; then
       log_success "nix-darwin installed and activated successfully!"
     else
       log_error "Failed to install nix-darwin."
-      log_info "Please check your flake.nix configuration at: $FLAKE_PATH"
-      log_info "See: https://github.com/LnL7/nix-darwin for documentation."
+      log_info "Please check your host configuration at: $HOST_CONFIG"
+      log_info "See: https://github.com/nix-darwin/nix-darwin for documentation."
       exit 1
     fi
   fi
@@ -236,7 +234,7 @@ if [ "$SKIP_DARWIN" = false ]; then
     log_success "nix-darwin is ready."
   fi
 else
-  log_warning "Skipping nix-darwin installation (no flake.nix found)."
+  log_warning "Skipping nix-darwin installation (no host configuration found)."
 fi
 
 # ------------------------------------------------------------------------
@@ -253,7 +251,7 @@ else
   # If nix-darwin was installed, suggest adding stow to configuration
   if [ "$SKIP_DARWIN" = false ]; then
     log_info "Add 'stow' to your nix-darwin configuration's environment.systemPackages"
-    log_info "Then run: darwin-rebuild switch --flake $REPO_ROOT"
+    log_info "Then run: darwin-rebuild switch --flake $REPO_ROOT#$HOSTNAME"
   else
     log_info "Install stow manually or add it to your Nix configuration."
   fi
@@ -275,16 +273,16 @@ if [ "$SKIP_DARWIN" = false ]; then
   log_info "Next steps:"
   log_info "1. Review your nix-darwin configuration in $HOST_DIR"
   log_info "2. Make any desired changes to your system configuration"
-  log_info "3. Apply changes with: darwin-rebuild switch --flake $HOST_DIR"
+  log_info "3. Apply changes with: mise run nix:apply"
   if command -v stow &> /dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
     log_info "4. Stow your dotfiles: cd $REPO_ROOT/dotfiles && stow <packages>"
   fi
 else
   log_info "To complete setup:"
   log_info "1. Create a host directory: mkdir -p $HOST_DIR"
-  log_info "2. Create $FLAKE_PATH and $HOST_DIR/configuration.nix"
+  log_info "2. Create $HOST_CONFIG, host-manifest.toml and host-vars.toml"
   log_info "3. Re-run this script to install nix-darwin"
-  log_info "4. See: https://github.com/LnL7/nix-darwin#getting-started"
+  log_info "4. See: https://github.com/nix-darwin/nix-darwin#getting-started"
 fi
 
 log_info "You may need to restart your shell or terminal for all changes to take effect."
