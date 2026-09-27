@@ -7,7 +7,10 @@ name: CI
 # requests - especially Renovate's, which no human formats - cannot land code
 # that fails them.
 #
-# Scope: this workflow validates the repo's sources.
+# Scope: `tools` and `quality` validate the repo's sources. `build` builds each
+# host's nix-darwin system from the root flake. The flake's `private` input
+# defaults to the tracked stub under nix/private-stub, so the build needs no
+# secrets and no private repository access.
 #
 # Two jobs rather than one: `tools` needs only mise and reports in seconds,
 # while `quality` additionally installs Nix (nixfmt, statix and treefmt come
@@ -16,8 +19,10 @@ name: CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -97,3 +102,28 @@ jobs:
       # nix-darwin-only gate. The last two need python3, which the runner has.
       - name: Lint
         run: mise run dev:lint
+
+  build:
+    name: Build nix-darwin systems
+    # macOS minutes cost 10x on private repos. While private, build only on
+    # pushes to main or on a PR labeled `build`; lockfile-bot dispatches skip
+    # it. A skipped job counts as passing for required checks.
+    if: >-
+      !github.event.repository.private
+      || github.event_name == 'push'
+      || contains(github.event.pull_request.labels.*.name, 'build')
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      # Builds with the public stub for the `private` input. No override, so
+      # the result is what a fresh clone of this repo produces.
+      - name: Build every host
+        run: |
+          for host in $(nix eval --json .#darwinConfigurations --apply builtins.attrNames | jq -r '.[]'); do
+            echo "Building $host"
+            nix build --no-link --print-build-logs ".#darwinConfigurations.$host.system"
+          done
