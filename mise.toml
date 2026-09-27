@@ -253,6 +253,13 @@ description = "Format all code (shell + Nix + YAML + JSON)"
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-format.sh {{ config_root }}"
 
+[tasks.check]
+# The gates CI enforces, run in sequence: format-check rewrites files in place,
+# so it must finish before lint reads them.
+description = "Run every CI gate locally: format check, lint, host validation"
+raw = true
+run = ["mise run dev:format-check", "mise run dev:lint", "mise run dev:validate-all-hosts"]
+
 [tasks."dev:lint"]
 depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync", "dev:check-spelling", "dev:check-skills"]
 description = "Lint all code (shell + Nix + Markdown + Claude definitions)"

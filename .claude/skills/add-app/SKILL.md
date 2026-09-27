@@ -142,4 +142,4 @@ Next (run yourself):
 - Homebrew is `cleanup = "zap"` in this repo, so anything not declared in a Nix module gets uninstalled on apply. Adding an app here is the only correct way to keep it.
 - Never edit `hosts/keith-macbook-pro/generated/`. It's gitignored and regenerated.
 - If the user is on a host other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.yml`. Use `hostname -s` to detect.
-- Templates here use 2-space indent (per `treefmt.toml` / `.editorconfig`); pre-commit will format on commit, but produce clean output anyway.
+- Templates here use 2-space indent (per `treefmt.toml` / `.editorconfig`); `mise run check` fails on unformatted output, so produce clean output.

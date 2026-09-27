@@ -53,13 +53,13 @@ mise tasks               # List all tasks
 
 **Tools included**: task, yq, jq, shellcheck, shfmt, prettier, stylua, taplo, neovim, LSPs
 
-**Git hooks**: Automatically installed by mise (pre-commit checks: format + lint).
+**Checks**: `mise run check` runs the same gates as CI. There is no pre-commit hook.
 
 ### Continuous Integration
 
 `.github/workflows/ci.yml` runs on every pull request and on pushes to `main`,
-enforcing the same gates as the pre-commit hook so that automated PRs (Renovate)
-can't land code that would trip the hook on someone else's next commit.
+enforcing the same gates as `mise run check`, so automated PRs (Renovate)
+can't land code that fails them.
 
 | Check                          | Task                              |
 | ------------------------------ | --------------------------------- |

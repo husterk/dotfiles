@@ -3,9 +3,9 @@ name: CI
 # Continuous Integration
 # ---------------------
 #
-# Runs the same quality gates as the local pre-commit hook, so that pull
+# Runs the same quality gates as `mise run check` locally, so that pull
 # requests - especially Renovate's, which no human formats - cannot land code
-# that would trip the hook on the next unrelated commit.
+# that fails them.
 #
 # Scope: this workflow validates the repo's *sources*. It deliberately does NOT
 # build the nix-darwin configuration. hosts/<host>/flake.nix imports
@@ -71,12 +71,12 @@ jobs:
 
       # nixfmt, statix and treefmt are declared in apps/neovim/neovim.nix and
       # come from nixpkgs, not mise, so CI needs a Nix to run the same checks
-      # the pre-commit hook runs locally.
+      # `mise run check` runs locally.
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
 
       # Pinned to the same nixpkgs revision the host builds from, so CI runs
-      # byte-identical nixfmt/statix/treefmt to the local pre-commit hook. A
+      # byte-identical nixfmt/statix/treefmt to `mise run check`. A
       # bare `nixpkgs#treefmt` would resolve via the runner's flake registry
       # and could format differently than your machine does - the same version
       # skew that makes formatter bumps churn.

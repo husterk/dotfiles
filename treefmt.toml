@@ -28,7 +28,7 @@ options = ["-i", "2", "-w"]
 
 [formatter.shell]
 command = "shfmt"
-includes = ["*.sh", "**/.zshrc", "**/.zshenv", "**/.zprofile", "**/.envrc", "**/*rc", "hooks/pre-commit"]
+includes = ["*.sh", "**/.zshrc", "**/.zshenv", "**/.zprofile", "**/.envrc", "**/*rc"]
 # shfmt with 2-space indent, simplify redirects, and consistent indentation
 options = ["-ln", "bash", "-i", "2", "-sr", "-ci", "-w"]
 

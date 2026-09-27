@@ -58,22 +58,14 @@ _You already have language servers installed via mise. VSCode will find them aut
 **Formatting:**
 
 Format-on-save is disabled. Use mise tasks instead:
-**Note**: Formatting is also automatically applied by pre-commit hooks.
 
 ```bash
 mise run dev:format     # Format all files
+mise run check          # Every CI gate: format check, lint, host validation
 ```
 
-Or let the pre-commit hook auto-format when you commit.
-
-**Pre-commit hooks:**
-
-Automatically installed by mise and run on `git commit`:
-
-- `mise run dev:format` (auto-fixes formatting)
-- `mise run dev:lint` (checks code quality)
-
-Skip with: `SKIP=1 git commit` or `git commit --no-verify`
+Run `mise run check` before you commit. CI enforces the same gates, and there
+is no pre-commit hook.
 
 ## Troubleshooting
 

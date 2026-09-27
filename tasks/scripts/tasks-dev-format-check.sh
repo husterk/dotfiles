@@ -67,7 +67,7 @@ fi
 # Any manifest line present after but not before means that file's content
 # changed; take the path column.
 mapfile -t changed < <(
-  comm -13 <(printf '%s\n' "$before") <(printf '%s\n' "$after") |
+  comm -13 <(printf '%s\n' "$before" | sort) <(printf '%s\n' "$after" | sort) |
     sed 's/^[0-9a-f]*  //'
 )
 

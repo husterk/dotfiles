@@ -1,0 +1,7 @@
+# Agent of Empires repository configuration.
+# See: https://www.agent-of-empires.com/docs/guides/configuration/
+
+[hooks]
+# A new worktree has an untrusted mise.toml and no tools, so every task in it
+# fails until both are done.
+on_create = ["mise trust", "mise install --locked"]

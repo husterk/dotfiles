@@ -38,7 +38,21 @@ Run `op signin` before any `*:generate` task.
 - **Code-first**: edit `apps/<name>/dotfiles/...`, then `mise run refresh`
   (regenerates + redeploys).
 
+## Workflow
+
+- **An issue comes first.** Before changing any tracked file, find or create a
+  GitHub issue with a goal and checkable acceptance criteria. The `start-work`
+  skill walks through it.
+- **One branch and one PR per issue.** Name the branch
+  `<type>/<issue-number>-<slug>`, and put `Closes #<number>` in the PR body.
+  The `Linked issue` CI check fails a PR without an open linked issue.
+- **Commit messages never contain `#<number>`.** The PR body carries the link.
+- **Verify before merging.** Run each acceptance criterion and post the
+  commands and results as a comment on the issue.
+
 ## Formatting & lint
 
-`mise run dev:format` / `mise run dev:lint`. Pre-commit hook runs both — fix
-the underlying issue rather than skipping.
+Run `mise run check` before every commit. It runs `dev:format-check`,
+`dev:lint` and `dev:validate-all-hosts`, the same gates CI enforces.
+`mise run dev:format` fixes formatting. There is no pre-commit hook. Fix the
+underlying issue rather than skipping a check.
