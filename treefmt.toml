@@ -35,17 +35,7 @@ options = ["-ln", "bash", "-i", "2", "-sr", "-ci", "-w"]
 [formatter.lua]
 command = "stylua"
 includes = ["*.lua"]
-# Stylua options to match .editorconfig settings
-options = [
-  "--indent-type",
-  "Spaces",
-  "--indent-width",
-  "2",
-  "--quote-style",
-  "AutoPreferDouble",
-  "--column-width",
-  "120",
-]
+# Settings live in stylua.toml at the repo root.
 
 [formatter.toml]
 command = "taplo"

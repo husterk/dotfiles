@@ -3,6 +3,6 @@ require("git"):setup()
 
 -- Setup Relative Motions (with optional config)
 require("relative-motions"):setup({
-    show_numbers = "relative",
-    show_motion = true,
+  show_numbers = "relative",
+  show_motion = true,
 })

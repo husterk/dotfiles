@@ -11,7 +11,7 @@ indent_style = space
 indent_size = 4
 
 # Language-specific overrides
-[*.{nix,sh,yml,yaml,json,jsonc}]
+[*.{nix,sh,lua,yml,yaml,json,jsonc}]
 indent_size = 2
 
 [*.md]
