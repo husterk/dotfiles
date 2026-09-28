@@ -69,13 +69,12 @@ log_info "Bootstrapping host: $HOSTNAME"
 # ------------------------------------------------------------------------
 log_info "Installing Nix package manager..."
 
-# Check if Nix is already installed by looking for /nix directory and receipt
-if [ ! -d "/nix" ] || [ ! -f "/nix/receipt.json" ]; then
-  log_info "Nix not found. Installing via Determinate Systems installer..."
-  # Use --prefer-upstream-nix flag for vanilla Nix (not Determinate distribution)
-  # This allows nix-darwin to manage Nix settings
-  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
-    sh -s -- install --prefer-upstream-nix
+# Any Nix counts as installed; /nix/receipt.json only exists after the
+# Determinate installer, so it misses an upstream install.
+if ! command -v nix &> /dev/null && [ ! -d /nix/store ]; then
+  log_info "Nix not found. Installing upstream Nix with the official installer..."
+  # nix-darwin manages the Nix settings afterwards (apps/nix/nix.nix).
+  sh <(curl --proto '=https' --tlsv1.2 -sSfL https://nixos.org/nix/install) --daemon --yes
 
   log_success "Nix installation complete."
 else
@@ -178,6 +177,33 @@ else
 fi
 
 # ------------------------------------------------------------------------
+# Step 4b: Check the host matches this machine, and install Homebrew
+# ------------------------------------------------------------------------
+if [ "$SKIP_DARWIN" = false ]; then
+  # nix-darwin aborts activation when system.primaryUser does not exist.
+  PRIMARY_USER=$(awk -F'"' '/^USER_USERNAME/ {print $2}' "$HOST_DIR/host-vars.toml")
+  if ! id "$PRIMARY_USER" &> /dev/null; then
+    log_error "User '$PRIMARY_USER' from host-vars.toml does not exist on this machine."
+    log_info "Create it, or edit $HOST_DIR/host-vars.toml, then re-run."
+    exit 1
+  fi
+  if [ "$(hostname -s)" != "$HOSTNAME" ]; then
+    log_warning "This machine's hostname is '$(hostname -s)', not '$HOSTNAME'."
+    log_info "mise tasks pick the host by 'hostname -s'. The first switch sets it."
+  fi
+
+  # nix-darwin manages Homebrew packages but does not install Homebrew;
+  # without it every cask is skipped with only an error message.
+  if [ ! -x /opt/homebrew/bin/brew ]; then
+    log_info "Installing Homebrew..."
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    log_success "Homebrew installed."
+  else
+    log_success "Homebrew is already installed."
+  fi
+fi
+
+# ------------------------------------------------------------------------
 # Step 5: Install nix-darwin
 # ------------------------------------------------------------------------
 if [ "$SKIP_DARWIN" = false ]; then
@@ -217,9 +243,13 @@ if [ "$SKIP_DARWIN" = false ]; then
     log_info "Running initial nix-darwin build..."
     log_info "This may take several minutes on first run..."
 
-    # Run nix-darwin switch with the repo-root flake (requires sudo for system activation)
-    # Pass experimental features since root user doesn't inherit user config
-    if sudo nix --extra-experimental-features 'nix-command flakes' run nix-darwin -- switch --flake "$REPO_ROOT#$HOSTNAME" 2>&1; then
+    # Run darwin-rebuild from the nix-darwin revision the flake locks
+    # (--inputs-from), not whatever the registry resolves. Root does not
+    # inherit the user's nix.conf, so pass the experimental features. With no
+    # private overlay yet, the build uses the public stub, which turns
+    # Homebrew's zap cleanup off.
+    if sudo nix --extra-experimental-features 'nix-command flakes' run --inputs-from "$REPO_ROOT" \
+      nix-darwin#darwin-rebuild -- switch --flake "$REPO_ROOT#$HOSTNAME" 2>&1; then
       log_success "nix-darwin installed and activated successfully!"
     else
       log_error "Failed to install nix-darwin."
@@ -257,26 +287,15 @@ else
   fi
 fi
 
-# If stow is available and we have a dotfiles directory, offer to stow
-if command -v stow &> /dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
-  log_info "Dotfiles directory found: $REPO_ROOT/dotfiles"
-  log_info "To stow your dotfiles, run:"
-  log_info "  cd $REPO_ROOT/dotfiles && stow *"
-  log_info "Or stow individual packages:"
-  log_info "  cd $REPO_ROOT/dotfiles && stow <package-name>"
-fi
-
 # ------------------------------------------------------------------------
 # Step 7: Final Instructions
 # ------------------------------------------------------------------------
 if [ "$SKIP_DARWIN" = false ]; then
   log_info "Next steps:"
-  log_info "1. Review your nix-darwin configuration in $HOST_DIR"
-  log_info "2. Make any desired changes to your system configuration"
-  log_info "3. Apply changes with: mise run nix:apply"
-  if command -v stow &> /dev/null && [ -d "$REPO_ROOT/dotfiles" ]; then
-    log_info "4. Stow your dotfiles: cd $REPO_ROOT/dotfiles && stow <packages>"
-  fi
+  log_info "1. Restart your shell so mise and the new PATH load."
+  log_info "2. If you keep a private overlay: gh auth login, then"
+  log_info "   gh repo clone <owner>/<private-overlay> ~/git-repos/dotfiles-private"
+  log_info "3. Run: mise run setup"
 else
   log_info "To complete setup:"
   log_info "1. Create a host directory: mkdir -p $HOST_DIR"
