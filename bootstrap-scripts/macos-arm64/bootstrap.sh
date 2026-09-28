@@ -4,12 +4,13 @@
 # macOS ARM Bootstrap Script
 # ========================================================================
 # This script bootstraps a macOS system with:
-# - Nix package manager (using Determinate Systems installer)
-# - nix-darwin (declarative macOS configuration)
-# - GNU Stow (dotfiles management)
+# - Nix (official upstream installer) and Homebrew
+# - nix-darwin (declarative macOS configuration), first switch
+# - GNU Stow (via the nix-darwin configuration)
 #
-# The script is fully idempotent and can be safely run multiple times
-# to bootstrap new systems or update existing ones.
+# Each step checks whether its work is already done, so rerunning it after a
+# failure picks up where it stopped. Day-to-day changes go through
+# `mise run refresh`, not this script.
 #
 # Usage: ./bootstrap.sh <hostname>
 # Example: ./bootstrap.sh keith-macbook-pro

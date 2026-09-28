@@ -7,7 +7,7 @@
 # It removes all existing Dock items and adds specified applications.
 #
 # Usage: configure-dock.sh <users-path> <username> <dockutil-path>
-# Example: configure-dock.sh /Users keithhuster /opt/homebrew/bin/dockutil
+# Example: configure-dock.sh /Users keithhuster /nix/store/.../bin/dockutil
 # ========================================================================
 
 set -e # Exit on error
@@ -34,7 +34,7 @@ if [ $# -ne 3 ]; then
   log_error "Invalid number of arguments."
   echo ""
   echo "Usage: $0 <users-path> <username> <dockutil-path>"
-  echo "Example: $0 /Users keithhuster /opt/homebrew/bin/dockutil"
+  echo "Example: $0 /Users keithhuster /nix/store/.../bin/dockutil"
   exit 1
 fi
 
