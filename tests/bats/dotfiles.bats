@@ -65,3 +65,14 @@ generate() {
   grep -qx 'email = ${USER_EMAIL}' "$repo/apps/test-app/dotfiles/config"
   grep -qx 'name = changed' "$repo/apps/test-app/dotfiles/config"
 }
+
+@test "capture leaves a value literal where the template never used its placeholder" {
+  printf 'email = ${USER_EMAIL}\nhome = /Users/shared\n' > "$repo/apps/test-app/dotfiles/config"
+  git -C "$repo" add -A
+  generate
+  printf 'email = tester@example.com\nhome = /Users/shared\nname = new\n' > "$rendered"
+  run bash "$scripts/capture-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 0 ]
+  grep -qx 'email = ${USER_EMAIL}' "$repo/apps/test-app/dotfiles/config"
+  grep -qx 'home = /Users/shared' "$repo/apps/test-app/dotfiles/config"
+}

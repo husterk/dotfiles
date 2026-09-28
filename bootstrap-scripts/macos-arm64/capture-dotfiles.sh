@@ -149,6 +149,46 @@ if [ ${#SECRET_MAP[@]} -eq 0 ]; then
 fi
 
 # ------------------------------------------------------------------------
+# Helper Function: Turn a generated file's content back into a template
+# ------------------------------------------------------------------------
+# Prints the generated content with each .env value replaced by its
+# ${VAR} placeholder. When the source template exists, only placeholders it
+# already uses are restored: a value such as /Users can appear in a file
+# legitimately, and turning every occurrence into ${PATH_USERS} would
+# corrupt it.
+capture_content() {
+  local generated_path="$1"
+  local source_path="$2"
+  local content has_template=false template_vars="" secret_value placeholder
+  local escaped_secret escaped_placeholder sorted_secrets
+
+  content=$(cat "$generated_path")
+  if [ -f "$source_path" ]; then
+    has_template=true
+    template_vars=$(grep -oE '\$\{[A-Za-z_][A-Za-z0-9_]*\}' "$source_path" | sort -u || true)
+  fi
+
+  # Longest values first, so a value that contains another is replaced whole
+  sorted_secrets=$(for key in "${!SECRET_MAP[@]}"; do
+    echo "${#key} $key"
+  done | sort -rn | cut -d' ' -f2-)
+
+  while IFS= read -r secret_value; do
+    [ -z "$secret_value" ] && continue
+    placeholder="${SECRET_MAP[$secret_value]}"
+    if $has_template && ! grep -qxF "$placeholder" <<< "$template_vars"; then
+      continue
+    fi
+    escaped_secret=$(printf '%s\n' "$secret_value" | sed -e 's/[]\/$*.^[]/\\&/g')
+    escaped_placeholder=$(printf '%s\n' "$placeholder" | sed -e 's/[\/&]/\\&/g')
+    # shellcheck disable=SC2001
+    content=$(echo "$content" | sed "s/$escaped_secret/$escaped_placeholder/g")
+  done <<< "$sorted_secrets"
+
+  printf '%s\n' "$content"
+}
+
+# ------------------------------------------------------------------------
 # Helper Function: Check if file should be ignored based on .gitignore
 # ------------------------------------------------------------------------
 should_ignore_file() {
@@ -269,29 +309,7 @@ while IFS='|' read -r source target; do
       # Construct source path
       SOURCE_PATH="$SOURCE_BASE/$RELATIVE_TO_BASE"
 
-      # Read generated file
-      GENERATED_CONTENT=$(cat "$GENERATED_PATH")
-
-      # Replace secrets with environment variable placeholders
-      CAPTURED_CONTENT="$GENERATED_CONTENT"
-
-      # Sort secrets by length (longest first) to avoid partial replacements
-      sorted_secrets=$(for key in "${!SECRET_MAP[@]}"; do
-        echo "${#key} $key"
-      done | sort -rn | cut -d' ' -f2-)
-
-      while IFS= read -r secret_value; do
-        [ -z "$secret_value" ] && continue
-        placeholder="${SECRET_MAP[$secret_value]}"
-
-        # Escape special characters for sed
-        escaped_secret=$(printf '%s\n' "$secret_value" | sed -e 's/[]\/$*.^[]/\\&/g')
-        escaped_placeholder=$(printf '%s\n' "$placeholder" | sed -e 's/[\/&]/\\&/g')
-
-        # Use sed with literal string matching (parameter expansion can't handle escaped patterns)
-        # shellcheck disable=SC2001
-        CAPTURED_CONTENT=$(echo "$CAPTURED_CONTENT" | sed "s/$escaped_secret/$escaped_placeholder/g")
-      done <<< "$sorted_secrets"
+      CAPTURED_CONTENT=$(capture_content "$GENERATED_PATH" "$SOURCE_PATH")
 
       # Display source path relative to repo root
       SOURCE_DISPLAY="${SOURCE_PATH#"$REPO_ROOT"}"
@@ -353,30 +371,7 @@ while IFS='|' read -r source target; do
     continue
   fi
 
-  # Read generated file
-  GENERATED_CONTENT=$(cat "$GENERATED_PATH")
-
-  # Replace secrets with environment variable placeholders
-  CAPTURED_CONTENT="$GENERATED_CONTENT"
-
-  # Sort secrets by length (longest first) to avoid partial replacements
-  sorted_secrets=$(for key in "${!SECRET_MAP[@]}"; do
-    echo "${#key} $key"
-  done | sort -rn | cut -d' ' -f2-)
-
-  while IFS= read -r secret_value; do
-    [ -z "$secret_value" ] && continue
-    placeholder="${SECRET_MAP[$secret_value]}"
-
-    # Escape special characters for sed (escape &, /, \, and newlines)
-    # This needs to be done carefully to handle all possible characters
-    escaped_secret=$(printf '%s\n' "$secret_value" | sed -e 's/[]\/$*.^[]/\\&/g')
-    escaped_placeholder=$(printf '%s\n' "$placeholder" | sed -e 's/[\/&]/\\&/g')
-
-    # Use sed with literal string matching (parameter expansion can't handle escaped patterns)
-    # shellcheck disable=SC2001
-    CAPTURED_CONTENT=$(echo "$CAPTURED_CONTENT" | sed "s/$escaped_secret/$escaped_placeholder/g")
-  done <<< "$sorted_secrets"
+  CAPTURED_CONTENT=$(capture_content "$GENERATED_PATH" "$SOURCE_PATH")
 
   # Check if content has changed from source
   if [ -f "$SOURCE_PATH" ]; then
