@@ -156,11 +156,13 @@ HOSTNAME=$(hostname -s)
 '''
 
 [tasks."dotfiles:redeploy"]
+# Same code path as dotfiles:deploy (--no-folding, orphan pruning), so a
+# redeploy can never fold directories into single symlinks.
 description = "Redeploy dotfiles (remove and reinstall symlinks)"
 raw = true
 run = '''
 HOSTNAME=$(hostname -s)
-{{ config_root }}/tasks/scripts/tasks-dotfiles-redeploy.sh "{{ config_root }}/hosts/$HOSTNAME"
+{{ config_root }}/bootstrap-scripts/macos-arm64/deploy-dotfiles.sh "$HOSTNAME" --restow
 '''
 
 [tasks."dotfiles:capture"]
