@@ -3,6 +3,7 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "labels": ["dependencies"],
   "rangeStrategy": "pin",
+  "automergeStrategy": "squash",
   "schedule": ["* 0-5 1 */2 *"],
   "nix": {
     "enabled": true
@@ -54,7 +55,7 @@
     {
       "description": "Group mise CLI utilities",
       "matchManagers": ["mise"],
-      "matchPackageNames": ["jq", "op", "yq", "neovim"],
+      "matchPackageNames": ["jq", "op", "yq", "aqua:neovim/neovim"],
       "groupName": "mise cli tools"
     }
   ]
