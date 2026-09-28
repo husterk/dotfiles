@@ -6,14 +6,15 @@ set -euo pipefail
 REPO_ROOT="${1:?REPO_ROOT required}"
 
 echo "⚙️  Updating flake inputs..."
-cd "$REPO_ROOT"
 
-# Update flake.lock (suppress Git dirty tree warnings)
-nix flake update 2>&1 | grep -v "warning: Git tree.*is dirty" || {
-  # If the command fails, show the error but check if lock file was updated
-  if [ "${PIPESTATUS[0]}" -ne 0 ] && [ "${PIPESTATUS[0]}" -ne 141 ]; then
-    exit "${PIPESTATUS[0]}"
-  fi
-}
+# Capture the output first: reading PIPESTATUS after a pipeline inside a ||
+# block reports the test commands' status, not nix's, so failures used to
+# exit 0.
+if ! out="$(nix flake update --flake "$REPO_ROOT" 2>&1)"; then
+  printf '%s\n' "$out"
+  echo "❌ nix flake update failed"
+  exit 1
+fi
+printf '%s\n' "$out" | grep -v "warning: Git tree.*is dirty" || true
 
 echo "✅ Flake inputs updated. Run 'mise run nix:apply' to apply changes."
