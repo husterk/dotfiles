@@ -13,7 +13,7 @@
 # Example: ./capture-dotfiles.sh keith-macbook-pro --dry-run
 # ========================================================================
 
-set -e # Exit on error
+set -euo pipefail
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers
@@ -42,9 +42,9 @@ for arg in "$@"; do
 done
 
 # Remove --dry-run from arguments to get hostname
-if [ "$1" = "--dry-run" ]; then
+if [ "${1:-}" = "--dry-run" ]; then
   HOSTNAME="${2:-}"
-elif [ "$2" = "--dry-run" ]; then
+elif [ "${2:-}" = "--dry-run" ]; then
   HOSTNAME="$1"
 fi
 

@@ -14,7 +14,7 @@
 # Example: ./generate-dotfiles.sh keith-macbook-pro
 # ========================================================================
 
-set -e # Exit on error
+set -euo pipefail
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers

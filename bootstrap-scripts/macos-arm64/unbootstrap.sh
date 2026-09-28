@@ -9,7 +9,7 @@
 # Usage: ./unbootstrap.sh <hostname>
 # ========================================================================
 
-set -e # Exit on error
+set -euo pipefail
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers

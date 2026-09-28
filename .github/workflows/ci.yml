@@ -117,9 +117,10 @@ jobs:
       - name: Install pinned tools
         run: mise install --locked
 
-      # envsubst renders the dotfile templates the round-trip tests exercise.
-      - name: Install envsubst
-        run: sudo apt-get install -y --no-install-recommends gettext-base
+      # envsubst renders the dotfile templates and stow deploys them in the
+      # round-trip tests.
+      - name: Install envsubst and stow
+        run: sudo apt-get install -y --no-install-recommends gettext-base stow
 
       - name: Run tests
         run: mise run dev:test

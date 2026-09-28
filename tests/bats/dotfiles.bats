@@ -76,3 +76,25 @@ generate() {
   grep -qx 'email = ${USER_EMAIL}' "$repo/apps/test-app/dotfiles/config"
   grep -qx 'home = /Users/shared' "$repo/apps/test-app/dotfiles/config"
 }
+
+@test "deploy links rendered files into HOME and prune removes a link whose source left" {
+  export HOME="$BATS_TEST_TMPDIR/home"
+  mkdir -p "$HOME"
+  printf 'x = 1\n' > "$repo/apps/test-app/dotfiles/extra"
+  git -C "$repo" add -A
+  generate
+  run bash "$scripts/deploy-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 0 ]
+  [ -L "$HOME/.config/test-app/config" ]
+  [ -L "$HOME/.config/test-app/extra" ]
+  grep -qx 'email = tester@example.com' "$HOME/.config/test-app/config"
+
+  rm "$repo/apps/test-app/dotfiles/extra"
+  git -C "$repo" add -A
+  generate
+  run bash "$scripts/deploy-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 0 ]
+  [ ! -e "$HOME/.config/test-app/extra" ]
+  [ ! -L "$HOME/.config/test-app/extra" ]
+  [ -L "$HOME/.config/test-app/config" ]
+}

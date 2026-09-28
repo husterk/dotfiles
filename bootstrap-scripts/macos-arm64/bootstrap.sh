@@ -15,7 +15,9 @@
 # Example: ./bootstrap.sh keith-macbook-pro
 # ========================================================================
 
-set -e # Exit on error
+# No -u: this runs under macOS's /bin/bash 3.2 before Nix exists, where an
+# empty array expansion counts as unbound.
+set -eo pipefail
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers

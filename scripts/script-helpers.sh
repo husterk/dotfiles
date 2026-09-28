@@ -47,7 +47,7 @@ log_error() {
 # Usage: script_header "Script Name" "Brief description of what this script does"
 script_header() {
   local script_name="${1}"
-  local description="${2}"
+  local description="${2:-}"
 
   echo ""
   echo -e "${CYAN}${BOLD}╔════════════════════════════════════════════════════════════════════╗${NC}"
@@ -64,7 +64,7 @@ script_header() {
 # Usage: script_footer "success|warning|error" "Optional message"
 script_footer() {
   local status="${1:-success}"
-  local message="${2}"
+  local message="${2:-}"
 
   echo ""
   echo -e "${CYAN}${BOLD}╔════════════════════════════════════════════════════════════════════╗${NC}"

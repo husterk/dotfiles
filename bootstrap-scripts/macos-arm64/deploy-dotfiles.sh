@@ -19,7 +19,7 @@
 #   --restore    Restore dotfiles from a backup
 # ========================================================================
 
-set -e # Exit on error
+set -euo pipefail
 
 # ------------------------------------------------------------------------
 # Setup Paths & Load Helpers
