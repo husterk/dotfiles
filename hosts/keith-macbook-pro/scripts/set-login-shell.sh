@@ -101,7 +101,9 @@ if [ "${currentShell}" = "${shellPath}" ]; then
   log_success "Login shell is already set to ${shellPath}."
 else
   log_info "Current shell: ${currentShell}"
-  if sudo -u "${username}" chsh -s "${shellPath}"; then
+  # Activation runs as root. chsh as the user would prompt for their
+  # password, which fails when darwin-rebuild has no terminal.
+  if sudo dscl . -create "/Users/${username}" UserShell "${shellPath}"; then
     log_success "Login shell changed successfully."
     log_info "Please log out and log back in for changes to take effect."
   else
