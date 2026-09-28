@@ -21,7 +21,7 @@ name: Update mise Lockfile
 # - Uses the github-actions[bot] identity for commits, which are unsigned:
 #   merge Renovate PRs with squash so GitHub signs the result
 # - A push made with GITHUB_TOKEN starts no workflow runs, so the last step
-#   dispatches CI on the new head commit. No loop risk: the dispatched run is
+#   dispatches CI and the PR policy check on the new head commit. No loop risk: the dispatched run is
 #   CI, and this workflow only triggers on mise.toml pushes.
 
 permissions:
@@ -72,9 +72,12 @@ jobs:
           echo "pushed=true" >> "$GITHUB_OUTPUT"
 
       # Pushes made with GITHUB_TOKEN start no workflow runs, but a
-      # workflow_dispatch always does, so run CI on the new head commit.
-      - name: Run CI on the lockfile commit
+      # workflow_dispatch always does, so run every required check on the
+      # new head commit.
+      - name: Run required checks on the lockfile commit
         if: steps.commit.outputs.pushed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref "$GITHUB_REF_NAME"
+        run: |
+          gh workflow run ci.yml --ref "$GITHUB_REF_NAME"
+          gh workflow run pr-policy.yml --ref "$GITHUB_REF_NAME"
