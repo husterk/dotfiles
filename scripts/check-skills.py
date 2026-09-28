@@ -32,16 +32,50 @@ DASHES = {"—": "em dash", "–": "en dash"}
 
 # Frontmatter keys Claude Code recognizes. An unknown key is usually a typo,
 # and a typo'd key is silently ignored rather than rejected.
-SKILL_KEYS = {"name", "description", "version", "license", "allowed-tools", "metadata"}
+# From https://code.claude.com/docs/en/skills and /en/sub-agents. `version`
+# predates those tables and is kept for existing skills.
+SKILL_KEYS = {
+    "name",
+    "description",
+    "when_to_use",
+    "argument-hint",
+    "arguments",
+    "disable-model-invocation",
+    "user-invocable",
+    "allowed-tools",
+    "disallowed-tools",
+    "model",
+    "effort",
+    "context",
+    "agent",
+    "background",
+    "hooks",
+    "paths",
+    "shell",
+    "metadata",
+    "license",
+    "compatibility",
+    "version",
+}
 AGENT_KEYS = {
     "name",
     "description",
-    "model",
     "tools",
-    "skills",
-    "background",
+    "disallowedTools",
+    "model",
     "permissionMode",
+    "maxTurns",
+    "skills",
+    "mcpServers",
+    "hooks",
+    "memory",
+    "background",
+    "omitClaudeMd",
+    "effort",
+    "isolation",
     "color",
+    "initialPrompt",
+    "experimental",
 }
 
 

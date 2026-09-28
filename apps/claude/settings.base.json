@@ -45,8 +45,6 @@
     ],
     "deny": [
       "Edit(hosts/*/generated/**)",
-      "Read(./.env)",
-      "Read(./secrets/**)",
       "Read(**/*.key)",
       "Read(**/id_ed25519)",
       "Bash(dd if=* of=/dev/*)",

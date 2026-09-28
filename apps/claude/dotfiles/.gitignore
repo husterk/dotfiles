@@ -2,11 +2,8 @@
 settings.local.json
 sessions/
 projects/
-# plugins/ holds installed marketplaces + per-plugin state, all of which is
-# transient. But known_marketplaces.json registers which marketplaces should
-# be set up, so it IS tracked.
-plugins/*
-!plugins/known_marketplaces.json
+# Installed marketplaces and per-plugin state are transient.
+plugins/
 cache/
 shell-snapshots/
 session-env/

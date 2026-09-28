@@ -38,15 +38,9 @@ an older SHA is stale, so do not report its result as the current one.
    specific assertion or command that failed. State the root cause. If you
    cannot name it, that is a stop condition, not a reason to guess.
 5. **Fix and verify locally.** Run the same gate on your machine before pushing.
-   This repo's checks all have local equivalents:
-
-    | Failing job                              | Local command                     |
-    | ---------------------------------------- | --------------------------------- |
-    | Format and lint / Formatting is clean    | `mise run dev:format-check`       |
-    | Format and lint / Lint                   | `mise run dev:lint`               |
-    | Tool pins and manifests / pins agree     | `mise run dev:check-tool-pins`    |
-    | Tool pins and manifests / host manifests | `mise run dev:validate-all-hosts` |
-    | Tool pins and manifests / install        | `mise install --locked`           |
+   Look up the failing job's local command in the project's `CLAUDE.md` (a
+   "CI job to local command" table). If it has none, run the command the
+   failing step runs, as shown in the workflow file.
 
 6. **Push and repeat** from step 1.
 
@@ -92,7 +86,8 @@ an older SHA is stale, so do not report its result as the current one.
 - Never delete, skip, or mark a test as expected-to-fail.
 - Never disable, downgrade, or narrow a lint, format, or analysis step to get
   green. Making the gate stop asking is not fixing the failure.
-- Never force-push.
+- Never force-push `main`. Force-push a PR branch only with
+  `--force-with-lease`, after a local rebase.
 - Never edit `hosts/*/generated/`. It is machine-generated and gitignored.
 - Maximum 3 fix attempts total.
 - Report failures honestly. A run that is still red is still red.

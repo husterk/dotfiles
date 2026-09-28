@@ -21,7 +21,7 @@ User says any of: "remove `<app>`", "uninstall `<app>`", "drop `<app>` from the 
 ### 1. Validate
 
 - Confirm `apps/<name>/` exists.
-- Confirm an `[[apps]]` entry with `name = "<name>"` exists in `hosts/keith-macbook-pro/host-manifest.toml`.
+- Confirm an `[[apps]]` entry with `name = "<name>"` exists in `hosts/<host>/host-manifest.toml`.
 
 If only one of those is true, surface the inconsistency and ask the user whether to proceed (likely yes, since the repo is partially out of sync).
 
@@ -30,13 +30,12 @@ If only one of those is true, surface the inconsistency and ask the user whether
 Run:
 
 ```bash
-grep -rn "<name>" hosts/keith-macbook-pro/host-manifest.toml modules/ apps/ \
-  --exclude-dir=apps/<name>
+git grep -n -e "<name>" -- hosts/ modules/ apps/ ':!apps/<name>/'
 ```
 
 This surfaces unrelated mentions (other apps depending on it, module imports, README references). Show any hits to the user and confirm before continuing. If only manifest hits appear, you can proceed without asking.
 
-### 3. Unregister from `hosts/keith-macbook-pro/host-manifest.toml`
+### 3. Unregister from `hosts/<host>/host-manifest.toml`
 
 Remove the `[[apps]]` block whose `name = "<name>"`, including any `[[apps.dotfiles]]` tables that follow it before the next `[[apps]]`. Use `Edit` with enough surrounding context to make the match unique. Do not use `yq -i`, which drops the blank lines between blocks.
 
@@ -59,7 +58,7 @@ rm -rf apps/<name>
 Print:
 
 ```
-Removed apps/<name>/ and its entry from hosts/keith-macbook-pro/host-manifest.toml.
+Removed apps/<name>/ and its entry from hosts/<host>/host-manifest.toml.
 
 Next (run yourself):
   mise run dev:validate-host-config
@@ -75,5 +74,5 @@ Mention the Homebrew zap behavior if the removed app declared `homebrew.brews` /
 ## Notes
 
 - The change is fully recoverable from git until committed (`git restore -SW .` to undo manifest edits + `git restore apps/<name>/` is not enough for a deleted dir; use `git checkout HEAD -- apps/<name>/`).
-- Never edit `hosts/keith-macbook-pro/generated/`. That's machine-generated and gitignored.
-- For hosts other than `keith-macbook-pro`, edit the manifest at `hosts/<that-host>/host-manifest.toml`. Detect via `hostname -s`.
+- Never edit `hosts/<host>/generated/`. That's machine-generated and gitignored.
+- `<host>` is the output of `hostname -s`, unless the user names another host.

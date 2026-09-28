@@ -57,6 +57,21 @@ Template vars come from `hosts/<hostname>/host-vars.toml`.
 - **Verify before merging.** Run each acceptance criterion and post the
   commands and results as a comment on the issue.
 
+## CI job to local command
+
+Every required CI job has a local equivalent:
+
+| Failing job                              | Local command                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------ |
+| Format and lint / Formatting is clean    | `mise run dev:format-check`                                        |
+| Format and lint / Lint                   | `mise run dev:lint`                                                |
+| Tool pins and manifests / pins agree     | `mise run dev:check-tool-pins`                                     |
+| Tool pins and manifests / host manifests | `mise run dev:validate-all-hosts`                                  |
+| Tool pins and manifests / install        | `mise install --locked`                                            |
+| Tests                                    | `mise run dev:test`                                                |
+| Build nix-darwin systems                 | `nix build --no-link .#darwinConfigurations.$(hostname -s).system` |
+| Linked issue                             | Put `Closes #<number>` for an open issue in the PR body            |
+
 ## Formatting & lint
 
 Run `mise run check` before every commit. It runs `dev:format-check`,
