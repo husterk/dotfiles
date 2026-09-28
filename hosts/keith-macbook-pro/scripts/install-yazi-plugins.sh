@@ -62,12 +62,31 @@ log_info "Using ya path: ${yaPath}"
 echo ""
 
 # ------------------------------------------------------------------------
+# Skip when nothing changed
+# ------------------------------------------------------------------------
+
+# Reinstalling on every activation needs the network and slows every
+# switch, so only reinstall when package.toml changed since the last
+# successful install.
+plugins_dir="${user_home}/.config/yazi/plugins"
+packages_dir="${user_home}/.local/state/yazi/packages"
+package_toml="${user_home}/.config/yazi/package.toml"
+stamp="${user_home}/.local/state/yazi/package.toml.sha256"
+current=""
+if [ -f "${package_toml}" ]; then
+  current="$(shasum -a 256 "${package_toml}" | awk '{print $1}')"
+fi
+if [ -n "${current}" ] && [ -d "${plugins_dir}" ] && [ "$(cat "${stamp}" 2> /dev/null)" = "${current}" ]; then
+  log_success "Yazi plugins are current for this package.toml; skipping."
+  script_footer "success"
+  exit 0
+fi
+
+# ------------------------------------------------------------------------
 # Clean Up Old Plugins
 # ------------------------------------------------------------------------
 
 # Remove old plugins to prevent accumulation of dead/unused plugins
-plugins_dir="${user_home}/.config/yazi/plugins"
-packages_dir="${user_home}/.local/state/yazi/packages"
 
 if [ -d "${plugins_dir}" ]; then
   log_info "Cleaning up old plugins directory: ${plugins_dir}"
@@ -90,6 +109,10 @@ log_info "Running: HOME=${user_home} ya pkg install"
 
 if sudo -u "${username}" HOME="${user_home}" "${yaPath}" pkg install; then
   log_success "Yazi plugins installed successfully"
+  if [ -n "${current}" ]; then
+    sudo -u "${username}" mkdir -p "$(dirname "${stamp}")"
+    printf '%s\n' "${current}" | sudo -u "${username}" tee "${stamp}" > /dev/null
+  fi
 else
   log_warning "Yazi plugin installation completed with warnings (this may be normal if no plugins are configured)"
   log_info "Check ${user_home}/.config/yazi/package.toml for plugin configuration"
