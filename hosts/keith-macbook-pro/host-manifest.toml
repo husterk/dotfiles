@@ -4,7 +4,7 @@ home-dir = "${PATH_USERS}/${USER_USERNAME}"
 root-relative-path = "../../"
 
 [system]
-modules = ["/modules/macos-base.nix"]
+modules = ["/modules/dev-tools.nix", "/modules/macos-base.nix"]
 
 [[apps]]
 modules = ["/apps/1password/1password.nix"]

@@ -14,7 +14,7 @@ name: CI
 #
 # Two jobs rather than one: `tools` needs only mise and reports in seconds,
 # while `quality` additionally installs Nix (nixfmt, statix and treefmt come
-# from nixpkgs via apps/neovim/neovim.nix, not from mise). Splitting them means
+# from nixpkgs via modules/dev-tools.nix, not from mise). Splitting them means
 # a bad lockfile fails fast instead of waiting on a Nix install.
 
 on:
@@ -70,7 +70,7 @@ jobs:
       - name: Install pinned tools
         run: mise install --locked
 
-      # nixfmt, statix and treefmt are declared in apps/neovim/neovim.nix and
+      # nixfmt, statix and treefmt are declared in modules/dev-tools.nix and
       # come from nixpkgs, not mise, so CI needs a Nix to run the same checks
       # `mise run check` runs locally.
       - name: Install Nix

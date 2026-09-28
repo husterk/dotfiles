@@ -1,5 +1,4 @@
-# Base configuration module
-# This module must be imported by all host configurations
+# Nix daemon settings, applied through the nix app on every host that lists it
 _:
 
 {
@@ -14,10 +13,6 @@ _:
     settings = {
       # Enable flakes and new nix command
       experimental-features = "nix-command flakes";
-
-      # Build settings
-      max-jobs = 8;
-      cores = 4;
 
       # Trusted users
       trusted-users = [ "@admin" ];
