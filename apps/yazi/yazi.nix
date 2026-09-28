@@ -2,16 +2,6 @@
 
 {
   # =========================================================================
-  # System Environment Variables
-  # =========================================================================
-
-  environment.variables = {
-    # Ensures Yazi knows it's inside a high-end terminal.
-    # This allows for proper previewing of images, videos, etc.
-    TERM = "xterm-256color";
-  };
-
-  # =========================================================================
   # Required System Packages
   # =========================================================================
 
