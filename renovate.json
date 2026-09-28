@@ -3,7 +3,6 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "labels": ["dependencies"],
   "rangeStrategy": "pin",
-  "automergeStrategy": "squash",
   "schedule": ["* 0-5 1 */2 *"],
   "nix": {
     "enabled": true
@@ -33,7 +32,7 @@
     {
       "description": "Group mise formatters and linters",
       "matchManagers": ["mise"],
-      "matchPackageNames": [
+      "matchDepNames": [
         "shellcheck",
         "shfmt",
         "prettier",
@@ -46,7 +45,7 @@
     {
       "description": "Group mise language servers",
       "matchManagers": ["mise"],
-      "matchPackageNames": [
+      "matchDepNames": [
         "lua-language-server",
         "npm:bash-language-server",
         "npm:vscode-langservers-extracted"
@@ -56,8 +55,21 @@
     {
       "description": "Group mise CLI utilities",
       "matchManagers": ["mise"],
-      "matchPackageNames": ["jq", "op", "yq", "aqua:neovim/neovim", "bats"],
+      "matchDepNames": ["jq", "op", "yq", "aqua:neovim/neovim", "bats"],
       "groupName": "mise cli tools"
+    },
+    {
+      "description": "1Password publishes the CLI on its own update feed, not GitHub",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["op"],
+      "overrideDatasource": "custom.1password-cli",
+      "overridePackageName": "1password-cli"
     }
-  ]
+  ],
+  "customDatasources": {
+    "1password-cli": {
+      "defaultRegistryUrlTemplate": "https://app-updates.agilebits.com/check/1/0/CLI2/en/2.0.0/N",
+      "transformTemplates": ["{\"releases\": [{\"version\": version}]}"]
+    }
+  }
 }
