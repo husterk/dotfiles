@@ -104,6 +104,10 @@ Code extensions and merges the Claude Code settings. If you keep a private
 overlay, clone it to `~/git-repos/dotfiles-private` first. For a first run
 without one, use `ALLOW_PUBLIC_STUB=1 mise run setup`.
 
+On a new machine, open one more shell and run `mise run refresh`. The first
+pass skips the Nushell config link and the VS Code extensions, because
+their sources are not in place until the switch and deploy finish.
+
 To adapt this for another machine, copy `hosts/keith-macbook-pro` to
 `hosts/$(hostname -s)`, then edit its `host-vars.toml`, `host-manifest.toml`
 and host names in `configuration.nix`.
