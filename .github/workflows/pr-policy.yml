@@ -3,15 +3,10 @@ name: PR policy
 # Every change starts from an issue (see CLAUDE.md). This check fails a pull
 # request whose body does not close an open issue, so the issue's acceptance
 # criteria are always there to verify against. Bot PRs are exempt.
-#
-# workflow_dispatch exists for the lockfile bot: its GITHUB_TOKEN push raises
-# no pull_request event, so it dispatches this workflow on its branch, and
-# the job looks the PR up by branch to report on the new head commit.
 
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,24 +21,12 @@ jobs:
       - name: Require a linked open issue
         env:
           GH_TOKEN: ${{ github.token }}
-          EVENT: ${{ github.event_name }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          BODY: ${{ github.event.pull_request.body }}
           REPO: ${{ github.repository }}
         run: |
-          AUTHOR="$PR_AUTHOR"
-          BODY="$PR_BODY"
-          if [ "$EVENT" = "workflow_dispatch" ]; then
-            pr="$(gh pr list --repo "$REPO" --head "$GITHUB_REF_NAME" --state open --json author,body --jq '.[0]')"
-            if [ -z "$pr" ] || [ "$pr" = "null" ]; then
-              echo "No open PR for $GITHUB_REF_NAME: nothing to check."
-              exit 0
-            fi
-            AUTHOR="$(jq -r '.author.login' <<< "$pr")"
-            BODY="$(jq -r '.body' <<< "$pr")"
-          fi
           case "$AUTHOR" in
-            renovate\[bot\] | renovate | app/renovate | github-actions\[bot\] | app/github-actions | dependabot\[bot\] | app/dependabot)
+            renovate\[bot\] | github-actions\[bot\] | dependabot\[bot\])
               echo "Bot PR from $AUTHOR: exempt."
               exit 0
               ;;
