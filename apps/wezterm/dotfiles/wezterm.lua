@@ -98,13 +98,9 @@ local leader_prefix = utf8.char(0x1f30a) -- ocean wave
 
 -- Basic Settings
 config.automatically_reload_config = true
-config.color_scheme = "Catppuccin Mocha"
 config.font = wezterm.font_with_fallback({ "JetBrainsMono Nerd Font", "JetBrainsMono" })
 config.front_end = "WebGpu" -- Use WebGPU for better performance
 config.font_size = 15
-
--- Use Nushell as the default terminal shell
--- config.default_prog = { "/run/current-system/sw/bin/nu", "--login" }
 
 -- Tab Bar & Window
 config.window_close_confirmation = "NeverPrompt"
@@ -240,7 +236,7 @@ wezterm.on("update-status", function(window, _)
   local arrow_background = { Background = { Color = colors.arrow_background_leader } }
   local prefix = ""
 
-  -- leaader is active
+  -- leader is active
   if window:leader_is_active() then
     prefix = " " .. leader_prefix
 
@@ -271,11 +267,5 @@ wezterm.on("update-status", function(window, _)
     { Text = solid_left_arrow },
   }))
 end)
-
--- Enable debugging of key events
--- - Uncomment the line below to see key event debug logs in wezterm's log file
--- - Type "ctrl+shift+L" to toggle the debug logging on.
--- - Type "ctrl+l" to toggle the debug logging off.
--- config.debug_key_events = true
 
 return config

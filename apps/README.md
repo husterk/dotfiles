@@ -80,7 +80,7 @@ apps/<app-name>/
 | `claude`             | Anthropic's AI assistant                               | Homebrew       | Yes          |
 | `curl`               | Command-line tool for transferring data with URLs      | Nix            | Yes          |
 | `davinci-resolve`    | Advanced video editor system                           | Mas (Homebrew) | No           |
-| `dockutil`           | MacOS dock management utility                          | Nix.           | No           |
+| `dockutil`           | macOS Dock management utility                          | Nix            | No           |
 | `dropbox`            | File hosting and synchronization service               | Homebrew       | No           |
 | `fzf`                | Command-line fuzzy finder                              | Nix            | No           |
 | `gettext`            | GNU internationalization utilities (provides envsubst) | Nix            | No           |

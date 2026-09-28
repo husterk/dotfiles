@@ -3,12 +3,10 @@
 # ========================================================================
 # Set Login Shell
 # ========================================================================
-# This script sets the login shell for a user to zsh. It i simportant
-# that the login shell always be set to a posix compliant shell in order
-# for nix to properly configure settings such as environment variables.
-# Personal preference shells, such as Nushell (nu), can then be configured
-# to load as the preferred unteractive shell using terminal emulators such
-# as WezTerm.
+# This script sets the login shell for a user to zsh. The login shell must
+# be POSIX compatible so nix can set environment variables through it.
+# Nushell or another preferred shell can still run as the interactive shell,
+# launched by a terminal emulator such as WezTerm.
 #
 # It ensures the shell is registered in /etc/shells before changing.
 #
