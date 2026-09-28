@@ -75,14 +75,17 @@ fi
 # ------------------------------------------------------------------------
 log_info "Checking for nix-darwin installation..."
 
-if [ -f "/nix/receipt.json" ] && command -v darwin-rebuild &> /dev/null; then
+if command -v darwin-rebuild &> /dev/null; then
   log_info "Found nix-darwin installation. Uninstalling..."
 
-  # Try to uninstall nix-darwin
-  if sudo nix-darwin uninstaller 2> /dev/null || sudo /nix/nix-installer uninstall 2> /dev/null; then
+  # nix-darwin ships its own uninstaller as a flake package. It must run
+  # before Nix itself is removed.
+  if sudo nix --extra-experimental-features 'nix-command flakes' \
+    run github:nix-darwin/nix-darwin#darwin-uninstaller; then
     log_success "nix-darwin uninstalled."
   else
-    log_warning "Could not uninstall nix-darwin (may not be installed or already removed)."
+    log_error "nix-darwin uninstaller failed. Stopping before removing Nix."
+    exit 1
   fi
 else
   log_info "nix-darwin not found or not installed."
@@ -132,10 +135,11 @@ else
     done
     sudo dscl . -delete /Groups/nixbld 2> /dev/null || true
 
-    # Remove nix volume entry from /etc/fstab (if present)
-    if grep -q "nix" /etc/fstab 2> /dev/null; then
-      log_info "Removing nix entry from /etc/fstab..."
-      sudo sed -i.backup '/nix/d' /etc/fstab 2> /dev/null || true
+    # Remove the /nix volume entry from /etc/fstab (if present). Match the
+    # mount point field exactly, so unrelated lines that mention "nix" stay.
+    if grep -qE '[[:space:]]/nix[[:space:]]' /etc/fstab 2> /dev/null; then
+      log_info "Removing the /nix entry from /etc/fstab..."
+      sudo sed -i.backup '\#[[:space:]]/nix[[:space:]]#d' /etc/fstab 2> /dev/null || true
     fi
 
     # Remove nix from /etc/synthetic.conf (if present)
