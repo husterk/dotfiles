@@ -1,6 +1,6 @@
 # Base configuration module
 # This module must be imported by all host configurations
-{ config, pkgs, ... }:
+_:
 
 {
   # =========================================================================

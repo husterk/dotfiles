@@ -16,7 +16,7 @@ excludes = [
   "**/*.template",
 ]
 
-[formatter.nixftm-rfc-style]
+[formatter.nixfmt-rfc-style]
 command = "nixfmt"
 includes = ["*.nix"]
 
@@ -52,6 +52,11 @@ command = "taplo"
 includes = ["*.toml", "**/config"]
 # Taplo options to match .editorconfig settings
 options = ["fmt", "-o", "indent_string=  ", "-o", "column_width=120", "-o", "reorder_keys=true"]
+
+[formatter.python]
+command = "ruff"
+includes = ["*.py"]
+options = ["format"]
 
 [formatter.prettier]
 command = "prettier"

@@ -20,8 +20,9 @@ if ! command -v shellcheck &> /dev/null; then
   exit 1
 fi
 
-# Find all shell scripts to lint
-mapfile -t scripts < <(find . -type f -name "*.sh" ! -path "./hosts/*/generated/*" | sort)
+# Lint tracked scripts only, so leftovers in the working tree never fail CI
+# differently from a local run
+mapfile -t scripts < <(git ls-files '*.sh' | sed 's|^|./|' | sort)
 
 if [ "${#scripts[@]}" -eq 0 ]; then
   echo "⚠️  No shell scripts found"

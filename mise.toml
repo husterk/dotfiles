@@ -20,6 +20,7 @@ shfmt = "3.14.0"
 
 # Code formatters
 prettier = "3.9.6" # Markdown, JSON, YAML formatter
+ruff = "0.16.9"    # Python linter and formatter
 stylua = "2.5.2"   # Lua formatter
 taplo = "0.10.0"   # TOML formatter
 
@@ -242,8 +243,15 @@ raw = true
 run = ["mise run dev:format-check", "mise run dev:lint", "mise run dev:validate-all-hosts"]
 
 [tasks."dev:lint"]
-depends = ["dev:lint-scripts", "dev:lint-nix", "dev:check-tool-sync", "dev:check-spelling", "dev:check-skills"]
-description = "Lint all code (shell + Nix + Markdown + Claude definitions)"
+depends = [
+  "dev:lint-scripts",
+  "dev:lint-nix",
+  "dev:lint-python",
+  "dev:check-tool-sync",
+  "dev:check-spelling",
+  "dev:check-skills",
+]
+description = "Lint all code (shell + Nix + Python + Markdown + Claude definitions)"
 raw = true
 
 [tasks."dev:format-check"]
@@ -288,6 +296,12 @@ description = "Lint shell scripts with shellcheck"
 hide = true
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-lint-scripts.sh {{ config_root }}"
+
+[tasks."dev:lint-python"]
+description = "Lint Python helpers with ruff (settings in ruff.toml)"
+hide = true
+raw = true
+run = "ruff check {{ config_root }}"
 
 [tasks."dev:lint-nix"]
 description = "Lint Nix files with statix"

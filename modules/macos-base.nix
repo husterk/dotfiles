@@ -1,6 +1,6 @@
 # macOS-specific configuration module
 # Import this module in macOS host configurations
-{ config, pkgs, ... }:
+_:
 
 {
   # =========================================================================

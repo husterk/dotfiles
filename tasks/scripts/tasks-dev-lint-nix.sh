@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Lint Nix files with statix
+# Lint Nix files with statix and deadnix
 
 REPO_ROOT="${1:?REPO_ROOT required}"
 
@@ -20,8 +20,8 @@ if ! command -v statix &> /dev/null; then
   exit 1
 fi
 
-# Find all Nix files to lint (exclude templates and generated files)
-mapfile -t nix_files < <(find . -type f -name "*.nix" ! -path "./.nix-shell/*" ! -path "./hosts/*/generated/*" | sort)
+# Lint tracked Nix files only
+mapfile -t nix_files < <(git ls-files '*.nix' | sed 's|^|./|' | sort)
 
 if [ "${#nix_files[@]}" -eq 0 ]; then
   echo "⚠️  No Nix files found"
@@ -48,7 +48,15 @@ for file in "${nix_files[@]}"; do
   fi
 done
 
-gha_summary_heading "Nix lint (statix)"
+# deadnix comes from the same nixpkgs revision the flake pins, through
+# `nix run`, so it needs no apply and matches CI exactly.
+rev="$(jq -r '.nodes.nixpkgs.locked.rev' flake.lock)"
+if ! nix run "github:NixOS/nixpkgs/$rev#deadnix" -- --fail "${nix_files[@]}"; then
+  gha_error "deadnix found unused bindings"
+  errors=$((errors + 1))
+fi
+
+gha_summary_heading "Nix lint (statix, deadnix)"
 if [ "$errors" -eq 0 ]; then
   gha_summary_result ok "All ${#nix_files[@]} Nix file(s) passed statix"
 else

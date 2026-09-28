@@ -18,7 +18,6 @@ Given a directory, it looks for `skills/` and `agents/` beneath it. Exits 0 when
 every check passes, 1 otherwise.
 """
 
-import io
 import os
 import re
 import sys
@@ -33,13 +32,20 @@ DASHES = {"—": "em dash", "–": "en dash"}
 
 # Frontmatter keys Claude Code recognizes. An unknown key is usually a typo,
 # and a typo'd key is silently ignored rather than rejected.
-SKILL_KEYS = {"name", "description", "version", "license",
-              "allowed-tools", "metadata"}
-AGENT_KEYS = {"name", "description", "model", "tools", "skills",
-              "background", "permissionMode", "color"}
+SKILL_KEYS = {"name", "description", "version", "license", "allowed-tools", "metadata"}
+AGENT_KEYS = {
+    "name",
+    "description",
+    "model",
+    "tools",
+    "skills",
+    "background",
+    "permissionMode",
+    "color",
+}
 
 
-class Problem(object):
+class Problem:
     def __init__(self, path, message):
         self.path = path
         self.message = message
@@ -70,12 +76,12 @@ def parse_frontmatter(text):
                 mapping[key].append(raw.lstrip()[2:].strip())
             continue
         if ":" not in raw:
-            return None, text, "cannot parse frontmatter line: %s" % raw.strip()
+            return None, text, f"cannot parse frontmatter line: {raw.strip()}"
         key, _, value = raw.partition(":")
         key = key.strip()
         value = value.strip()
         mapping[key] = value if value else None
-    return mapping, "\n".join(lines[end + 1:]), None
+    return mapping, "\n".join(lines[end + 1 :]), None
 
 
 def referenced_paths(body):
@@ -115,15 +121,15 @@ def check_dashes(path, text, problems):
     for number, line in enumerate(text.split("\n"), 1):
         for char, label in DASHES.items():
             if char in line:
-                problems.append(Problem(
-                    path, "line %d: %s in prose (use a period or comma)"
-                          % (number, label)))
+                problems.append(
+                    Problem(path, f"line {number}: {label} in prose (use a period or comma)")
+                )
                 break
 
 
 def check_unit(path, expected_name, allowed_keys, kind, problems, own_dir=None):
     """Validate one SKILL.md or agent file. Returns the parsed body."""
-    text = io.open(path, encoding="utf-8").read()
+    text = open(path, encoding="utf-8").read()
     mapping, body, error = parse_frontmatter(text)
     if error:
         problems.append(Problem(path, error))
@@ -133,20 +139,23 @@ def check_unit(path, expected_name, allowed_keys, kind, problems, own_dir=None):
     if not name:
         problems.append(Problem(path, "frontmatter has no `name`"))
     elif name != expected_name:
-        problems.append(Problem(
-            path, "`name: %s` does not match %s name `%s`"
-                  % (name, kind, expected_name)))
+        problems.append(
+            Problem(path, f"`name: {name}` does not match {kind} name `{expected_name}`")
+        )
 
     description = mapping.get("description")
     if not description:
         problems.append(Problem(path, "frontmatter has no `description`"))
     elif len(description) > MAX_DESCRIPTION:
-        problems.append(Problem(
-            path, "description is %d chars, over the %d limit"
-                  % (len(description), MAX_DESCRIPTION)))
+        problems.append(
+            Problem(
+                path,
+                f"description is {len(description)} chars, over the {MAX_DESCRIPTION} limit",
+            )
+        )
 
     for key in sorted(set(mapping) - allowed_keys):
-        problems.append(Problem(path, "unknown frontmatter key `%s`" % key))
+        problems.append(Problem(path, f"unknown frontmatter key `{key}`"))
 
     check_dashes(path, text, problems)
 
@@ -165,7 +174,7 @@ def check_unit(path, expected_name, allowed_keys, kind, problems, own_dir=None):
         bases.append(repo_root)
     for target in sorted(cited):
         if not any(os.path.exists(os.path.join(b, target)) for b in bases):
-            problems.append(Problem(path, "references missing file `%s`" % target))
+            problems.append(Problem(path, f"references missing file `{target}`"))
 
     on_disk = set()
     for root, _, names in os.walk(own_dir):
@@ -175,8 +184,7 @@ def check_unit(path, expected_name, allowed_keys, kind, problems, own_dir=None):
                 on_disk.add(rel)
     cited = cited | set(os.path.basename(c) for c in cited)
     for orphan in sorted(on_disk - cited):
-        problems.append(Problem(
-            path, "`%s` exists but SKILL.md never references it" % orphan))
+        problems.append(Problem(path, f"`{orphan}` exists but SKILL.md never references it"))
     return body
 
 
@@ -203,8 +211,7 @@ def audit(root):
             if not entry.endswith(".md") or entry.startswith("."):
                 continue
             counts["agents"] += 1
-            check_unit(os.path.join(agents_dir, entry), entry[:-3],
-                       AGENT_KEYS, "file", problems)
+            check_unit(os.path.join(agents_dir, entry), entry[:-3], AGENT_KEYS, "file", problems)
 
     return problems, counts
 
@@ -218,7 +225,7 @@ def main(argv):
     counts = {"skills": 0, "agents": 0}
     for root in argv[1:]:
         if not os.path.isdir(root):
-            sys.stderr.write("no such directory: %s\n" % root)
+            sys.stderr.write(f"no such directory: {root}\n")
             return 3
         found, seen = audit(root)
         problems += found
@@ -226,8 +233,7 @@ def main(argv):
             counts[key] += seen[key]
 
     if not counts["skills"] and not counts["agents"]:
-        sys.stderr.write("no skills/ or agents/ found under: %s\n"
-                         % " ".join(argv[1:]))
+        sys.stderr.write("no skills/ or agents/ found under: {}\n".format(" ".join(argv[1:])))
         return 3
 
     if problems:
@@ -236,13 +242,14 @@ def main(argv):
             if problem.path != current:
                 current = problem.path
                 print(current)
-            print("    %s" % problem.message)
-        print("\n  FAIL  %d problem(s) across %d skill(s) and %d agent(s)"
-              % (len(problems), counts["skills"], counts["agents"]))
+            print(f"    {problem.message}")
+        print(
+            f"\n  FAIL  {len(problems)} problem(s) across {counts['skills']} skill(s)"
+            f" and {counts['agents']} agent(s)"
+        )
         return 1
 
-    print("  PASS  %d skill(s) and %d agent(s) valid"
-          % (counts["skills"], counts["agents"]))
+    print(f"  PASS  {counts['skills']} skill(s) and {counts['agents']} agent(s) valid")
     return 0
 
 

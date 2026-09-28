@@ -38,7 +38,8 @@
         "shfmt",
         "prettier",
         "stylua",
-        "taplo"
+        "taplo",
+        "ruff"
       ],
       "groupName": "mise formatters and linters"
     },
