@@ -151,7 +151,6 @@
       "Bash(diskutil erase*)"
     ]
   },
-  "skipDangerousModePermissionPrompt": true,
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline.sh",

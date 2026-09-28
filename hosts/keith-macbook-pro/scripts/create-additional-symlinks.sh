@@ -48,7 +48,7 @@ else
 fi
 
 # Get user's home directory
-user_home=$(eval echo "~${username}")
+user_home="$(dscl . -read "/Users/${username}" NFSHomeDirectory | awk '{print $2}')"
 
 log_info "Configuring symlinks for user: ${username}"
 log_info "Home directory: ${user_home}"

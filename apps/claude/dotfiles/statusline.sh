@@ -57,7 +57,7 @@ DIM='\033[2m'
 RESET='\033[0m'
 
 # --- git info, cached per session for 5s (file counts, not line counts) ---
-CACHE_FILE="/tmp/statusline-git-cache-${SESSION_ID}"
+CACHE_FILE="${TMPDIR:-/tmp}/statusline-git-cache-${SESSION_ID}"
 CACHE_MAX_AGE=5
 
 cache_is_stale() {
