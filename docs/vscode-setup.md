@@ -1,10 +1,10 @@
-# VSCode Setup Guide
+# VS Code setup
 
-Minimal setup for this dotfiles repository using a custom VSCode profile.
+Minimal setup for this dotfiles repository using a custom VS Code profile.
 
 ## Prerequisites
 
-**⚠️ CRITICAL**: Always open this project from the terminal so VSCode inherits the mise environment:
+**⚠️ Important**: open this project from the terminal, so VS Code inherits the mise environment:
 
 ```bash
 cd ~/git-repos/dotfiles
@@ -36,7 +36,7 @@ If no prompt: **Cmd+Shift+P** → `Extensions: Show Recommended Extensions` → 
 
 When **Nix IDE** or other extensions prompt to install language servers, click **"Don't show again"**.
 
-_You already have language servers installed via mise. VSCode will find them automatically._
+_The language servers are already installed: nixd comes from Nix (`apps/neovim`) and the rest from mise. VS Code finds them on `PATH`._
 
 ### 5. Reload Window
 
@@ -53,7 +53,7 @@ _You already have language servers installed via mise. VSCode will find them aut
 - GitHub Copilot (AI assistance)
 - Nix IDE (Nix language support)
 - ShellCheck + Shell Format (shell scripts)
-- YAML, Markdown, Task, EditorConfig, GitLens, Error Lens, 1Password, Todo Tree
+- YAML, Markdown, EditorConfig, GitLens, Error Lens, 1Password, Todo Tree
 
 **Formatting:**
 
@@ -71,23 +71,23 @@ is no pre-commit hook.
 
 **Language servers not working?**
 
-1. Close VSCode
+1. Close VS Code
 2. Open terminal: `cd ~/git-repos/dotfiles`
 3. Verify mise is activated: `mise doctor`
-4. Launch VSCode: `code .`
+4. Launch VS Code: `code .`
 5. Verify tools are available: `which shellcheck yq jq`
 
 **Profile not switching?**
 **Cmd+Shift+P** → `Profiles: Use Profile for Current Workspace` → Select "Dotfiles"
 
 **Extensions not installing?**
-Manually install via Extensions sidebar (**Cmd+Shift+X**) or see [extensions.json](.vscode/extensions.json) for the list.
+Manually install via Extensions sidebar (**Cmd+Shift+X**) or see [extensions.json](../.vscode/extensions.json) for the list.
 
 **Note**: This installs extensions in your default profile. Using a custom profile is recommended to keep your default profile clean.
 
 ## Additional Resources
 
 - [mise Documentation](https://mise.jdx.dev/)
-- [VSCode Profiles Documentation](https://code.visualstudio.com/docs/editor/profiles)
+- [VS Code Profiles Documentation](https://code.visualstudio.com/docs/editor/profiles)
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 - [Nix IDE Extension](https://marketplace.visualstudio.com/items?itemName=jnoortheen.nix-ide)
