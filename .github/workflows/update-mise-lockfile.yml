@@ -13,18 +13,20 @@ name: Update mise Lockfile
 #
 # Required Permissions:
 # - contents: write (to push the updated lockfile back to the branch)
+# - actions: write (to dispatch CI on the pushed commit)
 #
 # Important Notes:
 # - Only runs when mise.toml is modified on a Renovate branch
 # - Skips execution if mise.lock is already up to date
-# - Uses the github-actions[bot] identity for commits
-# - Does NOT use [skip ci] in commit messages — other required checks
-#   (e.g., theme-ci-cd-pipeline) must run against the latest PR commit.
-#   No loop risk: this workflow triggers on mise.toml changes only, and the
-#   lockfile commit modifies only mise.lock.
+# - Uses the github-actions[bot] identity for commits, which are unsigned:
+#   merge Renovate PRs with squash so GitHub signs the result
+# - A push made with GITHUB_TOKEN starts no workflow runs, so the last step
+#   dispatches CI on the new head commit. No loop risk: the dispatched run is
+#   CI, and this workflow only triggers on mise.toml pushes.
 
 permissions:
   contents: write
+  actions: write
 
 on:
   push:
@@ -55,6 +57,7 @@ jobs:
         run: mise lock
 
       - name: Commit and push if changed
+        id: commit
         run: |
           if git diff --quiet mise.lock; then
             echo "mise.lock is already up to date."
@@ -66,3 +69,12 @@ jobs:
           git add mise.lock
           git commit -m "chore: update mise.lock"
           git push
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes made with GITHUB_TOKEN start no workflow runs, but a
+      # workflow_dispatch always does, so run CI on the new head commit.
+      - name: Run CI on the lockfile commit
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref "$GITHUB_REF_NAME"
