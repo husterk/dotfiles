@@ -52,10 +52,13 @@ if ! id "${username}" &> /dev/null; then
 fi
 
 # Validate shell path exists
-if [ ! -f "${shellPath}" ]; then
-  log_error "Shell not found at '${shellPath}'."
-  log_info "Ensure zsh is installed via nix-darwin."
-  exit 1
+# On the first switch /run/current-system only points at the new system
+# once activation finishes, so the shell is not there yet. Skip, and let the
+# next apply set it.
+if [ ! -e "${shellPath}" ]; then
+  log_warning "Shell not there yet at '${shellPath}'; skipping until the next apply."
+  script_footer "warning" "login shell not changed yet"
+  exit 0
 fi
 
 # Validate shell is executable
