@@ -19,7 +19,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Load shared script helpers (skip if already sourced by parent)
 if ! command -v script_header &> /dev/null; then
   # shellcheck disable=SC1091
-  source "${SCRIPT_DIR}/script-helpers.sh"
+  source "${SCRIPT_DIR}/../../../scripts/script-helpers.sh"
 fi
 
 # Display script header

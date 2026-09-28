@@ -319,17 +319,19 @@ else
   ACTION_DESC="stowed"
 fi
 
-# Build stow command
-STOW_CMD="stow"
-STOW_CMD="$STOW_CMD --verbose=2"          # Show what's being done
-STOW_CMD="$STOW_CMD --target=$HOME"       # Target is home directory
-STOW_CMD="$STOW_CMD --dir=$GENERATED_DIR" # Stow directory (parent of dotfiles)
-STOW_CMD="$STOW_CMD $STOW_ACTION"         # Action (stow/restow/delete)
-STOW_CMD="$STOW_CMD --no-folding"         # Don't fold directories into symlinks
+# Build the stow command as an array, so paths with spaces stay one argument
+STOW_CMD=(
+  stow
+  --verbose=2            # Show what's being done
+  --target="$HOME"       # Target is home directory
+  --dir="$GENERATED_DIR" # Stow directory (parent of dotfiles)
+  "$STOW_ACTION"         # Action (stow/restow/delete)
+  --no-folding           # Don't fold directories into symlinks
+)
 
 if [ "$DRY_RUN" = true ]; then
-  STOW_CMD="$STOW_CMD --simulate"
-  log_info "[DRY RUN] Command: $STOW_CMD dotfiles"
+  STOW_CMD+=(--simulate)
+  log_info "[DRY RUN] Command: ${STOW_CMD[*]} dotfiles"
 fi
 
 # GNU Stow expects to be run from the parent directory of the package
@@ -342,7 +344,7 @@ if $DRY_RUN; then
 fi
 
 # Execute stow
-if eval "$STOW_CMD dotfiles"; then
+if "${STOW_CMD[@]}" dotfiles; then
   if [ "$DRY_RUN" = false ]; then
     log_success "Dotfiles successfully $ACTION_DESC!"
   else

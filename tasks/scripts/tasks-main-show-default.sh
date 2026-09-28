@@ -26,7 +26,7 @@ echo "📚 Available Commands:"
 echo ""
 mise tasks
 echo ""
-echo "💡 Override hostname: HOSTNAME=my-host mise run [command]"
+echo "💡 Override the host: DOTFILES_HOST=my-host mise run [command]"
 echo "💡 Set up new host: mise run setup (for new hosts)"
 echo "💡 Refresh existing host: mise run refresh (regenerate and redeploy)"
 echo ""

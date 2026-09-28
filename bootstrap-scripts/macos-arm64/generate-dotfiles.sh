@@ -169,7 +169,7 @@ log_info "Generating dotfiles hierarchy..."
 mkdir -p "$GENERATED_DOTFILES_DIR"
 
 # Get count of dotfiles entries
-DOTFILES_COUNT=$(yq -p toml -o yaml eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2> /dev/null | grep -c "source:" || echo "0")
+DOTFILES_COUNT=$(yq -p toml -o yaml eval '.apps[].dotfiles[]' "$HOST_MANIFEST" 2> /dev/null | grep -c "source:" || true)
 
 if [ "$DOTFILES_COUNT" -eq 0 ]; then
   log_warning "No dotfiles found in manifest."

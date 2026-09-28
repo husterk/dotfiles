@@ -71,7 +71,7 @@ description = "Show available tasks and current configuration"
 raw = true
 run = '''
 #!/usr/bin/env bash
-HOSTNAME="${HOSTNAME:-$(hostname -s)}"
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 HOST_DIR="$REPO_ROOT/hosts/$HOSTNAME"
 BOOTSTRAP_TARGET="$($REPO_ROOT/tasks/scripts/tasks-main-get-bootstrap-target.sh $HOST_DIR/host-manifest.toml 2>/dev/null || echo 'unknown')"
@@ -105,7 +105,7 @@ echo "To see all available tasks: mise tasks"
 description = "Generate .env from host-vars.toml"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-env-generate.sh \
   {{ config_root }}/bootstrap-scripts/macos-arm64 \
   "$HOSTNAME" \
@@ -119,7 +119,7 @@ HOSTNAME=$(hostname -s)
 description = "Apply Nix configuration to system"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-nix-apply.sh \
   {{ config_root }}/bootstrap-scripts/macos-arm64 \
   "$HOSTNAME"
@@ -145,7 +145,7 @@ depends = ["env:generate", "claude:materialize"]
 description = "Generate dotfiles from templates"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/bootstrap-scripts/macos-arm64/generate-dotfiles.sh "$HOSTNAME"
 '''
 
@@ -153,7 +153,7 @@ HOSTNAME=$(hostname -s)
 description = "Deploy dotfiles using GNU Stow"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/bootstrap-scripts/macos-arm64/deploy-dotfiles.sh "$HOSTNAME"
 '''
 
@@ -163,7 +163,7 @@ HOSTNAME=$(hostname -s)
 description = "Redeploy dotfiles (remove and reinstall symlinks)"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/bootstrap-scripts/macos-arm64/deploy-dotfiles.sh "$HOSTNAME" --restow
 '''
 
@@ -171,7 +171,7 @@ HOSTNAME=$(hostname -s)
 description = "Capture dotfiles back to source templates"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/bootstrap-scripts/macos-arm64/capture-dotfiles.sh "$HOSTNAME" "$@"
 '''
 
@@ -179,7 +179,7 @@ HOSTNAME=$(hostname -s)
 description = "Restore dotfiles from backup"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dotfiles-restore.sh \
   {{ config_root }}/bootstrap-scripts/macos-arm64 \
   "$HOSTNAME"
@@ -189,7 +189,7 @@ HOSTNAME=$(hostname -s)
 description = "Show diff between deployed and source dotfiles"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dotfiles-diff.sh \
   "{{ config_root }}/hosts/$HOSTNAME" \
   {{ config_root }}
@@ -199,7 +199,7 @@ HOSTNAME=$(hostname -s)
 description = "Show dotfiles deployment status"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dotfiles-status.sh "{{ config_root }}/hosts/$HOSTNAME"
 '''
 
@@ -217,7 +217,7 @@ run = "{{ config_root }}/tasks/scripts/tasks-dotfiles-watch-repo.sh {{ config_ro
 description = "Remove all dotfile backups for current host"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dotfiles-clean-backups.sh "{{ config_root }}/hosts/$HOSTNAME"
 '''
 
@@ -328,7 +328,7 @@ run = "{{ config_root }}/tasks/scripts/tasks-dev-lint-nix.sh {{ config_root }}"
 description = "Clean generated files for current host"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dev-clean.sh "{{ config_root }}/hosts/$HOSTNAME"
 '''
 
@@ -336,7 +336,7 @@ HOSTNAME=$(hostname -s)
 description = "List all available hosts"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dev-list-hosts.sh {{ config_root }} "$HOSTNAME"
 '''
 
@@ -344,7 +344,7 @@ HOSTNAME=$(hostname -s)
 description = "Validate host configuration and manifests"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dev-validate-host-config.sh \
   "{{ config_root }}/hosts/$HOSTNAME" \
   "$HOSTNAME"
@@ -354,7 +354,7 @@ HOSTNAME=$(hostname -s)
 description = "Show current host configuration"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-dev-show-host-config.sh \
   "{{ config_root }}/hosts/$HOSTNAME" \
   "$HOSTNAME" \
@@ -442,7 +442,7 @@ run = 'echo "✅ All configurations generated successfully"'
 description = "Remove Nix and nix-darwin from system"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-main-unbootstrap.sh \
   {{ config_root }}/bootstrap-scripts/macos-arm64 \
   "$HOSTNAME"
@@ -452,7 +452,7 @@ HOSTNAME=$(hostname -s)
 description = "Show current configuration status"
 raw = true
 run = '''
-HOSTNAME=$(hostname -s)
+HOSTNAME="${DOTFILES_HOST:-$(hostname -s)}"
 {{ config_root }}/tasks/scripts/tasks-main-show-status.sh \
   "$HOSTNAME" \
   "macos-arm64" \
@@ -474,7 +474,7 @@ private="${DOTFILES_PRIVATE_DIR:-$HOME/git-repos/dotfiles-private}"
 flags=()
 # Nix rejects a path: input that passes through a symlink, so resolve it.
 [[ -f "$private/default.nix" ]] && flags=(--override-input private "path:$(cd "$private" && pwd -P)")
-cfg="{{ config_root }}#darwinConfigurations.$(hostname -s).config.homebrew"
+cfg="{{ config_root }}#darwinConfigurations.${DOTFILES_HOST:-$(hostname -s)}.config.homebrew"
 brews=$(nix eval --json "$cfg.brews" --apply 'map (b: b.name)' ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r '.[]')
 casks=$(nix eval --json "$cfg.casks" --apply 'map (c: c.name)' ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r '.[]')
 apps=$(nix eval --json "$cfg.masApps" ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r 'to_entries[] | "\(.value)|\(.key)"')
