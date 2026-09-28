@@ -16,10 +16,10 @@ yq = "4.53.2" # YAML processor
 
 # Shell script quality tools
 shellcheck = "0.11.0"
-shfmt = "3.14.0"
+shfmt = "3.14.1"
 
 # Code formatters
-prettier = "3.9.6" # Markdown, JSON, YAML formatter
+prettier = "3.9.9" # Markdown, JSON, YAML formatter
 ruff = "0.16.9"    # Python linter and formatter
 stylua = "2.5.2"   # Lua formatter
 taplo = "0.10.0"   # TOML formatter
