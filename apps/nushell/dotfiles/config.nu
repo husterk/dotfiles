@@ -15,9 +15,6 @@ if ("~/.orbstack/bin" | path expand | path exists) {
     path add "~/.orbstack/bin"
 }
 
-# Corrected NIX_PATH for your specific dotfiles setup.
-$env.NIX_PATH = $"darwin-config=($env.HOME)/dotfiles/darwin-configuration.nix:/nix/var/nix/profiles/per-user/root/channels"
-
 # Enable SSL certificates for Nix.
 $env.NIX_SSL_CERT_FILE = "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
 

@@ -1,6 +1,6 @@
 {
   // Editor Settings
-  "editor.formatOnSave": false, // Disabled: Use Task commands instead (task dev:format)
+  "editor.formatOnSave": false, // Disabled: run `mise run dev:format` instead
   "editor.rulers": [120],
   "editor.wordWrap": "off",
   "editor.bracketPairColorization.enabled": true,
@@ -48,7 +48,12 @@
         "command": ["nixfmt"]
       },
       "nixpkgs": {
-        "expr": "import <nixpkgs> { }"
+        "expr": "import (builtins.getFlake (builtins.toString ./.)).inputs.nixpkgs { }"
+      },
+      "options": {
+        "nix-darwin": {
+          "expr": "(builtins.getFlake (builtins.toString ./.)).darwinConfigurations.keith-macbook-pro.options"
+        }
       }
     }
   },
@@ -66,7 +71,7 @@
   "yaml.schemas": {
     "https://mise.jdx.dev/schema/mise.json": ["mise.toml", "mise.*.toml"]
   },
-  "yaml.format.enable": false, // Disabled: Use Task commands instead (task dev:format-yaml)
+  "yaml.format.enable": false, // Disabled: run `mise run dev:format` instead
   "yaml.format.singleQuote": false,
   "yaml.format.proseWrap": "preserve",
   "yaml.customTags": [],

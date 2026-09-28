@@ -8,7 +8,6 @@
 
     // Nix Development
     "jnoortheen.nix-ide",
-    "arrterian.nix-env-selector",
 
     // Shell & Dotfiles
     "timonwong.shellcheck",
