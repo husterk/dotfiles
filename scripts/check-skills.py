@@ -129,7 +129,8 @@ def check_dashes(path, text, problems):
 
 def check_unit(path, expected_name, allowed_keys, kind, problems, own_dir=None):
     """Validate one SKILL.md or agent file. Returns the parsed body."""
-    text = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as handle:
+        text = handle.read()
     mapping, body, error = parse_frontmatter(text)
     if error:
         problems.append(Problem(path, error))

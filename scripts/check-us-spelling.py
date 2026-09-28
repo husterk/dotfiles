@@ -258,7 +258,8 @@ def scan_file(path):
     """Return a list of (line_number, found, want, context) for one file."""
     hits = []
     try:
-        raw = open(path, encoding="utf-8").read()
+        with open(path, encoding="utf-8") as handle:
+            raw = handle.read()
     except (OSError, UnicodeDecodeError) as exc:
         sys.stderr.write(f"cannot read {path}: {exc}\n")
         raise
