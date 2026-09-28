@@ -23,7 +23,7 @@ $env.NIX_SSL_CERT_FILE = "/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.
 
 # Sync Nix-managed variables.
 $env.DOCKER_CONFIG = $"($env.HOME)/.config/docker"
-$env.WGETRC = $"($env.HOME)/.config/wgetrc"
+$env.WGETRC = $"($env.HOME)/.config/wget/wgetrc"
 
 # 1Password SSH Agent configuration.
 let onepassword_ssh_sock = $"($env.HOME)/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"

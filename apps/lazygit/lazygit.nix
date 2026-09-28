@@ -9,12 +9,4 @@
     lazygit
     delta # Syntax highlighting pager for lazygit
   ];
-
-  # =========================================================================
-  # Environment Variables for lazygit
-  # =========================================================================
-
-  environment.variables = {
-    CONFIG_DIR = "$HOME/.config/lazygit";
-  };
 }

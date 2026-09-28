@@ -1,4 +1,4 @@
-[manager]
+[mgr]
 # This ensures Yazi refreshes when it regains focus after closing LazyGit
 refresh_threshold = 0
 

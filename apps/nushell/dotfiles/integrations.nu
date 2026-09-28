@@ -15,8 +15,9 @@ def --env y [...args] {
 
 # Initialize zoxide for enhanced directory navigation
 # This will take over the default 'cd' command to use zoxide's functionality.
-if ("~/.config/zoxide/.zoxide.nu" | path expand | path exists) {
-  source "~/.config/zoxide/.zoxide.nu"
+# env.nu regenerates the init script on every start.
+if ("~/.cache/zoxide/init.nu" | path expand | path exists) {
+  source "~/.cache/zoxide/init.nu"
 }
 
 # Initialize Starship prompt

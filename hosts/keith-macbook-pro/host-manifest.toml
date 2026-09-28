@@ -200,9 +200,6 @@ target = "~/.config/yazi/"
 [[apps]]
 modules = ["/apps/zoxide/zoxide.nix"]
 name = "zoxide"
-[[apps.dotfiles]]
-source = "/apps/zoxide/dotfiles/**/*"
-target = "~/.config/zoxide/"
 
 [[apps]]
 modules = ["/apps/zsh/zsh.nix"]

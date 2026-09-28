@@ -47,3 +47,12 @@ if not ($starship_cache | path exists) {
 if not ($starship_init | path exists) {
     starship init nu | save -f $starship_init
 }
+
+# zoxide's init script changes between releases, so regenerate it on every
+# start rather than committing a copy that goes stale. --cmd cd makes zoxide
+# take over cd.
+let zoxide_cache = ($env.HOME | path join ".cache" "zoxide")
+if not ($zoxide_cache | path exists) {
+    mkdir $zoxide_cache
+}
+zoxide init nushell --cmd cd | save -f ($zoxide_cache | path join "init.nu")
