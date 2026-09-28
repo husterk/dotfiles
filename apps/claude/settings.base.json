@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "autoUpdatesChannel": "latest",
+  "autoContinueAtUsageLimit": true,
+  "env": {
+    "CLAUDE_CODE_NO_FLICKER": "1"
+  },
+  "model": "claude-opus-5-5",
+  "outputStyle": "Concise",
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(jq *)",
+      "Bash(yq *)",
+      "Bash(rg *)",
+      "Bash(fd *)",
+      "Bash(bat *)",
+      "Bash(shellcheck *)",
+      "Bash(shfmt *)",
+      "Bash(statix *)",
+      "Bash(treefmt *)",
+      "Bash(mise run dev:*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh run view *)",
+      "Bash(gh run list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr checks *)",
+      "Edit(/private/tmp/claude-*/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh release *)",
+      "Bash(mise run nix:apply*)",
+      "Bash(mise run apply*)",
+      "Bash(darwin-rebuild *)",
+      "Bash(sudo *)"
+    ],
+    "deny": [
+      "Edit(hosts/*/generated/**)",
+      "Read(./.env)",
+      "Read(./secrets/**)",
+      "Read(**/*.key)",
+      "Read(**/id_ed25519)",
+      "Bash(dd if=* of=/dev/*)",
+      "Bash(mkfs *)",
+      "Bash(diskutil erase*)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline.sh",
+    "padding": 1,
+    "refreshInterval": 10
+  },
+  "subagentStatusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/subagent-statusline.sh"
+  }
+}

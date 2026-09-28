@@ -139,7 +139,9 @@ run = 'nix flake check "{{ config_root }}"'
 # Dotfiles tasks
 # --------------------------------------------------------------------------
 [tasks."dotfiles:generate"]
-depends = ["env:generate"]
+# claude:materialize must finish before generate deletes the generated tree
+# the old ~/.claude/settings.json symlink points into.
+depends = ["env:generate", "claude:materialize"]
 description = "Generate dotfiles from templates"
 raw = true
 run = '''
@@ -363,6 +365,17 @@ HOSTNAME=$(hostname -s)
 # --------------------------------------------------------------------------
 # Composite tasks
 # --------------------------------------------------------------------------
+[tasks."claude:materialize"]
+description = "Turn a symlinked ~/.claude/settings.json into a regular file"
+hide = true
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-claude-settings.sh materialize {{ config_root }}"
+
+[tasks."claude:merge"]
+description = "Merge apps/claude/settings.base.json into ~/.claude/settings.json"
+raw = true
+run = "{{ config_root }}/tasks/scripts/tasks-claude-settings.sh merge {{ config_root }}"
+
 [tasks.setup]
 alias = "set-up-new-host"
 depends = ["env:generate", "dotfiles:generate"]
@@ -370,6 +383,7 @@ description = "Complete setup after bootstrap (generate + apply + deploy)"
 raw = true
 run = '''
 #!/usr/bin/env bash
+set -euo pipefail
 echo "✅ Configuration generated"
 echo ""
 echo "📦 Applying Nix configuration..."
@@ -377,6 +391,9 @@ mise run nix:apply
 echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
+echo ""
+echo "🤖 Merging Claude Code settings..."
+mise run claude:merge
 echo ""
 echo "🧩 Installing VSCode extensions..."
 mise run vscode:install-extensions
@@ -394,6 +411,7 @@ description = "Regenerate and redeploy everything"
 raw = true
 run = '''
 #!/usr/bin/env bash
+set -euo pipefail
 echo "✅ Configuration regenerated"
 echo ""
 echo "📦 Applying Nix configuration..."
@@ -401,6 +419,9 @@ mise run nix:apply
 echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
+echo ""
+echo "🤖 Merging Claude Code settings..."
+mise run claude:merge
 echo ""
 echo "🧩 Installing VSCode extensions..."
 mise run vscode:install-extensions
