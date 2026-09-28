@@ -127,8 +127,8 @@ jobs:
   build:
     name: Build nix-darwin systems
     # macOS minutes cost 10x on private repos. While private, build only on
-    # pushes to main or on a PR labeled `build`; lockfile-bot dispatches skip
-    # it. A skipped job counts as passing for required checks.
+    # pushes to main or on a PR labeled `build`. A skipped job counts as
+    # passing for required checks.
     if: >-
       !github.event.repository.private
       || github.event_name == 'push'
