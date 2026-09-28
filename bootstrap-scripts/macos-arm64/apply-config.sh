@@ -91,7 +91,8 @@ fi
 PRIVATE_FLAGS=()
 if [ -f "$PRIVATE_DIR/default.nix" ]; then
   log_success "Using private overlay: $PRIVATE_DIR"
-  PRIVATE_FLAGS=(--override-input private "path:$PRIVATE_DIR" --no-write-lock-file)
+  # Nix rejects a path: input that passes through a symlink, so resolve it.
+  PRIVATE_FLAGS=(--override-input private "path:$(cd "$PRIVATE_DIR" && pwd -P)" --no-write-lock-file)
 elif [ "${ALLOW_PUBLIC_STUB:-}" = "1" ]; then
   log_warning "ALLOW_PUBLIC_STUB=1: applying without the private overlay."
 else

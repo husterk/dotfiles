@@ -446,22 +446,39 @@ run = '''
 #!/usr/bin/env bash
 set -uo pipefail
 echo ""
-echo "🍺 Checking declared Homebrew formulae are installed..."
-declared=$(grep -rEho 'brews = \[[^]]*\]|casks = \[[^]]*\]' "{{ config_root }}/apps/" \
-  | grep -oE '"[^"]+"' \
-  | tr -d '"' \
-  | sort -u)
+echo "🍺 Checking declared Homebrew packages are installed..."
+# Read the declarations from the evaluated config, the same set apply uses.
+# The private overlay contributes casks, so include it when it is cloned.
+private="${DOTFILES_PRIVATE_DIR:-$HOME/git-repos/dotfiles-private}"
+flags=()
+# Nix rejects a path: input that passes through a symlink, so resolve it.
+[[ -f "$private/default.nix" ]] && flags=(--override-input private "path:$(cd "$private" && pwd -P)")
+cfg="{{ config_root }}#darwinConfigurations.$(hostname -s).config.homebrew"
+brews=$(nix eval --json "$cfg.brews" --apply 'map (b: b.name)' ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r '.[]')
+casks=$(nix eval --json "$cfg.casks" --apply 'map (c: c.name)' ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r '.[]')
+apps=$(nix eval --json "$cfg.masApps" ${flags[@]+"${flags[@]}"} 2>/dev/null | jq -r 'to_entries[] | "\(.value)|\(.key)"')
+installed_brews=$(/opt/homebrew/bin/brew list --formula -1 2>/dev/null)
+installed_casks=$(/opt/homebrew/bin/brew list --cask -1 2>/dev/null)
+installed_apps=$(mas list 2>/dev/null | awk '{print $1}')
 missing=0
-for pkg in $declared; do
-  if ! /opt/homebrew/bin/brew list --formula --cask 2>/dev/null | grep -qFx "$pkg"; then
-    echo "  ❌ missing: $pkg"
-    missing=$((missing + 1))
-  fi
+for pkg in $brews; do
+  grep -qFx "${pkg##*/}" <<< "$installed_brews" || { echo "  ❌ missing brew: $pkg"; missing=$((missing + 1)); }
 done
-if [[ $missing -eq 0 ]]; then
-  echo "  ✅ all declared Homebrew packages present"
+for pkg in $casks; do
+  grep -qFx "${pkg##*/}" <<< "$installed_casks" || { echo "  ❌ missing cask: $pkg"; missing=$((missing + 1)); }
+done
+while IFS='|' read -r id name; do
+  [[ -z "$id" ]] && continue
+  grep -qFx "$id" <<< "$installed_apps" || { echo "  ❌ missing App Store app: $name"; missing=$((missing + 1)); }
+done <<< "$apps"
+total=$(( $(wc -w <<< "$brews") + $(wc -w <<< "$casks") + $(grep -c . <<< "$apps") ))
+if [[ $total -eq 0 ]]; then
+  echo "  ❌ found no declared packages; the flake failed to evaluate"
+  exit 1
+elif [[ $missing -eq 0 ]]; then
+  echo "  ✅ all $total declared Homebrew and App Store packages present"
 else
-  echo "  ⚠️  $missing declared package(s) not installed — run 'mise run nix:apply'"
+  echo "  ⚠️  $missing of $total declared package(s) not installed; run 'mise run nix:apply'"
   exit 1
 fi
 echo ""
