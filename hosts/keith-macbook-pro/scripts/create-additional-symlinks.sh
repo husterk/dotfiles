@@ -78,11 +78,12 @@ create_symlink() {
 
   log_info "Checking ${description} symlink..."
 
-  # Check if source exists
+  # A missing source is normal on the first switch: /run/current-system only
+  # points at the new system once activation finishes, and dotfiles deploy
+  # after it. Skip, and let the next apply create the link.
   if [ ! -e "${source_path}" ]; then
-    log_warning "${description} not found at ${source_path}"
-    log_info "Ensure it is installed via nix-darwin configuration."
-    return 1
+    log_warning "${description} source not there yet (${source_path}); skipping until the next apply."
+    return 2
   fi
 
   # Check if target already exists and is correct
@@ -151,18 +152,23 @@ log_info "=========================================="
 echo ""
 
 failed=0
+skipped=0
 total=${#SYMLINKS[@]}
 
 # Process all defined symlinks
 for symlink_def in "${SYMLINKS[@]}"; do
   IFS='|' read -r description source_path target_path requires_sudo <<< "${symlink_def}"
-  if ! create_symlink "${description}" "${source_path}" "${target_path}" "${requires_sudo}"; then
-    failed=$((failed + 1))
-  fi
+  status=0
+  create_symlink "${description}" "${source_path}" "${target_path}" "${requires_sudo}" || status=$?
+  case "${status}" in
+    0) ;;
+    2) skipped=$((skipped + 1)) ;;
+    *) failed=$((failed + 1)) ;;
+  esac
   echo ""
 done
 
-log_info "Processed ${total} symlink(s): $((total - failed)) successful, ${failed} failed."
+log_info "Processed ${total} symlink(s): $((total - failed - skipped)) ok, ${skipped} skipped, ${failed} failed."
 if [ ${failed} -eq 0 ]; then
   script_footer "success"
 else
