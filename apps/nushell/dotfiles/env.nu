@@ -56,3 +56,10 @@ if not ($zoxide_cache | path exists) {
     mkdir $zoxide_cache
 }
 zoxide init nushell --cmd cd | save -f ($zoxide_cache | path join "init.nu")
+
+# Same for mise: integrations.nu sources the generated activation script.
+let mise_cache = ($env.HOME | path join ".cache" "mise")
+if not ($mise_cache | path exists) {
+    mkdir $mise_cache
+}
+mise activate nu | save -f ($mise_cache | path join "activate.nu")

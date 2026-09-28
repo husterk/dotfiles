@@ -28,6 +28,6 @@ if ("~/.cache/starship/init.nu" | path expand | path exists) {
 
 # Hook mise into the shell (replaces direnv)
 # This should be at the end to ensure it works correctly.
-if ("~/.config/mise/activate.nu" | path expand | path exists) {
-  source-env "~/.config/mise/activate.nu"
+if ("~/.cache/mise/activate.nu" | path expand | path exists) {
+  source-env "~/.cache/mise/activate.nu"
 }
