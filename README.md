@@ -16,6 +16,8 @@ set up for that: every change starts from a GitHub issue, CI enforces the
 link, and the agent rules are checked by linters rather than only written
 down.
 
+![Neovim with a file picker open in tmux inside WezTerm, using the Catppuccin Mocha theme](docs/images/terminal.png)
+
 ## Highlights
 
 - **CI builds the real system.** Every PR is checked for formatting, lint
