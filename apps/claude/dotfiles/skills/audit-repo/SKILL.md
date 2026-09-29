@@ -55,5 +55,7 @@ The baseline lives in the public repository `husterk/.github`, cloned at
   issues or commit messages.
 - Settings, rulesets and Actions policy change through the API only after
   the audited repository has an issue for them.
-- On a private repository, the Actions allowlist and SHA-pinning rules are
-  still unproven. Test one change at a time and roll back if CI stops.
+- The Actions allowlist and SHA pinning are enforced on public and private
+  repositories alike. Actions owned by husterk need no allowlist pattern;
+  every third-party action the workflows use does. Switch a repository to
+  "selected" only after listing its third-party actions, and re-run its CI.
