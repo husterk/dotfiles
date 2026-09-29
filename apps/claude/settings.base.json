@@ -33,24 +33,17 @@
       "Bash(gh pr checks *)",
       "Edit(/private/tmp/claude-*/**)"
     ],
-    "ask": [
-      "Bash(git push *)",
-      "Bash(gh pr create *)",
-      "Bash(gh pr merge *)",
-      "Bash(gh release *)",
-      "Bash(mise run nix:apply*)",
-      "Bash(mise run apply*)",
-      "Bash(darwin-rebuild *)",
-      "Bash(sudo *)"
-    ],
+    "ask": [],
     "deny": [
       "Edit(hosts/*/generated/**)",
       "Read(**/*.key)",
       "Read(**/id_ed25519)",
       "Bash(dd if=* of=/dev/*)",
       "Bash(mkfs *)",
-      "Bash(diskutil erase*)"
-    ]
+      "Bash(diskutil erase*)",
+      "Bash(gh repo delete *)"
+    ],
+    "disableBypassPermissionsMode": "disable"
   },
   "statusLine": {
     "type": "command",
@@ -61,5 +54,13 @@
   "subagentStatusLine": {
     "type": "command",
     "command": "bash ~/.claude/subagent-statusline.sh"
+  },
+  "autoMode": {
+    "environment": [
+      "$defaults",
+      "Source control: github.com/husterk and every repository under it. The owner works across these repositories from any session, so pushes, pull requests, issues, releases and workflow runs on them are routine.",
+      "Trusted domains: keithhuster.com, ibuyhappiness.com and keithandlindsey.com, plus their *.pages.dev and *.workers.dev preview and production hosts. These are the owner's own sites.",
+      "CI/CD deploy targets: GitHub Actions workflows in husterk repositories deploy the owner's sites to the owner's Cloudflare account. Triggering or re-running those workflows at the owner's request is routine."
+    ]
   }
 }
