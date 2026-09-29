@@ -6,6 +6,9 @@ name = "empire"
 
 [session]
 default_tool = "claude"
+# New sessions start in Claude auto mode. YOLO launches claude with
+# --dangerously-skip-permissions, which settings.base.json disables anyway.
+yolo_mode_default = false
 
 [worktree]
 auto_cleanup = true
