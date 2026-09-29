@@ -98,3 +98,38 @@ generate() {
   [ ! -L "$HOME/.config/test-app/extra" ]
   [ -L "$HOME/.config/test-app/config" ]
 }
+
+@test "a second generate with nothing edited in place regenerates without a prompt" {
+  generate
+  run bash "$scripts/generate-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"No generated file changed since the last generation."* ]]
+  grep -qx 'email = tester@example.com' "$rendered"
+}
+
+@test "an edit made in place stops a generate that has no terminal, and nothing is deleted" {
+  generate
+  printf 'email = tester@example.com\nname = edited\n' > "$rendered"
+  run bash "$scripts/generate-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"  - .config/test-app/config"* ]]
+  grep -qx 'name = edited' "$rendered"
+}
+
+@test "a new file in a generated directory stops a generate that has no terminal" {
+  generate
+  printf 'added = true\n' > "$host/generated/dotfiles/.config/test-app/new"
+  run bash "$scripts/generate-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"  - .config/test-app/new"* ]]
+  [ -f "$host/generated/dotfiles/.config/test-app/new" ]
+}
+
+@test "a generated tree with no checksum record stops a generate that has no terminal" {
+  generate
+  rm "$host/generated/dotfiles.sha256"
+  run bash "$scripts/generate-dotfiles.sh" test-host < /dev/null
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"It has no checksum record"* ]]
+  [ -f "$rendered" ]
+}

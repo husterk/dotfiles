@@ -22,8 +22,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-# Set to skip the overwrite prompt, so `mise run refresh` works in a shell with
-# no TTY.
+# Set to regenerate without checking the generated tree for edits made in
+# place; any such edit is lost.
 FORCE_OVERWRITE="${FORCE_OVERWRITE:-false}"
 
 # Load shared script helpers
@@ -88,6 +88,9 @@ HOST_MANIFEST="$HOST_DIR/host-manifest.toml"
 GENERATED_DIR="$HOST_DIR/generated"
 GENERATED_ENV="$GENERATED_DIR/.env"
 GENERATED_DOTFILES_DIR="$GENERATED_DIR/dotfiles"
+# Checksums of the tree as last generated. An edit made through a Stow link
+# lands in the tree, so any difference is work that capture has not saved.
+GENERATED_MANIFEST="$GENERATED_DIR/dotfiles.sha256"
 
 # Validate required files exist
 if [ ! -f "$HOST_MANIFEST" ]; then
@@ -116,26 +119,46 @@ fi
 
 log_success "All prerequisites verified."
 
+dotfiles_checksums() {
+  (cd "$GENERATED_DOTFILES_DIR" && find . -type f -exec shasum -a 256 {} + | LC_ALL=C sort -k 2)
+}
+
+confirm_overwrite() {
+  if [ ! -t 0 ]; then
+    log_error "No terminal to confirm, so nothing was deleted."
+    log_info "Capture the changes with: mise run dotfiles:capture"
+    log_info "Or discard them with: FORCE_OVERWRITE=true mise run dotfiles:generate"
+    exit 1
+  fi
+  echo -n "Continue? (y/N): "
+  read -r response
+  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+    log_info "Generation cancelled by user."
+    exit 0
+  fi
+}
+
 # ------------------------------------------------------------------------
 # Step 2: Clean Generated Dotfiles Directory
 # ------------------------------------------------------------------------
 if [ -d "$GENERATED_DOTFILES_DIR" ]; then
-  log_warning "Generated dotfiles directory already exists: $GENERATED_DOTFILES_DIR"
-  log_warning "All files in this directory will be deleted and regenerated."
-
-  if [ "$FORCE_OVERWRITE" = false ]; then
-    echo -n "Continue? (y/N): "
-    read -r response
-
-    if [[ ! "$response" =~ ^[Yy]$ ]]; then
-      log_info "Generation cancelled by user."
-      exit 0
-    fi
-  else
+  if [ "$FORCE_OVERWRITE" = true ]; then
     log_info "Force overwrite enabled, regenerating dotfiles directory..."
+  elif [ ! -f "$GENERATED_MANIFEST" ]; then
+    log_warning "Generated dotfiles directory already exists: $GENERATED_DOTFILES_DIR"
+    log_warning "It has no checksum record, so edits made in place cannot be detected."
+    log_warning "All files in this directory will be deleted and regenerated."
+    confirm_overwrite
+  elif ! changed="$(diff "$GENERATED_MANIFEST" <(dotfiles_checksums))"; then
+    log_warning "These files changed since the last generation and would be lost:"
+    sed -nE 's/^[<>] [0-9a-f]{64}  \.\///p' <<< "$changed" | LC_ALL=C sort -u | sed 's/^/  - /'
+    confirm_overwrite
+  else
+    log_info "No generated file changed since the last generation."
   fi
 
   log_info "Removing existing dotfiles..."
+  rm -f "$GENERATED_MANIFEST"
   rm -rf "$GENERATED_DOTFILES_DIR"
   log_success "Cleaned dotfiles directory."
 fi
@@ -284,6 +307,8 @@ else
 
   log_success "Generated dotfiles in: $GENERATED_DOTFILES_DIR"
 fi
+
+dotfiles_checksums > "$GENERATED_MANIFEST"
 
 # ------------------------------------------------------------------------
 # Step 5: Final Summary
