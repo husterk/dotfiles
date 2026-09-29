@@ -1,75 +1,23 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
-  "labels": ["dependencies"],
-  "rangeStrategy": "pin",
-  "schedule": ["* 0-5 1 */2 *"],
+  "extends": [
+    "github>husterk/.github//renovate/default#v1.0.0",
+    "github>husterk/.github//renovate/mise#v1.0.0"
+  ],
   "nix": {
     "enabled": true
   },
-  "osvVulnerabilityAlerts": true,
-  "vulnerabilityAlerts": {
-    "enabled": true,
-    "labels": ["dependencies", "security"],
-    "schedule": ["* 0-5 1,15 * *"]
-  },
-  "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["* 0-5 1 */2 *"]
-  },
   "packageRules": [
-    {
-      "description": "Group GitHub Actions minor and patch updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "github actions"
-    },
     {
       "description": "Group Nix flake inputs",
       "matchManagers": ["nix"],
       "groupName": "nix flake inputs"
     },
     {
-      "description": "Group mise formatters and linters",
-      "matchManagers": ["mise"],
-      "matchDepNames": [
-        "shellcheck",
-        "shfmt",
-        "prettier",
-        "stylua",
-        "taplo",
-        "ruff"
-      ],
-      "groupName": "mise formatters and linters"
-    },
-    {
-      "description": "Group mise language servers",
-      "matchManagers": ["mise"],
-      "matchDepNames": [
-        "lua-language-server",
-        "npm:bash-language-server",
-        "npm:vscode-langservers-extracted"
-      ],
-      "groupName": "mise language servers"
-    },
-    {
       "description": "Group mise CLI utilities",
       "matchManagers": ["mise"],
       "matchDepNames": ["jq", "op", "yq", "aqua:neovim/neovim", "bats"],
       "groupName": "mise cli tools"
-    },
-    {
-      "description": "1Password publishes the CLI on its own update feed, not GitHub",
-      "matchManagers": ["mise"],
-      "matchDepNames": ["op"],
-      "overrideDatasource": "custom.1password-cli",
-      "overridePackageName": "1password-cli"
     }
-  ],
-  "customDatasources": {
-    "1password-cli": {
-      "defaultRegistryUrlTemplate": "https://app-updates.agilebits.com/check/1/0/CLI2/en/2.0.0/N",
-      "transformTemplates": ["{\"releases\": [{\"version\": version}]}"]
-    }
-  }
+  ]
 }
