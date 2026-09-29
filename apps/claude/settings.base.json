@@ -61,6 +61,10 @@
       "Source control: github.com/husterk and every repository under it. The owner works across these repositories from any session, so pushes, pull requests, issues, releases and workflow runs on them are routine.",
       "Trusted domains: keithhuster.com, ibuyhappiness.com and keithandlindsey.com, plus their *.pages.dev and *.workers.dev preview and production hosts. These are the owner's own sites.",
       "CI/CD deploy targets: GitHub Actions workflows in husterk repositories deploy the owner's sites to the owner's Cloudflare account. Triggering or re-running those workflows at the owner's request is routine."
+    ],
+    "allow": [
+      "$defaults",
+      "Committing, pushing and opening PRs for changes to apps/claude/settings.base.json in the husterk/dotfiles repository is allowed; the change only takes effect after the owner runs mise run refresh."
     ]
   }
 }
