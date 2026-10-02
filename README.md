@@ -116,15 +116,16 @@ and host names in `configuration.nix`.
 
 ## Day to day
 
-| Task                                  | Command                                                                     |
-| ------------------------------------- | --------------------------------------------------------------------------- |
-| Apply everything after pulling        | `mise run refresh`                                                          |
-| See every task                        | `mise tasks`                                                                |
-| Run all CI gates locally              | `mise run check`                                                            |
-| Update flake inputs                   | `mise run nix:update`                                                       |
-| Check declared packages are installed | `mise run verify`                                                           |
-| Edit a dotfile in place, then keep it | edit `~/.config/...`, then `mise run dotfiles:capture`                      |
-| Add or remove an app                  | the `add-app` / `remove-app` Claude skills, or [docs/apps.md](docs/apps.md) |
+| Task                                  | Command                                                                                                |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Apply everything after pulling        | `mise run refresh`                                                                                     |
+| See every task                        | `mise tasks`                                                                                           |
+| Run all CI gates locally              | `mise run check`                                                                                       |
+| Update flake inputs                   | `mise run nix:update`                                                                                  |
+| Check declared packages are installed | `mise run verify`                                                                                      |
+| Edit a dotfile in place, then keep it | edit `~/.config/...`, then `mise run dotfiles:capture`                                                 |
+| Add or remove an app                  | the `add-app` / `remove-app` Claude skills, or [docs/apps.md](docs/apps.md)                            |
+| Sign in to the Cloudflare `cf` CLI    | `cf auth login` (browser device code); `cf auth logout` removes the token from `~/.config/cloudflare/` |
 
 ## Claude Code setup
 

@@ -1,0 +1,8 @@
+[settings]
+experimental = true
+
+# Global tools, available outside any project. mise's npm backend needs a
+# global node to install npm packages.
+[tools]
+node = "24.21.0"
+"npm:cf" = "1.0.0-beta.12"
