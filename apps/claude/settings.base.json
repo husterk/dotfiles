@@ -35,7 +35,14 @@
       "Bash(cf cli search *)",
       "Bash(cf schema *)",
       "Bash(cf auth whoami)",
-      "Bash(cf * --help)"
+      "Bash(cf * --help)",
+      "Bash(cf zones settings edit *)",
+      "Bash(cf rulesets account-rulesets update *)",
+      "Bash(cf dns records create *)",
+      "Bash(cf dns records edit *)",
+      "Bash(cf dns records update *)",
+      "Bash(cf dns dnssec edit *)",
+      "Bash(cf workers deployments create *)"
     ],
     "ask": [],
     "deny": [
