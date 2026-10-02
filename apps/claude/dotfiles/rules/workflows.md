@@ -16,6 +16,26 @@
   The two rules above state the intent; the setting is what actually holds when
   context is full. Do not delete that setting to "clean up" a duplicate.
 
+# GitHub Issues
+
+In repositories owned by `husterk`, every open issue carries exactly one label
+naming who acts next. The full rules live in `husterk/.github`, section 8 of
+`docs/public-repos.md`.
+
+| Label           | Use when                                                                                  |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| `next: agent`   | An agent can finish it with the access it has                                             |
+| `next: human`   | I act first: a dashboard or console step, a credential, something physical, or a decision |
+| `next: waiting` | Nobody can act until an outside event or a date, which the issue names                    |
+
+- Label every issue you create. When you reach a step only I can do, switch
+  to `next: human` and comment the exact steps: where to click, what to
+  paste, or the decision with your recommendation. Switch back to
+  `next: agent` when I say it is done.
+- When working through issues on your own, take only `next: agent` ones.
+- File a new issue for each task found along the way, labeled, rather than
+  leaving it in chat.
+
 # Branches and Pull Requests
 
 - `git fetch origin` and confirm local `main` matches `origin/main` **before**
