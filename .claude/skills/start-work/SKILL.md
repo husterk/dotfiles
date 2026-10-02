@@ -20,7 +20,7 @@ Reuse an open issue that already covers the work. Otherwise create one from
 the task template, with a goal and checkable acceptance criteria:
 
 ```bash
-gh issue create --title "<imperative summary>" --label task --body "$(cat <<'BODY'
+gh issue create --title "<imperative summary>" --label task --label "next: agent" --body "$(cat <<'BODY'
 ## Goal
 <what should be true, and why>
 
@@ -31,6 +31,19 @@ BODY
 ```
 
 Ask the user when the goal or the criteria are unclear. Do not guess them.
+
+Use `next: human` instead when the user must act before any work can start,
+and `next: waiting` when the work waits on an outside event or a date.
+
+When a step needs the user, such as a dashboard change, a credential or a
+decision, hand the issue over and wait:
+
+```bash
+gh issue edit <number> --remove-label "next: agent" --add-label "next: human"
+gh issue comment <number> --body "<the exact steps, or the decision with a recommended answer>"
+```
+
+Switch the label back to `next: agent` when the user says it is done.
 
 ## 2. Branch
 
