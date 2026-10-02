@@ -19,5 +19,8 @@
       "matchDepNames": ["jq", "op", "yq", "aqua:neovim/neovim", "bats"],
       "groupName": "mise cli tools"
     }
-  ]
+  ],
+  "mise": {
+    "managerFilePatterns": ["/(^|/)apps/mise/dotfiles/config\\.toml$/"]
+  }
 }

@@ -392,6 +392,9 @@ echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
 echo ""
+echo "🧰 Installing global mise tools..."
+mise -C "$HOME" install
+echo ""
 echo "🤖 Merging Claude Code settings..."
 mise run claude:merge
 echo ""

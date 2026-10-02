@@ -102,6 +102,9 @@ name = "mas"
 [[apps]]
 modules = ["/apps/mise/mise.nix"]
 name = "mise"
+[[apps.dotfiles]]
+source = "/apps/mise/dotfiles/config.toml"
+target = "~/.config/mise/config.toml"
 
 [[apps]]
 modules = ["/apps/neovim/neovim.nix"]

@@ -31,7 +31,11 @@
       "Bash(gh run list *)",
       "Bash(gh pr view *)",
       "Bash(gh pr checks *)",
-      "Edit(/private/tmp/claude-*/**)"
+      "Edit(/private/tmp/claude-*/**)",
+      "Bash(cf cli search *)",
+      "Bash(cf schema *)",
+      "Bash(cf auth whoami)",
+      "Bash(cf * --help)"
     ],
     "ask": [],
     "deny": [
