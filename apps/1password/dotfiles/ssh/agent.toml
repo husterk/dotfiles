@@ -30,3 +30,8 @@
 #  https://developer.1password.com/docs/ssh/agent/config
 [[ssh-keys]]
 vault = "Private"
+
+# A homelab host login key outside the Private vault, named by item ID so no
+# vault or item name is published.
+[[ssh-keys]]
+item = "d7nzkqsi5ule7b63hcujdwcjli"
