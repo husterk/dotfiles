@@ -105,3 +105,11 @@ What to do:
 - When I say it is unlocked, retry the same commit unchanged.
 - A `git push` can report success while the commit never happened, leaving the
   remote branch at the old tip. Confirm with `git log` before reporting a push.
+
+# 1Password CLI
+
+Every Bash call runs in a new shell with no terminal, so 1Password can ask for
+my fingerprint on each `op` command. Put every `op read` a task needs into one
+Bash call, for example loading all the SSH keys a task needs into a temporary
+agent at once. When only an SSH key is needed, use the 1Password SSH agent
+instead of `op read`.
