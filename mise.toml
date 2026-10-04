@@ -506,5 +506,26 @@ else
   exit 1
 fi
 echo ""
+echo "🔐 Checking manual settings the 1Password prompts depend on (see README)..."
+# Full Disk Access is what lets a process read the user TCC database at all.
+if [[ ! -d /Applications/WezTerm.app ]]; then
+  echo "  ⏭️  WezTerm not installed; skipping Full Disk Access check"
+elif ! /usr/bin/sqlite3 "$HOME/Library/Application Support/com.apple.TCC/TCC.db" 'select 1' >/dev/null 2>&1; then
+  echo "  ⚠️  this terminal lacks Full Disk Access; grant it to WezTerm"
+elif [[ "$(/usr/bin/sqlite3 '/Library/Application Support/com.apple.TCC/TCC.db' \
+  "select auth_value from access where service = 'kTCCServiceSystemPolicyAllFiles' and client = 'com.github.wez.wezterm'" 2>/dev/null)" == 2 ]]; then
+  echo "  ✅ WezTerm has Full Disk Access"
+else
+  echo "  ⚠️  WezTerm lacks Full Disk Access"
+fi
+op_settings="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/Library/Application Support/1Password/Data/settings/settings.json"
+if [[ ! -r "$op_settings" ]]; then
+  echo "  ⏭️  1Password settings not readable; skipping SSH agent check"
+elif [[ "$(jq -r '."sshAgent.sshAuthorizatonModel" // empty' "$op_settings")" == application ]]; then
+  echo "  ✅ 1Password SSH agent approves once per application"
+else
+  echo "  ⚠️  1Password SSH agent does not approve once per application"
+fi
+echo ""
 echo "✅ Verification complete"
 '''

@@ -110,6 +110,14 @@ On a new machine, open one more shell and run `mise run refresh`. The first
 pass skips the Nushell config link and the VS Code extensions, because
 their sources are not in place until the switch and deploy finish.
 
+Two settings have no declarative form, so set them by hand. `mise run verify`
+warns when either is missing.
+
+| Setting                                                        | Where                                                   | Without it                                                                        |
+| -------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| WezTerm has Full Disk Access                                   | System Settings > Privacy & Security > Full Disk Access | macOS asks to let WezTerm access data from other apps each time the `op` CLI runs |
+| The 1Password SSH agent asks for approval once per application | 1Password > Settings > Developer > SSH Agent            | 1Password asks for Touch ID in every new terminal session                         |
+
 To adapt this for another machine, copy `hosts/keith-macbook-pro` to
 `hosts/$(hostname -s)`, then edit its `host-vars.toml`, `host-manifest.toml`
 and host names in `configuration.nix`.
