@@ -105,6 +105,9 @@ name = "mise"
 [[apps.dotfiles]]
 source = "/apps/mise/dotfiles/config.toml"
 target = "~/.config/mise/config.toml"
+[[apps.dotfiles]]
+source = "/apps/mise/dotfiles/mise.lock"
+target = "~/.config/mise/mise.lock"
 
 [[apps]]
 modules = ["/apps/neovim/neovim.nix"]
