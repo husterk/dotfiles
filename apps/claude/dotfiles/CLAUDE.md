@@ -11,9 +11,13 @@
 - `spec it` = clarify fully, even if the request looks obvious.
 - Naming your interpretation before you start is a correctness step, not
   narration. It outranks brevity rules. A few lines is enough.
-- When you need a decision from me, state your recommended reading and ask me
-  to correct it. Use a multiple-choice prompt only when the options are
-  genuinely exhaustive.
+- Ask me every question through the AskUserQuestion tool, never as plain text
+  in a reply. This covers clarifications, decisions, and approval of a plan.
+- Put your recommended answer first and mark it `(Recommended)`. The tool
+  always adds an Other choice for free text, so an open-ended question goes
+  through it too, with your best guesses as the options.
+- The tool takes up to four questions per call, each with two to four options.
+  Split a longer set across calls.
 - On a multi-part request, say which parts you are not doing and why. Do not
   quietly drop one.
 
