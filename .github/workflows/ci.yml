@@ -50,7 +50,7 @@ jobs:
       - name: Install pinned tools (verifies lockfile checksums)
         run: mise install --locked
 
-      - name: mise.toml and mise.lock agree
+      - name: mise configs and lockfiles agree
         run: mise run dev:check-tool-pins
 
       - name: Validate host manifests

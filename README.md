@@ -28,7 +28,7 @@ down.
   CI installs nixfmt, statix, treefmt and deadnix from the nixpkgs revision
   `flake.lock` pins, so a formatter never disagrees between the two.
 - **Drift checks.** `dev:check-tool-pins` fails when `mise.toml` and
-  `mise.lock` disagree. `dev:check-tool-sync` fails when a tool managed by
+  `mise.lock` disagree, or when the global mise config and its lockfile do. `dev:check-tool-sync` fails when a tool managed by
   both mise and Nix drifts between them.
 - **Machine-first editing.** Edit a dotfile in place, then
   `mise run dotfiles:capture` writes it back to its template and restores

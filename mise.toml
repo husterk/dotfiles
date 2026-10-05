@@ -297,9 +297,15 @@ raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-sync.sh {{ config_root }}"
 
 [tasks."dev:check-tool-pins"]
-description = "Check mise.lock records the versions pinned in mise.toml"
+description = "Check each mise lockfile records the versions pinned in its config"
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-pins.sh {{ config_root }}"
+
+[tasks."dev:lock-global"]
+description = "Regenerate apps/mise/dotfiles/mise.lock from the global mise config"
+env = { MISE_CONFIG_DIR = "{{ config_root }}/apps/mise/dotfiles", MISE_GLOBAL_CONFIG_FILE = "{{ config_root }}/apps/mise/dotfiles/config.toml" }
+raw = true
+run = "mise lock --global"
 
 [tasks."dev:validate-all-hosts"]
 description = "Validate every host's configuration and manifests"
