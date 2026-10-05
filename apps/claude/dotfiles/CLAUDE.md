@@ -116,9 +116,9 @@ set `CLAUDE_CODE_SUBAGENT_MODEL`.
 - Haiku 4.5 has a 200K context window and knowledge only to February 2025. Use
   Sonnet instead when a lookup must read more than that or depends on anything
   newer.
-- Haiku 4.5 does not think by default and takes no effort setting. Hand it a
-  narrow task: name what to search, where, and the shape of the answer. Ask it
-  to find and report, not to judge or recommend.
+- Haiku 4.5 takes no effort setting. Hand it a narrow task: name what to
+  search, where, and the shape of the answer. Ask it to find and report, not to
+  judge or recommend.
 - When unsure, stay on Opus. Never pass `model` to `babysit-ci`.
 - When a session runs on Fable 5.1, route subagents the same way.
 
