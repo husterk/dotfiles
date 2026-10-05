@@ -44,6 +44,9 @@ at all is covered by `# Code Comments` in `preferences.md`, which defaults to no
   validates queries". Passive only when the actor genuinely doesn't matter.
 - One idea per sentence. If the reader has to backtrack to parse it, split it.
 - Cut adverbs or use a stronger verb. "runs quickly" -> "is fast", or the number.
+- Say it literally. A metaphor standing in for a plain phrase makes the reader
+  decode it: "a dial worth turning" -> "a parameter worth varying", "earns its
+  keep" -> "still matters".
 - Say what it does, not how it feels. "types that follow your schema" names a
   feeling. "a column rename fails the build" names a fact. If a sentence could
   appear unchanged in another project's docs, it says nothing. Cut it.

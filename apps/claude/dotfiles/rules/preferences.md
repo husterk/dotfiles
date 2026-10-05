@@ -2,6 +2,14 @@
 
 - Follow existing project code style and conventions. Do not impose new patterns.
 - Prefer minimal, focused changes. Do not refactor beyond what is asked.
+- A pre-existing bug, performance problem, or gap you find along the way is a
+  follow-up to report, not something to fix in this change, unless the
+  requested behavior cannot work without it.
+- Commit tests only where the task asks for them or the repo already keeps
+  tests for this kind of change, sized like the neighboring test files. Scratch
+  checks you ran to verify the work do not become permanent tests.
+- Edit files surgically. Rewrite a whole file only when it is short or most of
+  it is changing.
 - Preserve all existing behavior when refactoring unless explicitly told otherwise.
 - Code reviews: prioritize correctness, security, then maintainability.
 - When fixing bugs, explain the root cause before applying the fix.
