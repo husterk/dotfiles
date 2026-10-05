@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Merge a JSON fragment into VSCode's settings.json non-destructively.
-# Keys from the fragment win; keys already in settings.json that aren't in
-# the fragment are preserved.
+# Keys from the fragment win, RETIRED keys are removed, and every other key
+# already in settings.json is preserved.
 #
 # VSCode's settings.json is JSONC (allows // and /* */ comments). We try
 # vanilla jq first, then fall back to a string-aware JSONC stripper before
@@ -15,6 +15,10 @@ set -euo pipefail
 CONFIG_ROOT="${1:?usage: $0 <config-root>}"
 FRAGMENT_FILE="$CONFIG_ROOT/apps/visual-studio-code/vscode-settings-fragment.json"
 SETTINGS_FILE="$HOME/Library/Application Support/Code/User/settings.json"
+# Keys the fragment used to set and has since dropped. initialPermissionMode
+# pins every new conversation to one mode and cannot be set to auto, so the
+# extension can start in auto mode only once the key is gone.
+RETIRED='["claudeCode.initialPermissionMode"]'
 
 if [[ ! -f "$FRAGMENT_FILE" ]]; then
   echo "❌ VSCode settings fragment not found: $FRAGMENT_FILE" >&2
@@ -97,7 +101,8 @@ else
 fi
 
 fragment_json=$(jq '.' "$FRAGMENT_FILE")
-merged_json=$(echo "$existing_json" | jq --argjson fragment "$fragment_json" '. * $fragment')
+merged_json=$(echo "$existing_json" | jq --argjson fragment "$fragment_json" --argjson retired "$RETIRED" \
+  '(. * $fragment) | delpaths([$retired[] | [.]])')
 
 if [[ "$existing_json" == "$merged_json" ]]; then
   echo "  ✓ already up to date"
