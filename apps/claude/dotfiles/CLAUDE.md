@@ -98,6 +98,48 @@ Rules:
   saved with `/effort` lasts only until the next refresh. Change a repo-owned
   setting in the base file, not in the live file.
 
+# Subagent Models
+
+Opus 5.5 is the main model. Pick a cheaper model per call with the Agent
+tool's `model` parameter, which overrides a subagent's own frontmatter. Do not
+set `CLAUDE_CODE_SUBAGENT_MODEL`.
+
+| Model      | Agent `model`   | Use it for                                                                                          |
+| ---------- | --------------- | --------------------------------------------------------------------------------------------------- |
+| Haiku 4.5  | `"haiku"`       | Read-only lookups: a search, finding files or symbols, a doc fetch and summary                      |
+| Sonnet 5.5 | `"sonnet"`      | Small work with a clear finish line I can check: a mechanical edit across files, running a command  |
+| Opus 5.5   | omit it         | Judgment: design, debugging an unknown cause, code review, a finding I will act on without checking |
+| Fable 5.1  | only on request | Extremely complex tasks. I switch the session to it myself                                          |
+
+- Explore and Plan run on the session model unless you pass `model`, so pass
+  `"haiku"` for a plain search.
+- Haiku 4.5 has a 200K context window and knowledge only to February 2025. Use
+  Sonnet instead when a lookup must read more than that or depends on anything
+  newer.
+- Haiku 4.5 does not think by default and takes no effort setting. Hand it a
+  narrow task: name what to search, where, and the shape of the answer. Ask it
+  to find and report, not to judge or recommend.
+- When unsure, stay on Opus. Never pass `model` to `babysit-ci`.
+- When a session runs on Fable 5.1, route subagents the same way.
+
+Anthropic's Sonnet 5.5 guide reports three habits that matter for a delegated
+task. It can stop to check in before the work is done, add tests or docs nobody
+asked for, and report a code change done without running anything. A subagent
+has no user to answer, so carry these lines in a Sonnet delegation prompt where
+they apply:
+
+- "Keep working until everything asked for is done. Stop only when you cannot
+  go on without the user, or before a risky step."
+- "When the work is done and checked, stop and report. Do not add features,
+  tests, files, docs, or refactors that were not asked for. Mention them at the
+  end instead."
+- For a code change: "Before reporting it done, run a real check that exercises
+  the change: the tests, the type-checker, the build, or the changed command. If
+  none can run, say which check you did not run and why."
+
+Do not ask a Sonnet subagent to include its reasoning in the reply. That can be
+declined as reasoning extraction.
+
 # Rules
 
 Three files load with every session and are authoritative:
