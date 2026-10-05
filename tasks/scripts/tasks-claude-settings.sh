@@ -4,7 +4,7 @@ set -euo pipefail
 # Manage ~/.claude/settings.json as a merge rather than a Stow symlink.
 #
 # AoE rewrites the hooks in that file, and Claude Code writes keys such as
-# modelSettings into it, so it cannot be a read-only symlink into generated
+# model into it, so it cannot be a read-only symlink into generated
 # output. The repo owns the keys in apps/claude/settings.base.json; the live
 # file keeps everything else.
 #
@@ -12,8 +12,8 @@ set -euo pipefail
 #   materialize  Replace a symlinked settings.json with a regular file holding
 #                the same content. Must run before dotfiles:generate deletes
 #                the symlink's target.
-#   merge        Write live + base: base keys win, other live keys (hooks,
-#                modelSettings) stay, and RETIRED keys are removed.
+#   merge        Write live + base: base keys win, other live keys (such as
+#                hooks) stay, and RETIRED keys are removed.
 
 MODE="${1:?mode required: materialize or merge}"
 CONFIG_ROOT="${2:?config_root required}"

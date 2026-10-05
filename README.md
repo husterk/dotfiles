@@ -144,9 +144,10 @@ and host names in `configuration.nix`.
     - Evidence labels (`Verified`, `Inferred`, `Unknown`) keep a guess from
       passing as a fact.
     - A writing standard covers every commit message, PR and doc.
-- **`settings.base.json`** holds the permission rules and the model.
-  `mise run refresh` merges it into `~/.claude/settings.json`, and Agent of
-  Empires keeps ownership of its own hooks.
+- **`settings.base.json`** holds the permission rules, the model and each
+  model's effort level. `mise run refresh` merges it into
+  `~/.claude/settings.json`, and Agent of Empires keeps ownership of its own
+  hooks.
 - **`dotfiles/agents/babysit-ci.md`** is a background agent. It watches a
   GitHub Actions run, maps each failing job to its local command, and fixes
   and retries within explicit stop conditions.

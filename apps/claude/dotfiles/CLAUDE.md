@@ -89,8 +89,9 @@ Rules:
   `disableAllHooks: true`; it would blind the AoE status view.
 - `~/.claude/settings.json` is a regular file, not a Stow symlink. The
   dotfiles repo owns the keys in `apps/claude/settings.base.json` and merges
-  them in on `mise run refresh`; every other key, including `hooks` and
-  `modelSettings`, stays as Claude Code and aoe wrote it. Change a repo-owned
+  them in on `mise run refresh`; every other key, including `hooks`, stays as
+  Claude Code and aoe wrote it. The base file owns `modelSettings`, so a level
+  saved with `/effort` lasts only until the next refresh. Change a repo-owned
   setting in the base file, not in the live file.
 
 # Rules
