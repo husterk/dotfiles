@@ -9,7 +9,7 @@ excludes = [
   "**/.gitignore",
   "**/.editorconfig",
   "**/*.tmTheme",
-  "**/*.nu",            # Nushell is not POSIX/Zsh compatible
+  "**/*.nu", # Nushell is not POSIX/Zsh compatible
   "**/commit-template",
   "**/ignore",
   "**/*.env*",
@@ -41,7 +41,17 @@ includes = ["*.lua"]
 command = "taplo"
 includes = ["*.toml", "**/config"]
 # Taplo options to match .editorconfig settings
-options = ["fmt", "-o", "indent_string=  ", "-o", "column_width=120", "-o", "reorder_keys=true"]
+options = [
+  "fmt",
+  "-o",
+  "indent_string=  ",
+  "-o",
+  "column_width=120",
+  "-o",
+  "reorder_keys=true",
+  "-o",
+  "align_comments=false",
+]
 
 [formatter.python]
 command = "ruff"

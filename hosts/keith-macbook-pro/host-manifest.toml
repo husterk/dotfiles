@@ -103,7 +103,7 @@ name = "mas"
 modules = ["/apps/mise/mise.nix"]
 name = "mise"
 [[apps.dotfiles]]
-source = "/apps/mise/dotfiles/config.toml"
+source = "/apps/mise/dotfiles/mise.toml"
 target = "~/.config/mise/config.toml"
 [[apps.dotfiles]]
 source = "/apps/mise/dotfiles/mise.lock"
