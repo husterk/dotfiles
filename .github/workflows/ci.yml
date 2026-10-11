@@ -74,7 +74,7 @@ jobs:
       # come from nixpkgs, not mise, so CI needs a Nix to run the same checks
       # `mise run check` runs locally.
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
 
       # Pinned to the same nixpkgs revision the host builds from, so CI runs
       # byte-identical nixfmt/statix/treefmt to `mise run check`. A
@@ -139,7 +139,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
 
       # Builds with the public stub for the `private` input. No override, so
       # the result is what a fresh clone of this repo produces.
