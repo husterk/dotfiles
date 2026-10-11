@@ -1,8 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>husterk/.github//renovate/default#v2.0.0",
-    "github>husterk/.github//renovate/mise#v2.0.0"
+    "github>husterk/.github//renovate/default#v2.1.2",
+    "github>husterk/.github//renovate/mise#v2.1.2"
   ],
   "nix": {
     "enabled": true
@@ -16,7 +16,13 @@
     {
       "description": "Group mise CLI utilities",
       "matchManagers": ["mise"],
-      "matchDepNames": ["jq", "op", "yq", "aqua:neovim/neovim", "bats"],
+      "matchDepNames": [
+        "jq",
+        "aqua:1password/cli",
+        "yq",
+        "aqua:neovim/neovim",
+        "bats"
+      ],
       "groupName": "mise cli tools"
     }
   ],
