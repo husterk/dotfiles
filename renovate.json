@@ -16,14 +16,14 @@
     {
       "description": "Group mise CLI utilities",
       "matchManagers": ["mise"],
-      "matchDepNames": [
-        "jq",
-        "aqua:1password/cli",
-        "yq",
-        "aqua:neovim/neovim",
-        "bats"
-      ],
+      "matchDepNames": ["yq", "bats"],
       "groupName": "mise cli tools"
+    },
+    {
+      "description": "Nix installs these too, and mise pins them to the version Nix provides so the repo and the system run the same binary. They move with mise run nix:update, which dev:check-tool-sync enforces.",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["aqua:1password/cli", "aqua:neovim/neovim", "jq"],
+      "enabled": false
     }
   ]
 }
