@@ -5,4 +5,4 @@ experimental = true
 # global node to install npm packages.
 [tools]
 node = "24.21.0"
-"npm:cf" = "1.0.0-beta.12"
+"npm:cf" = "1.0.0-beta.14"
