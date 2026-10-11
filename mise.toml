@@ -11,8 +11,8 @@ min_version = "2026.1.2"
 [tools]
 # Script dependencies
 "aqua:1password/cli" = "2.39.0" # 1Password CLI
-jq = "1.8.2"                    # JSON processor
-yq = "4.53.2"                   # YAML processor
+jq = "1.8.2" # JSON processor
+yq = "4.53.2" # YAML processor
 
 # Shell script quality tools
 shellcheck = "0.11.0"
@@ -20,9 +20,9 @@ shfmt = "3.14.1"
 
 # Code formatters
 prettier = "3.9.9" # Markdown, JSON, YAML formatter
-ruff = "0.16.9"    # Python linter and formatter
-stylua = "2.5.2"   # Lua formatter
-taplo = "0.10.0"   # TOML formatter
+ruff = "0.16.9" # Python linter and formatter
+stylua = "2.5.2" # Lua formatter
+taplo = "0.10.0" # TOML formatter
 
 # Language servers for IDE integration
 lua-language-server = "3.18.2"
@@ -303,7 +303,7 @@ run = "{{ config_root }}/tasks/scripts/tasks-dev-check-tool-pins.sh {{ config_ro
 
 [tasks."dev:lock-global"]
 description = "Regenerate apps/mise/dotfiles/mise.lock from the global mise config"
-env = { MISE_CONFIG_DIR = "{{ config_root }}/apps/mise/dotfiles", MISE_GLOBAL_CONFIG_FILE = "{{ config_root }}/apps/mise/dotfiles/config.toml" }
+env = { MISE_CONFIG_DIR = "{{ config_root }}/apps/mise/dotfiles", MISE_GLOBAL_CONFIG_FILE = "{{ config_root }}/apps/mise/dotfiles/mise.toml" }
 raw = true
 run = "mise lock --global"
 

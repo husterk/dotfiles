@@ -42,7 +42,7 @@ done
 # tools in ~/.config/mise/config.toml.
 pairs=(
   "mise.toml|mise.lock|mise lock"
-  "apps/mise/dotfiles/config.toml|apps/mise/dotfiles/mise.lock|mise run dev:lock-global"
+  "apps/mise/dotfiles/mise.toml|apps/mise/dotfiles/mise.lock|mise run dev:lock-global"
 )
 
 gha_summary_heading "Tool pins (config vs lockfile)"
