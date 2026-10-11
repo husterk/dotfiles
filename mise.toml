@@ -48,6 +48,10 @@ bats = "1.14.0"
 experimental = true
 lockfile = true
 
+# Install only what mise.lock records. Without this, installing a tool whose
+# lock entry has no checksum writes one into mise.lock and dirties the tree.
+locked = true
+
 # Automatically install missing tools when entering directory
 not_found_auto_install = true
 
