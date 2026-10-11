@@ -106,27 +106,26 @@ set `CLAUDE_CODE_SUBAGENT_MODEL`.
 
 | Model      | Agent `model`   | Use it for                                                                                          |
 | ---------- | --------------- | --------------------------------------------------------------------------------------------------- |
-| Haiku 4.5  | `"haiku"`       | Read-only lookups: a search, finding files or symbols, a doc fetch and summary                      |
+| Haiku 5.5  | `"haiku"`       | Read-only lookups: a search, finding files or symbols, a doc fetch and summary                      |
 | Sonnet 5.5 | `"sonnet"`      | Small work with a clear finish line I can check: a mechanical edit across files, running a command  |
 | Opus 5.5   | omit it         | Judgment: design, debugging an unknown cause, code review, a finding I will act on without checking |
 | Fable 5.1  | only on request | Extremely complex tasks. I switch the session to it myself                                          |
 
 - Explore and Plan run on the session model unless you pass `model`, so pass
   `"haiku"` for a plain search.
-- Haiku 4.5 has a 200K context window and knowledge only to February 2025. Use
-  Sonnet instead when a lookup must read more than that or depends on anything
-  newer.
-- Haiku 4.5 takes no effort setting. Hand it a narrow task: name what to
-  search, where, and the shape of the answer. Ask it to find and report, not to
-  judge or recommend.
+- Hand Haiku a narrow task: name what to search, where, and the shape of the
+  answer. Ask it to find and report, not to judge or recommend.
+- Haiku can answer from memory when a search would catch a changed fact. When
+  a lookup depends on a version, a price, or anything "latest", say to fetch
+  or search for it even when it feels sure.
 - When unsure, stay on Opus. Never pass `model` to `babysit-ci`.
 - When a session runs on Fable 5.1, route subagents the same way.
 
-Anthropic's Sonnet 5.5 guide reports three habits that matter for a delegated
-task. It can stop to check in before the work is done, add tests or docs nobody
-asked for, and report a code change done without running anything. A subagent
-has no user to answer, so carry these lines in a Sonnet delegation prompt where
-they apply:
+Anthropic's Sonnet 5.5 and Haiku 5.5 guides report three habits that matter for
+a delegated task. Each model can stop to check in before the work is done, add
+tests or docs nobody asked for, and report a code change done without running
+anything. A subagent has no user to answer, so carry these lines in a Sonnet or
+Haiku delegation prompt where they apply:
 
 - "Keep working until everything asked for is done. Stop only when you cannot
   go on without the user, or before a risky step."

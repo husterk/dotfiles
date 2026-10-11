@@ -32,7 +32,7 @@ echo "$input" | jq -rc '
     else dim + "○" + reset end;
 
   # shorten model id: strip provider/region prefixes and the "claude-" stem
-  #   us.anthropic.claude-opus-5-5 -> opus-5-5 ; claude-haiku-4-5-20251001 -> haiku-4-5-20251001
+  #   us.anthropic.claude-opus-5-5 -> opus-5-5 ; anthropic.claude-haiku-5-5 -> haiku-5-5
   def shortmodel:
     . | sub("^[a-z]+\\.anthropic\\."; "") | sub("^anthropic\\."; "") | sub("^claude-"; "");
 
