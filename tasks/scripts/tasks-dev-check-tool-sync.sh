@@ -11,7 +11,8 @@ set -euo pipefail
 # working directory. Neovim hit exactly this: the mise pin held 0.11.6 inside
 # the repo while Nix had already moved the system editor to 0.12.5.
 #
-# Renovate only sees the mise side, so nothing upstream catches the drift.
+# Renovate skips these tools, so their mise pins move only when this check
+# reports drift after a nix:update.
 
 REPO_ROOT="${1:?REPO_ROOT required}"
 
@@ -30,7 +31,7 @@ NIX_BIN="${NIX_BIN:-/run/current-system/sw/bin}"
 DUAL_MANAGED=(
   "aqua:neovim/neovim|nvim|apps/neovim/neovim.nix"
   "jq|jq|apps/claude/claude.nix"
-  "op|op|apps/1password/1password.nix"
+  "aqua:1password/cli|op|apps/1password/1password.nix"
 )
 
 echo "🔍 Checking mise/Nix tool version sync..."

@@ -10,7 +10,7 @@ min_version = "2026.1.2"
 # =========================================================================
 [tools]
 # Script dependencies
-"aqua:1password/cli" = "2.40.0" # 1Password CLI
+"aqua:1password/cli" = "2.39.0" # 1Password CLI
 jq = "1.8.2" # JSON processor
 yq = "4.54.1" # YAML processor
 
@@ -30,7 +30,7 @@ lua-language-server = "3.19.1"
 "npm:vscode-langservers-extracted" = "4.10.0"
 
 # Editor
-"aqua:neovim/neovim" = "0.12.6"
+"aqua:neovim/neovim" = "0.12.5"
 
 # Testing
 bats = "1.14.0"
