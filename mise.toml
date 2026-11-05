@@ -386,6 +386,11 @@ description = "Merge apps/claude/settings.base.json into ~/.claude/settings.json
 raw = true
 run = "{{ config_root }}/tasks/scripts/tasks-claude-settings.sh merge {{ config_root }}"
 
+[tasks."gh:configure"]
+description = "Set gh to use SSH for git operations, so clones authenticate through the 1Password agent"
+raw = true
+run = "gh config set git_protocol ssh"
+
 [tasks.setup]
 alias = "set-up-new-host"
 depends = ["env:generate", "dotfiles:generate"]
@@ -404,6 +409,9 @@ mise run dotfiles:deploy
 echo ""
 echo "🧰 Installing global mise tools..."
 mise -C "$HOME" install
+echo ""
+echo "🐙 Configuring GitHub CLI..."
+mise run gh:configure
 echo ""
 echo "🤖 Merging Claude Code settings..."
 mise run claude:merge
@@ -432,6 +440,9 @@ mise run nix:apply
 echo ""
 echo "🔗 Deploying dotfiles..."
 mise run dotfiles:deploy
+echo ""
+echo "🐙 Configuring GitHub CLI..."
+mise run gh:configure
 echo ""
 echo "🤖 Merging Claude Code settings..."
 mise run claude:merge
