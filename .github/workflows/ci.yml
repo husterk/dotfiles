@@ -41,6 +41,7 @@ jobs:
       - name: Install mise
         uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
+          version: 2026.11.0
           install: false
 
       # Verifies every checksum in mise.lock for the platforms this runner
@@ -65,6 +66,7 @@ jobs:
       - name: Install mise
         uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
+          version: 2026.11.0
           install: false
 
       - name: Install pinned tools
@@ -112,6 +114,7 @@ jobs:
       - name: Install mise
         uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
+          version: 2026.11.0
           install: false
 
       - name: Install pinned tools
