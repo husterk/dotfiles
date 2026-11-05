@@ -9,6 +9,11 @@
   },
   "packageRules": [
     {
+      "description": "Update the mise CLI on its own, so a breaking release fails a PR that changes nothing else",
+      "matchDepNames": ["jdx/mise"],
+      "groupName": "mise CLI"
+    },
+    {
       "description": "Group Nix flake inputs",
       "matchManagers": ["nix"],
       "groupName": "nix flake inputs"
